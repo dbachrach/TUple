@@ -1,0 +1,282 @@
+body {
+    background-color: #EAEAEA;
+    font-family: Verdana, Arial, Sans-Serif;
+    font-size: 12px;
+    line-height: 150%;
+    margin: 0;
+}
+
+#page {
+    margin: 0 auto;
+    width: 800px;
+    height: 100%;
+}
+
+#header_img {
+    margin: 0;
+    padding: 0;
+}
+
+#timer {
+        color: red;
+        font-size: 16px;
+        position: relative;
+        top: 5px;
+        left: 470px;
+}
+
+#content {
+    border: 1px solid #A2BDC0;
+    height: 100%;
+    width: 798px;
+    margin-top: 0px;
+    padding: 0;
+}
+
+#contentBorder {
+    border: 1px solid #FFF;
+    height: 100%;
+    width: 756px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 50px;
+    padding-top: 10px;
+    background-color: #E3F4F6;
+}
+
+#left_col {
+    float: left;
+    width: 522px;
+    font-size: 13px;
+}
+#right_col {
+    float: right;
+    width: 226px;
+}
+
+#footer {
+    font-size:10px;
+    text-align: right;
+    margin-bottom:25px;
+}
+
+h1 {
+    font-size: 16px;
+    font-weight: normal;
+    display: block;
+    width: 100%;
+    color: #333;
+    padding-bottom: 4px;
+    border-bottom: 1px #BBB solid;
+}
+
+img {
+    border: 0;
+}
+
+table {
+    border: 0;
+    padding: 0;
+}
+
+table#login {
+    margin: 0 auto;
+}
+
+
+#overflow_table {
+   overflow:hidden; 
+   width:226px; 
+   height:422px;
+   margin-left:5px;
+}
+/* Reset overflow value to hidden for all non-IE browsers. 
+html>body #overflow_table {
+        overflow: hidden;
+        width: 226px;
+        margin-left:5px;
+        border-bottom: 1px solid #C1DAD7;
+
+}
+
+table#answerKey {
+    /*margin-left: auto;
+    margin-right: 10; ---
+    width:210px;
+    float:left;
+}*/
+
+table#answerKeyHeader {
+    width: 226px;
+}
+
+thead.fixedHeader tr {
+        display: block;
+}
+
+#answerScroller {
+	height: 382px;
+        overflow-x: hidden;
+	overflow-y: scroll;
+        width: 226px;
+	border-bottom: 1px solid #C1DAD7;
+}
+
+table#answerKey  {
+/*        display: block;
+  */      
+        
+        width: 226px;
+}
+/*
+thead.fixedHeader th {
+        width: 35px;
+}
+thead.fixedHeader th + th {
+        width: 35px;
+}
+thead.fixedHeader th + th + th {
+        width: 35px;
+}
+thead.fixedHeader th + th + th + th {
+        width: 35px;
+}
+thead.fixedHeader th + th + th + th + th {
+        width: 35px;
+}
+thead.fixedHeader th + th + th + th + th + th {
+        width: 51px;
+}
+*/
+
+
+table#answerKey td {
+        border-right: 1px solid #C1DAD7;
+        border-bottom: 1px solid #C1DAD7;
+        /*padding: 2px 2px 4px 4px;*/
+        padding:2px 0px;
+        text-align: center;
+        margin:0;
+}
+
+
+/*
+tbody.scrollContent td {
+	width: 35px;
+	text-align: center;
+}
+tbody.scrollContent td + td + td + td +td + td {
+        width: 36px;
+}
+
+tbody.scrollContent td + td + td + td +td + td + td {
+	width: 15px;
+}
+*/
+table#answerKeyHeader th {
+    color: #4f6b72;
+        border-right: 1px solid #C1DAD7;
+        border-bottom: 1px solid #C1DAD7;
+        border-top: 1px solid #C1DAD7;
+        text-align: center;
+        /*padding: 2px 2px 4px 4px;*/
+        padding: 2px 0px;
+        background: #CAE8EA;
+}
+table#answerKey tr {
+    background: #fff;
+    color: #4f6b72;
+      height: 20px;
+
+}
+
+table#answerKey tr.alt {
+        background: #E5E5E5;
+        /*color: #4f6b72;*/
+}
+
+.left_td {
+    border-left: 1px solid #C1DAD7;
+}
+
+caption {
+        padding: 0 0 5px 0;
+        width: 200px;    
+        font: italic 11px Verdana, Arial, Sans-Serif;
+        text-align: right;
+        color: #4f6b72;
+}
+
+#periodicTableHeader {
+    margin-top: 30px;
+}
+
+
+.ender {
+    clear: both;
+}
+
+#FinishTestButton {
+    margin-top: 10px;
+    float:right;
+}
+
+#prevNext {
+    float:right;
+    color: #888;
+    font-size: 12px;
+}
+
+a {
+    color: #888;
+    text-decoration: none;
+    
+}
+a:hover {
+    color: #000;
+}
+
+a:hover {
+    color: #000;
+}
+
+.radioButton {
+   /* width: 8px;
+    height: 8px;*/
+}
+
+#pTableNote {
+        padding: 0 15px 5px 0;   
+        font: italic 11px Verdana, Arial, Sans-Serif;
+        text-align: right;
+        color: #4f6b72;
+}
+
+#question {
+    height: 250px;
+    margin-top: -30px;
+}
+
+.error {
+        text-align: center;
+        color: red;
+}
+
+#help_link {
+        text-align: right;
+        top: -36px;
+        position: relative;
+	
+}
+#help_link a {
+color: #FFF;
+        text-decoration: none;
+
+}
+#help_link a:hover {
+        text-decoration: underline;
+}
+
+#instructions {
+	margin: 20px;
+}
