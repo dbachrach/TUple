@@ -1,5 +1,7 @@
 from django.conf.urls.defaults import *
-from placement.exam import views
+import os.path
+from django.conf import settings
+from TUple.exam import views
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -9,11 +11,13 @@ urlpatterns = patterns('',
     # Example:
     # (r'^placement/', include('placement.foo.urls')),
 
-    (r'^$', exam.views.home)
-    (r'^instructions/$', exam.views.instructions)
-    (r'^exam/$', exam.views.exam)
-    (r'^finished/$', exam.views.finished)
-    (r'^closed/$', exam.views.closed)
+    (r'^$', views.home),
+    (r'^instructions/$', views.instructions),
+    (r'^exam/$', views.exam),
+    (r'^finished/$', views.finished),
+    (r'^closed/$', views.closed),
+    
+    
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
@@ -21,3 +25,8 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     # (r'^admin/', include(admin.site.urls)),
 )
+
+if settings.DEBUG:
+    urlpatterns += patterns('', (r'^media/(?P<path>.*)$', 'django.views.static.serve',
+            {'document_root': os.path.join(os.path.dirname(__file__), 'media').replace('\\','/'), 'show_indexes': True}),
+    )

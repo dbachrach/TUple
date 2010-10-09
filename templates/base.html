@@ -4,11 +4,11 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta>
     <link rel="stylesheet" href="/media/style.css" type="text/css" media="screen"></link>
-    <title>{{ site_title }}</title>
+    <title>{% block title %} Trinity University Chemistry Placement Exam {% endblock %}</title>
 </head>
 <body marginheight="0" marginwidth="0">
 <div id="page">
-    <img id="header_img" src="images/header.png" alt="{{ header_img_title }}" width="800" height="72" />
+    <img id="header_img" src="/media/images/header.png" alt="{{ header_img_title }}" width="800" height="72" />
     <div id="content">
         <div id="contentBorder">
             {% block content %}{% endblock %}

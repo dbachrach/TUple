@@ -1,3 +1,4 @@
+from django.shortcuts import render_to_response
 
 def home(requst):
     return HttpResponse("Home")
@@ -12,4 +13,4 @@ def finished(request):
     return HttpResponse("Finished")
 
 def closed(request):
-    return HttpResponse("Closed")
+    return render_to_response('closed.html')
