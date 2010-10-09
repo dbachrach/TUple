@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if popup %}
+<div id="instructions">
+{% endif %}
+
+<h1>Instructions</h1>
+
+<p>You are about to take the Chemistry Placement Exam. The test consists of 30 multiple choice questions with 5 answers (A through E) for each. You will have 1 hour to complete the exam.</p>
+<p>You should have available a pencil, paper and a calculator to work out problems.  You should use no outside resources. A periodic table will be displayed below each question. To view a larger version of the periodic table, simply click the image. A new window will open, which you can keep open for the duration of your exam.</p>
+
+<p>Once you click "Start Test" below, your timer will begin, and you will have 60 minutes to complete the exam. You can submit the exam before time expires by clicking "Finish Test." If you do not finish in the time limit, your test will automatically be submitted for you. Please note that you have exactly one hour from the time you click the "Start Test" button below to complete the exam, or your exam will be automatically graded after an hour.</p>
+
+<p>When you answer a question, your solutions are automatically saved, so in the case of a crash, you will not lose any of your work. If you close the browser window, or your browser crashes, simply reopen your browser and log back in. Your test will continue with your answers intact. Please note that you will not be compensated for time lost. You have exactly one hour regardless of closing your browser or it crashing.</p>
+
+<p>Questions are shown in the left hand column of the screen. Your answer key is in the right hand column. You can navigate questions by either clicking "Previous Question" or "Next Question." You may also click the question number on the answer key to skip directly to a question. You may skip ahead or return to questions and change answers; only your last entry will be counted. The selected question is highlighted in red on your answer key, and you may only answer the currently selected question.</p>
+
+<p>While you are free to use any browser you'd like, we <b>strongly recommend the latest version of Firefox or Safari</b>. Older versions of firefox will work fine. Internet Explorer 6 and 7 work satisfactorily. Older versions of Internet Explorer will not work, and you should also avoid Netscape Navigator earlier than version 8.</p>
+
+<p>If you have any questions, please send an email to <a href="mailto://sbachrach@trinity.edu">sbachrach@trinity.edu</a>{% if popup %}.{% else %} and do not start your test. Close this window and wait for a response.{% endif %}</p>
+
+{% if popup %}
+</div>
+{% endif %}
+
+{% if not popup %}
+<form action="/start/" method="post">
+   <input type="submit" value="Start Exam" />
+</form>
+{% endif %}
+
+{% endblock %}

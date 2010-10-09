@@ -13,6 +13,7 @@ urlpatterns = patterns('',
 
     (r'^$', views.home),
     (r'^instructions/$', views.instructions),
+    (r'^start/$', views.start),
     (r'^exam/$', views.exam),
     (r'^finished/$', views.finished),
     (r'^closed/$', views.closed),

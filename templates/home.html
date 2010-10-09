@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Login</h1>
+<p>Login using your last name and your Trinity Student Identification number. <strong>If your last name contains a space or a hyphen or an apostrophe, please omit it; i.e., "Zeta-Jones" is entered as "ZetaJones" and "O'Malley" is entered as "OMalley".</strong> Your student identification number is a seven digit number that should be located in your student orientation packet.</p>
+
+<form action="do_login.php" method="post">
+    <table id="login">
+        <tr>
+            <td align="right"><label for="last_name">Last Name: </label></td>
+            <td align="left"><input type="text" name="last_name" id="last_name" /></td>
+        </tr>
+        <tr>
+            <td align="right"><label for="student_num">7-Digit ID#: </label></td>
+            <td align="left"><input type="text" name="student_num"id="student_num" /></td>
+        </tr>
+         <tr>
+            <td align="right"></td>
+            <td align="left"><input type="submit" value="Login" /></td>
+        </tr>
+    </table>
+</form>
+
+{% endblock %}
