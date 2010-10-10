@@ -6,7 +6,7 @@
 <p>Login using your last name and your Trinity Student Identification number. <strong>If your last name contains a space or a hyphen or an apostrophe, please omit it; i.e., "Zeta-Jones" is entered as "ZetaJones" and "O'Malley" is entered as "OMalley".</strong> Your student identification number is a seven digit number that should be located in your student orientation packet.</p>
 
 {% if form.errors %}
-<p class="error">Your credentials were incorrect. Please try again.</p>
+<p class="error">Login failed. Please try again. If you continue to have problems, email <a href=\"mailto:sbachrac@trinity.edu\">sbachrach@trinity.edu</a>.</p>
 {% endif %}
 
 <form method="post" action="{% url django.contrib.auth.views.login %}">

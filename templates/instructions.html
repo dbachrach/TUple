@@ -26,8 +26,9 @@
 {% endif %}
 
 {% if not popup %}
-<form action="/start/" method="post">
-   <input type="submit" value="Start Exam" />
+<form method="post" action="/start/">
+	{% csrf_token %}
+   	<input type="submit" value="Start Exam" />
 </form>
 {% endif %}
 

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div id="help_link">
+	<a href="#" onclick="window.open('/popup/instructions/','Instructions','width=830,height=580,scrollbars=1');">Help?</a>
+</div>
+
+<div id="left_col">
+	<div id="timer">
+		<p id="timer_string"></p>
+	</div>
+	
+	<div id="question">
+		<p>Test loading...</p>
+    </div>
+
+	<p id="prevNext">
+		<a id="prev_link" href="#" onmouseover="$('prev_img').src='/media/images/prv_h.png';" onmouseout="$('prev_img').src='/media/images/prv.png';"   onclick="prevQuestion(); return false;">
+			<img src="/media/images/prv.png" alt="Previous" id="prev_img" /> Previous Question
+		</a>
+		<span id="pipe_symbol"> | </span>
+		<a id="next_link" href="#" onmouseover="$('next_img').src='/media/images/nxt_h.png';" onmouseout="$('next_img').src='/media/images/nxt.png';"   onclick="nextQuestion(); return false;">
+			Next Question <img src="/media/images/nxt.png" alt="Next" id="next_img" />
+		</a>
+	</p>
+	
+	<div class="ender"></div>
+
+	<h1 id="periodicTableHeader">Periodic Table</h1>
+	<div id="pTableNote">
+		Click table to enlarge
+	</div>
+	               
+ 	<a href="#" onclick="window.open('/media/images/ptable.gif','PeriodicTable','width=806,height=580');">
+	  	<img src="/media/images/ptable.png" alt="Periodic Table" />
+	</a>
+</div>
+	
+<div id="right_col">
+	<form id="answerKeyForm" action="finish.php" method="post">
+		<div id="overflow_table">
+			<table id="answerKeyHeader" cellpadding="0" cellspacing="0">
+				<caption>Answer Form</caption>
+				<thead class="fixedHeader">
+			 		<tr>
+						<th class="left_td" width="35px">#</th>
+                       	<th width="35">A</th>
+                       	<th width="35">B</th>
+                       	<th width="35">C</th>
+                       	<th width="35">D</th>
+                       	<th width="51">E</th>
+                   </tr>
+				</thead>
+			</table>
+			<div id="answerScroller">
+				<table id="answerKey" cellpadding="0" cellspacing="0">
+					<tbody id="scrolled_table_content" class="scrollContent">
+						
+						{% for problem in problems %}
+						<tr id="answerFormRow{{problem.id}}" class="{% if forloop.counter|divisibleby:2 %}alt{% endif %}">
+
+
+							<td class="left_td" width="35px">
+								<a href="#" id="row_{{ forloop.counter }}_link" onclick="selectQuestion({{ forloop.counter }}); return false;">
+									{{ forloop.counter }}
+								</a>
+							</td>
+
+							{% for answer_choice in answer_choices %}
+
+							<td width="35">
+								<input type="radio" name="question_{{ forloop.parentloop.counter }}" value="{{ answer_choice|upper }}" class="radioButton" onclick="answerSelected('{{ problem.id }}', '{{ answer_choice|lower }}');" disabled="disabled" id="row{{ forloop.parentloop.counter }}-input{{ answer_choice|lower }}" {% if 1 %} checked='checked' {% endif %} />
+							</td>
+
+							{% endfor %}
+
+							<td width="15"></td>
+						</tr>
+						{% endfor %}
+						
+					</tbody>
+				</table>
+			</div>
+			<p>
+				<input type="submit" value="Finish Test" id="FinishTestButton" onclick="return checkFinished();" />
+			</p>
+		</div>
+	</form>
+	<div class="ender"></div>
+</div>
+
+{% endblock %}

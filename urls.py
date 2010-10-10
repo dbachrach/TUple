@@ -14,6 +14,7 @@ urlpatterns = patterns('',
 
     (r'^$', login, {'template_name' : 'home.html'}),
     (r'^instructions/$', views.instructions),
+	(r'^popup/instructions/$', views.instructions, {'popup' : True}),
     (r'^start/$', views.start),
     (r'^exam/$', views.exam),
     (r'^finished/$', views.finished),

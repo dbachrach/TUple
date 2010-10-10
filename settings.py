@@ -99,3 +99,7 @@ INSTALLED_APPS = (
 # Allows us to take a user and get their profile like:
 # user_address = u.get_profile().home_address
 AUTH_PROFILE_MODULE = 'exam.UserProfile'
+
+LOGIN_URL = '/'
+
+EXAM_CLOSED = 0

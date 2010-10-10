@@ -260,6 +260,7 @@ a:hover {
 .error {
         text-align: center;
         color: red;
+		font-weight: bold;
 }
 
 #help_link {
