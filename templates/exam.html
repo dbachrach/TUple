@@ -1,5 +1,24 @@
 {% extends "base.html" %}
 
+
+{% block head_additions %}
+<script type="text/javascript" src="/media/js/jquery.js"></script> 
+<script type="text/javascript" src="/media/js/hotkeys.js"></script>   
+<script type="text/javascript" src="/media/js/exam.js"></script> 
+<script type="text/javascript">
+
+$(document).ready(function() {
+	
+	$("#FinishTestButton").click(function() {
+	    return checkFinished();
+	});
+   	startTest();
+});
+</script>
+ 
+{% endblock %}
+
+
 {% block content %}
 
 <div id="help_link">
@@ -29,7 +48,7 @@
 
 	<h1 id="periodicTableHeader">Periodic Table</h1>
 	<div id="pTableNote">
-		Click table to enlarge
+		<a href="#" onclick="window.open('/media/images/ptable.gif','PeriodicTable','width=806,height=580');">Click table to enlarge.</a>
 	</div>
 	               
  	<a href="#" onclick="window.open('/media/images/ptable.gif','PeriodicTable','width=806,height=580');">
@@ -38,7 +57,7 @@
 </div>
 	
 <div id="right_col">
-	<form id="answerKeyForm" action="finish.php" method="post">
+	<form id="answerKeyForm" action="/end/" method="post">
 		<div id="overflow_table">
 			<table id="answerKeyHeader" cellpadding="0" cellspacing="0">
 				<caption>Answer Form</caption>
@@ -58,7 +77,8 @@
 					<tbody id="scrolled_table_content" class="scrollContent">
 						
 						{% for problem in problems %}
-						<tr id="answerFormRow{{problem.id}}" class="{% if forloop.counter|divisibleby:2 %}alt{% endif %}">
+						
+						<tr id="answerFormRow{{forloop.counter}}" class="{% if forloop.counter|divisibleby:2 %}alt{% endif %}">
 
 
 							<td class="left_td" width="35px">
@@ -70,24 +90,27 @@
 							{% for answer_choice in answer_choices %}
 
 							<td width="35">
-								<input type="radio" name="question_{{ forloop.parentloop.counter }}" value="{{ answer_choice|upper }}" class="radioButton" onclick="answerSelected('{{ problem.id }}', '{{ answer_choice|lower }}');" disabled="disabled" id="row{{ forloop.parentloop.counter }}-input{{ answer_choice|lower }}" {% if 1 %} checked='checked' {% endif %} />
+								<input type="radio" name="question_{{ forloop.parentloop.counter }}" value="{{ answer_choice|upper }}" class="radioButton" onclick="answerSelected('{{ problem.id }}', '{{ answer_choice|lower }}');" disabled="disabled" id="row{{ forloop.parentloop.counter }}-input{{ answer_choice|lower }}" {% if 0 %} checked='checked' {% endif %} />
 							</td>
 
 							{% endfor %}
 
 							<td width="15"></td>
 						</tr>
+						
 						{% endfor %}
 						
 					</tbody>
 				</table>
 			</div>
-			<p>
-				<input type="submit" value="Finish Test" id="FinishTestButton" onclick="return checkFinished();" />
-			</p>
+			
 		</div>
+		<p>
+			<input type="submit" value="Finish Test" id="FinishTestButton" />
+		</p>
 	</form>
-	<div class="ender"></div>
 </div>
+
+<div class="ender"></div>
 
 {% endblock %}

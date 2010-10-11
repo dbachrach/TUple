@@ -103,3 +103,5 @@ AUTH_PROFILE_MODULE = 'exam.UserProfile'
 LOGIN_URL = '/'
 
 EXAM_CLOSED = 0
+EXAM_NAME = "Trinity University Chemistry Placement Exam"
+COPYRIGHT_HOLDER = "Trinity University"
