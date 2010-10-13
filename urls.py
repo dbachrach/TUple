@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     # (r'^placement/', include('placement.foo.urls')),
 
     (r'^$', login, {'template_name' : 'home.html'}),
+    (r'^didlogin/$', views.didlogin),
     (r'^instructions/$', views.instructions),
 	(r'^popup/instructions/$', views.instructions, {'popup' : True}),
     (r'^start/$', views.start),

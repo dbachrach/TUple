@@ -1,12 +1,14 @@
 
 var oldQuestionNum = 0;
 var questionNum = 1;
+var question_count = 0;
 
-function startTest() {
+function startTest(num_questions) {
 	questionNum = 1;
+	question_count = num_questions
 	changeQuestion();
 	updateTimer();
-	initializeKeyboardShortcuts();
+	initializeKeyboardShortcuts();    
 }
 
 function initializeKeyboardShortcuts() {
@@ -44,20 +46,35 @@ function changeQuestion() {
 
 	// Load the new question
 	$.get('/problem/' + questionNum + '/', function(data) {
+        // if (oldQuestionNum < questionNum) {
+        //     $('#question-left').html(data);
+        //             // $('#question-right').fadeIn('fast');
+        //             // $('#question-left').fadeOut('fast');
+        // }
+        // else if (oldQuestionNum > questionNum) {
+        //     $('#question-left').html(data);
+        //             // $('#question-left').fadeIn('fast');
+        //             // $('#question-right').fadeOut('fast');
+        // }
+        // else {
+        //     $('#question-center').html(data);
+        // }
 		$('#question').html(data);
 	});
 	
-	
+    
 	// Show or hide the previous/next question links
-	if (questionNum==1) {
-		$('#prev_link').fadeOut("fast");
-		$('#next_link').fadeIn("fast");
-		$('#pipe_symbol').fadeOut("fast");
+	if (questionNum == 1) {
+	    $('#pipe_symbol').fadeOut("fast");
+		$('#prev_link').fadeOut("fast", function() {
+		    $('#next_link').fadeIn("fast");
+		});
 	}
-	else if (questionNum==3000000) {
-		$('#next_link').fadeOut("fast");
-		$('#prev_link').fadeIn("fast");
-		$('#pipe_symbol').fadeOut("fast");
+	else if (questionNum == question_count) {
+	    $('#pipe_symbol').fadeOut("fast");
+		$('#next_link').fadeOut("fast", function() {
+		    $('#prev_link').fadeIn("fast");
+		});
 	}
 	else {
 		$('#prev_link').fadeIn("fast");
@@ -115,7 +132,7 @@ function prevQuestion() {
 }
 
 function nextQuestion() {
-	if(questionNum < 3000000) {
+	if(questionNum < question_count) {
 		oldQuestionNum = questionNum;
 		questionNum++;
 		changeQuestion();
@@ -123,7 +140,7 @@ function nextQuestion() {
 }
 
 function selectQuestion(q) {
-	if(q >= 1 && q <= 3000000) {
+	if(q >= 1 && q <= question_count) {
 		oldQuestionNum = questionNum;
 		questionNum = q;
 		changeQuestion();
@@ -161,8 +178,11 @@ function timer_done() {
 }
 
 function answerSelected(question_id, answer_value) {
-	// Select the appropriate radio button
+	// Select the appropriate radio button in the table
 	$('#row' + question_id + '-input' + answer_value.toLowerCase()).attr('checked', true);
+	
+	// Select the appropriate radio button in the problem list
+	$('#problem' + question_id + '-input' + answer_value.toLowerCase()).attr('checked', true);
 	
 	// Send an AJAX request to save the answer
 	$.post('/problem/' + question_id + '/', {answer : answer_value});

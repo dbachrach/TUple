@@ -16,11 +16,22 @@ def check_closed(f):
             return f(*args, **kwargs)
     return _inner
 
- 
+
+@check_closed
+@login_required
+def didlogin(request):
+    # TODO: Check if the user has already started exam. If so, redirect to /exam/
+    if (request.user.is_staff):
+        return HttpResponseRedirect('/admin/')
+    # elif user has already started exam:
+        #return HttpResponseRedirect('/exam/')
+    else:
+        return HttpResponseRedirect('/instructions/')
+    
+    
 @check_closed
 @login_required
 def instructions(request, popup=False):
-    # TODO: Check if the user has already started exam. If so, redirect to /exam/
     return render_to_response("instructions.html", {'popup' : popup})
 
 

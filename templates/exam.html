@@ -12,7 +12,40 @@ $(document).ready(function() {
 	$("#FinishTestButton").click(function() {
 	    return checkFinished();
 	});
-   	startTest();
+	
+	$("#help_link a").click(function() {
+		window.open('/popup/instructions/','Instructions','width=830,height=580,scrollbars=1');
+		return false;
+	});
+	
+	$("#prev_link").click(function() {
+		prevQuestion();
+		return false;
+	});
+	
+	$("#next_link").click(function() {
+		nextQuestion();
+		return false;
+	});
+	
+	$("#periodic-table").click(function() {
+		window.open('/media/images/ptable.gif','PeriodicTable','width=806,height=580');
+		return false;
+	});
+	
+	$(function() {
+        $('.rollover').hover(function() {
+            var currentImg = $('img', this).attr('src');
+            $('img', this).attr('src', $('img', this).attr('hover'));
+            $('img', this).attr('hover', currentImg);
+        }, function() {
+            var currentImg = $('img', this).attr('src');
+            $('img', this).attr('src', $('img', this).attr('hover'));
+            $('img', this).attr('hover', currentImg);
+        });
+    });
+
+   	startTest({{ problems|length }});
 });
 </script>
  
@@ -22,7 +55,7 @@ $(document).ready(function() {
 {% block content %}
 
 <div id="help_link">
-	<a href="#" onclick="window.open('/popup/instructions/','Instructions','width=830,height=580,scrollbars=1');">Help?</a>
+	<a href="#">Help?</a>
 </div>
 
 <div id="left_col">
@@ -35,25 +68,27 @@ $(document).ready(function() {
     </div>
 
 	<p id="prevNext">
-		<a id="prev_link" href="#" onmouseover="$('prev_img').src='/media/images/prv_h.png';" onmouseout="$('prev_img').src='/media/images/prv.png';"   onclick="prevQuestion(); return false;">
-			<img src="/media/images/prv.png" alt="Previous" id="prev_img" /> Previous Question
+		<a id="prev_link" href="#" class="rollover">
+			<img src="/media/images/prv.png" hover="/media/images/prv_h.png" alt="Previous" id="prev_img" /> Previous Question
 		</a>
 		<span id="pipe_symbol"> | </span>
-		<a id="next_link" href="#" onmouseover="$('next_img').src='/media/images/nxt_h.png';" onmouseout="$('next_img').src='/media/images/nxt.png';"   onclick="nextQuestion(); return false;">
-			Next Question <img src="/media/images/nxt.png" alt="Next" id="next_img" />
+		<a id="next_link" href="#" class="rollover">
+			Next Question <img src="/media/images/nxt.png" hover="/media/images/nxt_h.png" alt="Next" id="next_img" />
 		</a>
 	</p>
 	
 	<div class="ender"></div>
 
 	<h1 id="periodicTableHeader">Periodic Table</h1>
-	<div id="pTableNote">
-		<a href="#" onclick="window.open('/media/images/ptable.gif','PeriodicTable','width=806,height=580');">Click table to enlarge.</a>
+	<div id="periodic-table">
+		<div id="pTableNote">
+			<a href="#">Click table to enlarge.</a>
+		</div>
+
+	 	<a href="#">
+		  	<img src="/media/images/ptable.png" alt="Periodic Table" />
+		</a>
 	</div>
-	               
- 	<a href="#" onclick="window.open('/media/images/ptable.gif','PeriodicTable','width=806,height=580');">
-	  	<img src="/media/images/ptable.png" alt="Periodic Table" />
-	</a>
 </div>
 	
 <div id="right_col">
