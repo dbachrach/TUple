@@ -113,4 +113,10 @@ def post_problem(request, problem):
     return HttpResponse('')
         
         
-        
+
+
+@login_required
+@user_passes_test(lambda u: u.isStaff)
+def admin(request, year=null):
+    # TODO: Set year to be current year by default
+    # TODO: Check for invalid year   
