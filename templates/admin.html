@@ -7,5 +7,80 @@
 {% block content %}
 
 
+<form action="admin.php" method="get">
+<p style="text-align:right; font-size:10px;">Select class year:
+<select name="Year">
+
+<?php
+        foreach ($validYears as $aYear) {
+                if ($aYear == $year) {
+                        echo "<option selected='selected'>$aYear</option>";
+                }
+                else {
+                        echo "<option>$aYear</option>";                }
+        }
+?>
+
+</select>
+<input type="submit" value="Go" />
+</p>
+</form>
+
+
+<h1>Stats</h1>
+<ul>
+	<li><strong>{{ stats.finished_students_count }}</strong> students have taken the test out of <strong>{{ stats.total_students_count }}</strong> students (<strong>{{ stats.finished_students_percentage|floatformat }}%</strong>). There are <strong>{{ stats.current_students_count }}</strong> people taking the test right now.</li>
+    <li>The average score is <strong>{{ stats.average_score_percentage|floatformat }}% ({{ stats.average_score }} out of {{ stats.question_count }})</strong>.</li>
+	<li>The standard deviation is <strong>{{ stats.standard_deviation }}</strong>.</li>
+	<li>The highest score is <strong>{{ stats.high_score_percentage|floatformat }}% ({{ stats.high_score }} out of {{ stats.question_count }})</strong>.</li>           
+	<li>The lowest score is <strong>{{ stats.low_score_percentage|floatformat }}% ({{ stats.low_score }} out of {{ stats.question_count }})</strong>.</li>
+</ul>
+
+
+<h1>Grades</h1>
+<p>Download a <a href="/admin/grades/{{ year }}/csv/">CSV file</a> of all students scores to import into Excel. You can also view student scores as a <a href="/admin/grades/{{ year }}/">webpage</a>.</p>
+<ul>
+	<li>Lookup a student's grade by last name: <input type="text" /> <input type="submit" value="Lookup" /></li>
+    <li>Lookup a student's grade by Student ID #: <input type="text" /> <input type="submit" value="Lookup" /></li>
+</ul>
+
+
+<h1>Question Distributions</h1>
+<p>This is a breakdown of student answers for all questions. A CSV file of this data may be found <a href="/admin/distribution/{{ year }}/csv/">here</a>.</p>
+
+<table id="answerKeyHeader" cellpadding="0" cellspacing="0" style="width:700px">
+	<caption>Number of graded exams: {{ finished_students_count }}</caption>
+	<thead>
+		<tr>
+			<th class="left_td" style="width:100px" width="100px">#</th>
+               <th style="width:100px" width="100px">A</th>
+               <th style="width:100px" width="100px">B</th>
+               <th style="width:100px" width="100px">C</th>
+               <th style="width:100px" width="100px">D</th>
+               <th style="width:100px" width="100px">E</th>
+               <th style="width:100px" width="100px">Unanswered</th>
+        	</tr>
+	</thead>
+</table>
+
+<table id="answerKey" cellpadding="0" cellspacing="0" style="width:700px">
+	<tbody>
+		{% for problem in problems %}
+		<tr id="answerFormRow<?php echo $i; ?>" class="{% if forloop.counter|divisibleby:2 %}alt{% endif %}">
+			<!-- TODO: Make the question clickable to view what the question is -->
+			<td class="left_td" style="width:100px" width="100px"><strong>{{ problem.id }}</strong></td>
+               <td style="width:100px" width="100px">{{ problems.answered_a_percentage|floatformat }}% {% if problem.correct_solution == 'a' %}<img src="images/checkmark.gif" style="height:12px;width:12px;">{% endif %} {% if problems.asnwered_a_count > 0 %} <br />({{ problems.asnwered_a_count }}) {% endif %}</td>
+               <td style="width:100px" width="100px">{{ problems.answered_b_percentage|floatformat }}% {% if problem.correct_solution == 'b' %}<img src="images/checkmark.gif" style="height:12px;width:12px;">{% endif %} {% if problems.asnwered_b_count > 0 %} <br />({{ problems.asnwered_b_count }}) {% endif %}</td>
+               <td style="width:100px" width="100px">{{ problems.answered_c_percentage|floatformat }}% {% if problem.correct_solution == 'c' %}<img src="images/checkmark.gif" style="height:12px;width:12px;">{% endif %} {% if problems.asnwered_c_count > 0 %} <br />({{ problems.asnwered_c_count }}) {% endif %}</td>
+               <td style="width:100px" width="100px">{{ problems.answered_d_percentage|floatformat }}% {% if problem.correct_solution == 'd' %}<img src="images/checkmark.gif" style="height:12px;width:12px;">{% endif %} {% if problems.asnwered_d_count > 0 %} <br />({{ problems.asnwered_d_count }}) {% endif %}</td>
+               <td style="width:100px" width="100px">{{ problems.answered_e_percentage|floatformat }}% {% if problem.correct_solution == 'e' %}<img src="images/checkmark.gif" style="height:12px;width:12px;">{% endif %} {% if problems.asnwered_e_count > 0 %} <br />({{ problems.asnwered_e_count }}) {% endif %}</td>
+               <td style="wdith:100px" width="100px">{{ problems.unanswered_percentage|floatformat }}% {% if unanswered_count > 0 %} <br />({{ problems.unanswered_count }}) {% endif %}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+
+
 
 {% endblock %}

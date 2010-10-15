@@ -1,7 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.conf import settings
 from TUple.exam.models import Problem
 
@@ -116,7 +116,26 @@ def post_problem(request, problem):
 
 
 @login_required
-@user_passes_test(lambda u: u.isStaff)
-def admin(request, year=null):
+@user_passes_test(lambda u: u.is_staff)
+def admin(request, year=2010):
     # TODO: Set year to be current year by default
     # TODO: Check for invalid year   
+    stats = calculate_statistics()
+    return render_to_response("admin.html", {'stats' : stats, 'problems' : Problem.objects.all()})
+
+
+def calculate_statistics():
+	question_count = 30
+	finished_students_count = 5
+	total_students_count = 24
+	finished_students_percentage = float(finished_students_count) / float(total_students_count) * 100
+	average_score = 13
+	average_score_percentage = float(average_score) / float(question_count) * 100
+	standard_deviation = 12.2
+	high_score = 29
+	high_score_percentage = float(high_score) / float(question_count) * 100
+	low_score = 8
+	low_score_percentage = float(low_score) / float(question_count) * 100
+	return locals()
+	
+	
