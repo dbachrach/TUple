@@ -64,10 +64,15 @@ function changeQuestion() {
 	
     
 	// Show or hide the previous/next question links
-	if (questionNum == 1) {
+	if (questionNum == 1 && questionNum == question_count) {
+		$('#prev_link').fadeOut("fast");
+		$('#next_link').fadeOut("fast");
+		$('#pipe_symbol').fadeOut("fast");
+	}
+	else if (questionNum == 1) {
 	    $('#pipe_symbol').fadeOut("fast");
 		$('#prev_link').fadeOut("fast", function() {
-		    $('#next_link').fadeIn("fast");
+		   	$('#next_link').fadeIn("fast");
 		});
 	}
 	else if (questionNum == question_count) {

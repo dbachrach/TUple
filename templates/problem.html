@@ -1,33 +1,15 @@
 <!-- TODO: On radio buttons. We need to find their answer and do the checked='checked thing for them -->
-<h1>Question #{{ problem.id }}</h1>
-<p>{{ problem.question }}</p>
+<h1>Question #{{ problem.number }}</h1>
+<p>{{ problem.text }}</p>
        
 <form>         
-<table id="multipleChoiceTable">     
+<table id="multipleChoiceTable">   
+	{% for answer in problem.answer_set.all %}  
     <tr>
-		<td><input type="radio" name="question_{{ problem.id }}" value="A" onclick="answerSelected('{{ problem.id }}', 'a');" id="problem{{ problem.id }}-inputa" {% if 0 %} checked='checked' {% endif %} /></td>
-        <td><strong>a)</strong></td>
-        <td>{{ problem.solution_a }}</td>
+		<td><input type="radio" name="question_{{ problem.id }}" value="{{ answer.letter|upper }}" onclick="answerSelected('{{ problem.id }}', '{{ answer.letter|lower }}');" id="problem{{ problem.id }}-input{{ answer.letter|lower }}" {% if 0 %} checked='checked' {% endif %} /></td>
+        <td><strong>{{ answer.letter }})</strong></td>
+        <td>{{ answer.text }}</td>
     </tr>
-    <tr>
-		<td><input type="radio" name="question_{{ problem.id }}" value="B" onclick="answerSelected('{{ problem.id }}', 'b');" id="problem{{ problem.id }}-inputb" {% if 0 %} checked='checked' {% endif %} /></td>
-        <td><strong>b)</strong></td>
-        <td>{{ problem.solution_b }}</td>
-    </tr>
-    <tr>
-		<td><input type="radio" name="question_{{ problem.id }}" value="C" onclick="answerSelected('{{ problem.id }}', 'c');" id="problem{{ problem.id }}-inputc" {% if 0 %} checked='checked' {% endif %} /></td>
-        <td><strong>c)</strong></td>
-        <td>{{ problem.solution_c }}</td>
-    </tr>
-    <tr>
-		<td><input type="radio" name="question_{{ problem.id }}" value="D" onclick="answerSelected('{{ problem.id }}', 'd');" id="problem{{ problem.id }}-inputd" {% if 0 %} checked='checked' {% endif %} /></td>
-        <td><strong>d)</strong></td>
-        <td>{{ problem.solution_d }}</td>
-    </tr>
-    <tr>
-		<td><input type="radio" name="question_{{ problem.id }}" value="E" onclick="answerSelected('{{ problem.id }}', 'e');" id="problem{{ problem.id }}-inpute" {% if 0 %} checked='checked' {% endif %} /></td>
-        <td><strong>e)</strong></td>
-        <td>{{ problem.solution_e }}</td>
-    </tr>
+    {% endfor %}
 </table>
 </form>

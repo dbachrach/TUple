@@ -113,7 +113,7 @@ $(document).ready(function() {
 						
 						{% for problem in problems %}
 						
-						<tr id="answerFormRow{{forloop.counter}}" class="{% if forloop.counter|divisibleby:2 %}alt{% endif %}">
+						<tr id="answerFormRow{{ forloop.counter }}" class="{% if forloop.counter|divisibleby:2 %}alt{% endif %}">
 
 
 							<td class="left_td" width="35px">
@@ -122,10 +122,10 @@ $(document).ready(function() {
 								</a>
 							</td>
 
-							{% for answer_choice in answer_choices %}
+							{% for answer in problem.answer_set.all %}
 
 							<td width="35">
-								<input type="radio" name="question_{{ forloop.parentloop.counter }}" value="{{ answer_choice|upper }}" class="radioButton" onclick="answerSelected('{{ problem.id }}', '{{ answer_choice|lower }}');" disabled="disabled" id="row{{ forloop.parentloop.counter }}-input{{ answer_choice|lower }}" {% if 0 %} checked='checked' {% endif %} />
+								<input type="radio" name="question_{{ forloop.parentloop.counter }}" value="{{ answer.letter|upper }}" class="radioButton" onclick="answerSelected('{{ problem.id }}', '{{ answer.letter|lower }}');" disabled="disabled" id="row{{ forloop.parentloop.counter }}-input{{ answer.letter|lower }}" {% if 0 %} checked='checked' {% endif %} />
 							</td>
 
 							{% endfor %}

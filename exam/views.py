@@ -3,7 +3,7 @@ from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.conf import settings
-from TUple.exam.models import Problem
+from TUple.exam.models import Problem, ExamGroup
 
 
 site_settings = {'exam_name' : settings.EXAM_NAME}
@@ -49,7 +49,7 @@ def start(request):
 @check_closed
 @login_required    
 def exam(request):
-    return render_to_response("exam.html", {'problems' : Problem.objects.all(), 'answer_choices' : ('a', 'b', 'c', 'd', 'e',)})
+    return render_to_response("exam.html", {'problems' : Problem.objects.all()})
 
 
 
@@ -85,6 +85,8 @@ def problem(request, problem_id):
     except Problem.MultipleObjectsReturned:
         # TODO: Return error
         return HttpResponse("error")
+        
+    # TODO: Make sure user is authorized to access problem with id=problem_id
 
     if request.method == 'POST':
         return post_problem(request, problem)
@@ -117,25 +119,42 @@ def post_problem(request, problem):
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin(request, year=2010):
-    # TODO: Set year to be current year by default
-    # TODO: Check for invalid year   
-    stats = calculate_statistics()
+def admin(request, group_name=None):
+    if group_name is None:
+        try:
+            exam_group = ExamGroup.objects.get(active=True)
+        except ExamGroup.DoesNotExist:
+            # TODO: Return error
+            return HttpResponse("error: no active group exists")
+        except ExamGroup.MultipleObjectsReturned:
+            # TODO: Return error
+            return HttpResponse("error: multiple active groups exist")
+    else:
+        try:
+            exam_group = ExamGroup.objects.get(name=group_name)
+        except ExamGroup.DoesNotExist:
+            # TODO: Return error
+            return HttpResponse("error: no group with name " + group_name)
+        except ExamGroup.MultipleObjectsReturned:
+            # TODO: Return error
+            return HttpResponse("error: multiple groups with naame " + group_name)
+          
+    stats = exam_group.calculate_statistics()
     return render_to_response("admin.html", {'stats' : stats, 'problems' : Problem.objects.all()})
 
 
-def calculate_statistics():
-	question_count = 30
-	finished_students_count = 5
-	total_students_count = 24
-	finished_students_percentage = float(finished_students_count) / float(total_students_count) * 100
-	average_score = 13
-	average_score_percentage = float(average_score) / float(question_count) * 100
-	standard_deviation = 12.2
-	high_score = 29
-	high_score_percentage = float(high_score) / float(question_count) * 100
-	low_score = 8
-	low_score_percentage = float(low_score) / float(question_count) * 100
-	return locals()
-	
-	
+#def calculate_statistics(exam_group):
+#    question_count = 30
+#    finished_students_count = 5
+#    total_students_count = 24
+#    finished_students_percentage = float(finished_students_count) / float(total_students_count) * 100
+#    average_score = 13
+#    average_score_percentage = float(average_score) / float(question_count) * 100
+#    standard_deviation = 12.2
+#    high_score = 29
+#    high_score_percentage = float(high_score) / float(question_count) * 100
+#    low_score = 8
+#    low_score_percentage = float(low_score) / float(question_count) * 100
+#    return locals()
+    
+    
