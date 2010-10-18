@@ -85,6 +85,12 @@ TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__), 'templates').replace('\\','/'),
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    #'exam.context_processors.media_url', # TODO: Use media_url in templates
+    'exam.context_processors.exam_settings',
+)
+
 INSTALLED_APPS = (
     'TUple.exam',
     'django.contrib.auth',
@@ -102,6 +108,4 @@ AUTH_PROFILE_MODULE = 'exam.UserProfile'
 
 LOGIN_URL = '/'
 
-EXAM_CLOSED = 0
-EXAM_NAME = "Trinity University Chemistry Placement Exam"
-COPYRIGHT_HOLDER = "Trinity University"
+EXAM_CLOSED = 0 # TODO: Move this into exam_settings.py

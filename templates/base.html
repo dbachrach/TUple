@@ -4,8 +4,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="/media/style.css" type="text/css" media="screen" />
-<!-- TODO: Use exam name -->
-    <title>{{ exam_name }} Trinity University Chemistry Placement Exam</title>
+    <title>{{ exam_name }}</title>
 
 	{% block head_additions %}
 	{% endblock %}
@@ -26,7 +25,7 @@
             {% block content %}{% endblock %}
         </div>
     </div>
-    <div id="footer">&copy; {{ copyright_year }} {{ copyright_owner }}</div>
+    <div id="footer">&copy; {{ copyright_start }}-{{ copyright_end }} {{ copyright_owner }}</div>
 </div>
 </body>
 </html>

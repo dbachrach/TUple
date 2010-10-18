@@ -29,7 +29,7 @@
 
 <h1>Stats</h1>
 <ul>
-	<li><strong>{{ stats.finished_students_count }}</strong> students have taken the test out of <strong>{{ stats.total_students_count }}</strong> students (<strong>{{ stats.finished_students_percentage|floatformat }}%</strong>). There are <strong>{{ stats.current_students_count }}</strong> people taking the test right now.</li>
+	<li><strong>{{ stats.finished_students_count }}</strong> student{{ stats.finished_students_count|pluralize:" has,s have" }} taken the test out of <strong>{{ stats.total_students_count }}</strong> student{{ stats.total_students_count|pluralize }} (<strong>{{ stats.finished_students_percentage|floatformat }}%</strong>). Currently, <strong>{{ stats.current_students_count }}</strong> student{{ stats.current_students_count|pluralize:" is,s are" }} taking the test right now.</li>
     <li>The average score is <strong>{{ stats.average_score_percentage|floatformat }}% ({{ stats.average_score }} out of {{ stats.question_count }})</strong>.</li>
 	<li>The standard deviation is <strong>{{ stats.standard_deviation }}</strong>.</li>
 	<li>The highest score is <strong>{{ stats.high_score_percentage|floatformat }}% ({{ stats.high_score }} out of {{ stats.question_count }})</strong>.</li>           

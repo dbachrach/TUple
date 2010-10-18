@@ -3,10 +3,9 @@ from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.conf import settings
+from django.template import RequestContext
 from TUple.exam.models import Problem, ExamGroup
 
-
-site_settings = {'exam_name' : settings.EXAM_NAME}
 
 def check_closed(f):
     def _inner(*args, **kwargs):
@@ -32,7 +31,7 @@ def didlogin(request):
 @check_closed
 @login_required
 def instructions(request, popup=False):
-    return render_to_response("instructions.html", {'popup' : popup})
+    return render_to_response("instructions.html", {'popup' : popup}, context_instance=RequestContext(request))
 
 
 
@@ -49,7 +48,7 @@ def start(request):
 @check_closed
 @login_required    
 def exam(request):
-    return render_to_response("exam.html", {'problems' : Problem.objects.all()})
+    return render_to_response("exam.html", {'problems' : Problem.objects.all()}, context_instance=RequestContext(request))
 
 
 
@@ -66,11 +65,11 @@ def end(request):
 @login_required  
 def finished(request):
     # TODO: Should we logout? logout(request)
-    return render_to_response('finished.html')
+    return render_to_response('finished.html', context_instance=RequestContext(request))
 
 
 def closed(request):
-    return render_to_response('closed.html')
+    return render_to_response('closed.html', context_instance=RequestContext(request))
 
 
 
@@ -101,7 +100,7 @@ def problem(request, problem_id):
 @check_closed
 @login_required 
 def get_problem(request, problem):  
-    return render_to_response("problem.html", {'problem' : problem})
+    return render_to_response("problem.html", {'problem' : problem}, context_instance=RequestContext(request))
 
 
 
@@ -109,9 +108,11 @@ def get_problem(request, problem):
 @login_required 
 def post_problem(request, problem):
     if 'answer' in request.POST and request.POST['answer']:
-        answer = request.POST['answer']
+        answer_id = request.POST['answer']
+        answer = 1 # TODO: Get answer from database
         # TODO: Do any validation on answer
         # TODO: Save answer to user's choices
+        request.user.get_user_profile().answer_problem(problem,)
     return HttpResponse('')
         
         
@@ -140,21 +141,7 @@ def admin(request, group_name=None):
             return HttpResponse("error: multiple groups with naame " + group_name)
           
     stats = exam_group.calculate_statistics()
-    return render_to_response("admin.html", {'stats' : stats, 'problems' : Problem.objects.all()})
-
-
-#def calculate_statistics(exam_group):
-#    question_count = 30
-#    finished_students_count = 5
-#    total_students_count = 24
-#    finished_students_percentage = float(finished_students_count) / float(total_students_count) * 100
-#    average_score = 13
-#    average_score_percentage = float(average_score) / float(question_count) * 100
-#    standard_deviation = 12.2
-#    high_score = 29
-#    high_score_percentage = float(high_score) / float(question_count) * 100
-#    low_score = 8
-#    low_score_percentage = float(low_score) / float(question_count) * 100
-#    return locals()
+    return render_to_response("admin.html", {'stats' : stats, 'problems' : exam_group.problems.all()}, context_instance=RequestContext(request))
     
     
+    #answer.letter='a' TODO: What is this???

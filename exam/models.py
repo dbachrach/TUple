@@ -13,6 +13,10 @@ class ExamGroup(models.Model):
 	active = models.BooleanField()
 	problems = models.ManyToManyField(Problem)
 	
+	def finished_students(self):
+	    return self.userprofile_set.filter(test_status=2)
+	    
+	    
 	def calculate_statistics(self):
 		'''Calculates various statistics for this exam group. The statistics are returned as an dictionary of statistic names to values.
 			The statistics available are:
@@ -21,7 +25,7 @@ class ExamGroup(models.Model):
 		   		standard_deviation, average_score, high_score, low_score, average_score_percentage, high_score_percentage, low_score_percentage'''
 		   		
 		question_count = self.problems.count()
-		finished_students = self.userprofile_set.filter(test_status=2)
+		finished_students = self.finished_students()
 		
 		finished_students_count = finished_students.count()
 		current_students_count = self.userprofile_set.filter(test_status=1).count()
@@ -55,6 +59,9 @@ class UserProfile(models.Model):
     # Correlate this to the User table. This lets us extend properties of authenticated users.
     user = models.ForeignKey(User, unique=True)
     
+    def answer_problem(problem, answer):
+        x = 1 # TODO: Write this method
+        
     def get_score(self):
     	''' Calculates the user's score, saves it to UserProfile.score and returns the score.'''
     	score = 0
