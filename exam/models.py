@@ -60,18 +60,27 @@ class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True)
     
     def answer_problem(problem, answer):
-        x = 1 # TODO: Write this method
+        answer_sheet = AnswerSheet.objects.get(user_profile=self, problem=problem)
+        # TODO: Check for exceptions
+        
+        answer_sheet.answer = answer
+        answer_sheet.save()
+        
         
     def get_score(self):
     	''' Calculates the user's score, saves it to UserProfile.score and returns the score.'''
-    	score = 0
-    	score = self.answer_sheet.filter(correct=True).count()
+    	new_score = 0
+    	
+    	new_score = AnswerSheet.objects.filter(user_profile=self, answer__correct=True).count()
+    	# TODO: Check for exceptions
+    	
+#    	score = self.answer_sheet.filter(correct=True).count()
 #    	for answer_sheet in self.answersheet_set.all():
 #    		if answer_sheet.answer.correct:
 #    			score = score + 1
-    	self.score = score
-    	self.save() # TODO: We need this right?
-    	return score
+    	self.score = new_score
+    	self.save()
+    	return new_score
 
 
 class Answer(models.Model):

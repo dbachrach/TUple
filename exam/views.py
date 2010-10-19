@@ -6,7 +6,7 @@ from django.conf import settings
 from django.template import RequestContext
 from TUple.exam.models import Problem, ExamGroup
 
-
+# TODO: Handle retakes
 def check_closed(f):
     def _inner(*args, **kwargs):
         if settings.EXAM_CLOSED:
@@ -24,6 +24,7 @@ def didlogin(request):
         return HttpResponseRedirect('/admin/')
     # elif user has already started exam:
         #return HttpResponseRedirect('/exam/')
+    # TODO: Check for user who has already finished exam
     else:
         return HttpResponseRedirect('/instructions/')
     
@@ -55,7 +56,7 @@ def exam(request):
 @check_closed
 @login_required
 def end(request):
-    # TODO: Do actions required at end
+    # TODO: Do actions required at end of exam
     if request.method == 'POST':
         return HttpResponseRedirect('/finished/')
     else:
@@ -93,7 +94,7 @@ def problem(request, problem_id):
         return get_problem(request, problem)
     else:
         # TODO: Error?
-        return HttpResponse("")
+        return HttpResponse("error")
 
 
 
@@ -109,10 +110,16 @@ def get_problem(request, problem):
 def post_problem(request, problem):
     if 'answer' in request.POST and request.POST['answer']:
         answer_id = request.POST['answer']
-        answer = 1 # TODO: Get answer from database
+        answer = Answer.objects.get(id=answer_id) 
+        # TODO: Handle exceptions
+        
         # TODO: Do any validation on answer
-        # TODO: Save answer to user's choices
-        request.user.get_user_profile().answer_problem(problem,)
+        if problem != answer.problem:
+            # TODO: Error
+            return HttpResponse("Error: problem != answer.problem")
+            
+        # Save answer to user's answer sheet
+        request.user.get_user_profile().answer_problem(problem, answer)
     return HttpResponse('')
         
         
@@ -142,6 +149,3 @@ def admin(request, group_name=None):
           
     stats = exam_group.calculate_statistics()
     return render_to_response("admin.html", {'stats' : stats, 'problems' : exam_group.problems.all()}, context_instance=RequestContext(request))
-    
-    
-    #answer.letter='a' TODO: What is this???
