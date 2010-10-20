@@ -66,7 +66,7 @@
 <table id="answerKey" cellpadding="0" cellspacing="0" style="width:700px">
 	<tbody>
 		{% for problem in problems %}
-		<tr id="answerFormRow<?php echo $i; ?>" class="{% if forloop.counter|divisibleby:2 %}alt{% endif %}">
+		<tr id="answer_form_row_{{ problem.id }}" class="{% if forloop.counter|divisibleby:2 %}alt{% endif %}">
 			<!-- TODO: Make the question clickable to view what the question is -->
 			<td class="left_td" style="width:100px" width="100px"><strong>{{ problem.id }}</strong></td>
                <td style="width:100px" width="100px">{{ problems.answered_a_percentage|floatformat }}% {% if problem.correct_solution == 'a' %}<img src="images/checkmark.gif" style="height:12px;width:12px;">{% endif %} {% if problems.asnwered_a_count > 0 %} <br />({{ problems.asnwered_a_count }}) {% endif %}</td>

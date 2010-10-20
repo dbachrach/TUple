@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Avg, StdDev, Max, Min
+from datetime import datetime
 
 
 class Problem(models.Model):
@@ -56,10 +57,32 @@ class UserProfile(models.Model):
     exam_group = models.ForeignKey(ExamGroup)
     problems = models.ManyToManyField(Problem, through='AnswerSheet')
     
+    def has_not_started(self):
+        return (self.test_status == 0)
+    
+    def is_in_progress(self):
+        return (self.test_status == 1)
+        
+    def has_finished(self):
+        return (self.test_status == 2)
+    
     # Correlate this to the User table. This lets us extend properties of authenticated users.
     user = models.ForeignKey(User, unique=True)
     
-    def answer_problem(problem, answer):
+    def start_exam(self):
+        if self.has_not_started():
+            self.test_status = 1
+            self.test_date = datetime.now()
+            self.save()
+        
+    def end_exam(self):
+        if self.is_in_progress():
+            self.update_score()
+            self.test_status = 2
+            self.save()
+        
+        
+    def answer_problem(self, problem, answer):
         answer_sheet = AnswerSheet.objects.get(user_profile=self, problem=problem)
         # TODO: Check for exceptions
         
@@ -67,7 +90,7 @@ class UserProfile(models.Model):
         answer_sheet.save()
         
         
-    def get_score(self):
+    def update_score(self):
     	''' Calculates the user's score, saves it to UserProfile.score and returns the score.'''
     	new_score = 0
     	

@@ -1,4 +1,4 @@
-<!-- TODO: On radio buttons. We need to find their answer and do the checked='checked thing for them -->
+<!-- TODO: On radio buttons. We need to find their answer and do the checked='checked' thing for them -->
 <h1>Question #{{ problem.number }}</h1>
 <p>{{ problem.text }}</p>
        
@@ -6,8 +6,8 @@
 <table id="multipleChoiceTable">   
 	{% for answer in problem.answer_set.all %}  
     <tr>
-		<td><input type="radio" name="question_{{ problem.id }}" value="{{ answer.letter|upper }}" onclick="answerSelected('{{ problem.id }}', '{{ answer.letter|lower }}');" id="problem{{ problem.id }}-input{{ answer.letter|lower }}" {% if 0 %} checked='checked' {% endif %} /></td>
-        <td><strong>{{ answer.letter }})</strong></td>
+		<td><input type="radio" name="problem_{{ problem.id }}" value="{{ answer.letter|upper }}" onclick="answerSelected('{{ problem.id }}', '{{ answer.id }}');" id="problem_{{ problem.id }}_answer_{{ answer.id }}" {% if 0 %} checked='checked' {% endif %} /></td>
+        <td><strong>{{ answer.letter|upper }})</strong></td>
         <td>{{ answer.text }}</td>
     </tr>
     {% endfor %}

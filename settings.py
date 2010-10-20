@@ -107,5 +107,3 @@ INSTALLED_APPS = (
 AUTH_PROFILE_MODULE = 'exam.UserProfile'
 
 LOGIN_URL = '/'
-
-EXAM_CLOSED = 0 # TODO: Move this into exam_settings.py

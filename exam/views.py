@@ -2,14 +2,14 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.conf import settings
+from exam_settings import EXAM_SETTINGS
 from django.template import RequestContext
 from TUple.exam.models import Problem, ExamGroup
 
 # TODO: Handle retakes
 def check_closed(f):
     def _inner(*args, **kwargs):
-        if settings.EXAM_CLOSED:
+        if EXAM_SETTINGS['exam_closed']
             return closed(*args, **kwargs)
         else:
             return f(*args, **kwargs)
@@ -19,12 +19,12 @@ def check_closed(f):
 @check_closed
 @login_required
 def didlogin(request):
-    # TODO: Check if the user has already started exam. If so, redirect to /exam/
-    if (request.user.is_staff):
+    if request.user.is_staff:
         return HttpResponseRedirect('/admin/')
-    # elif user has already started exam:
-        #return HttpResponseRedirect('/exam/')
-    # TODO: Check for user who has already finished exam
+    elif request.user.get_user_profile().is_in_progress():
+        return HttpResponseRedirect('/exam/')
+    elif request.user.get_user_profile().has_finished():
+        return HttpResponseRedirect('/') # TODO: Append a message, saying they have already finished the exam
     else:
         return HttpResponseRedirect('/instructions/')
     
@@ -39,7 +39,8 @@ def instructions(request, popup=False):
 @check_closed
 @login_required
 def start(request):
-    # TODO: Do actions required at start
+    request.user.get_user_profile().start_exam()
+    
     if request.method == 'POST':
         return HttpResponseRedirect('/exam/')
     else:
@@ -49,6 +50,9 @@ def start(request):
 @check_closed
 @login_required    
 def exam(request):
+    if !request.user.get_user_profile().is_in_progress():
+        return HttpResponseRedirect('/')
+        
     return render_to_response("exam.html", {'problems' : Problem.objects.all()}, context_instance=RequestContext(request))
 
 
@@ -56,16 +60,17 @@ def exam(request):
 @check_closed
 @login_required
 def end(request):
-    # TODO: Do actions required at end of exam
+    request.user.get_user_profile().end_exam()
+    
     if request.method == 'POST':
         return HttpResponseRedirect('/finished/')
     else:
         return HttpResponseRedirect('/')
 
+
 @check_closed
 @login_required  
 def finished(request):
-    # TODO: Should we logout? logout(request)
     return render_to_response('finished.html', context_instance=RequestContext(request))
 
 

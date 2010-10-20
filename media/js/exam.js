@@ -20,6 +20,8 @@ function initializeKeyboardShortcuts() {
 	    nextQuestion();
 	    return false;
 	});
+	
+	// TODO: Bind these letters to their answers. We are going to need to do this dynamically. When we select a question, we should unbind the previous letters, and the bind all of the problem.answer_set.letter's. This way, answerSelected second parameter can be the id of that answer.
 	$(document).bind('keydown', 'a', function (evt) {
 	    answerSelected(questionNum, 'A');
 	    return false;
@@ -90,7 +92,7 @@ function changeQuestion() {
 	
 	// Reset the previous row to its unselected state
 	if (oldQuestionNum != 0) { 
-		var i = '#answerFormRow' + oldQuestionNum;
+		var i = '#answer_form_row' + oldQuestionNum;
 		if(oldQuestionNum % 2 == 0) {
 			$(i).css({
 				color: '#4f6b72',
@@ -108,20 +110,20 @@ function changeQuestion() {
 	}
 	
 	// Set the current row to its selected state
-	$('#answerFormRow' + questionNum).css({
+	$('#answer_form_row' + questionNum).css({
 		color: '#FFFFFF',
 		background: '#ffea96',
 		fontWeight: 'bold'
 	}, "fast");
 	
 	// Disable the previous row radio buttons
-	var old_row_inputs = $('#answerFormRow' + oldQuestionNum + " :radio");
+	var old_row_inputs = $('#answer_form_row' + oldQuestionNum + " :radio");
  	if (oldQuestionNum != 0) {
 		old_row_inputs.attr('disabled', true);
 	}
 	
 	// Enable the current row radio buttons
-	var current_row_inputs = $('#answerFormRow' + questionNum + " :radio");
+	var current_row_inputs = $('#answer_form_row' + questionNum + " :radio");
 	current_row_inputs.attr('disabled', false);
 	
 	// Scroll the question to the top
@@ -179,7 +181,7 @@ function updateTimer() {
 }
 
 function timer_done() {
-	$('#answerKeyForm').submit();
+	$('#answer_key_form').submit();
 }
 
 function answerSelected(question_id, answer_value) {
@@ -195,7 +197,7 @@ function answerSelected(question_id, answer_value) {
 
 function checkFinished() {
 	for(var x = 1; x <= 3000000; x++) {
-		var radio_buttons = $('#answerFormRow' + x + " :radio");
+		var radio_buttons = $('#answer_form_row' + x + " :radio");
 		
 		var has_selection = false;
 		radio_buttons.each(function () {
