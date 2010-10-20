@@ -7,12 +7,17 @@ from datetime import datetime
 class Problem(models.Model):
 	number = models.PositiveSmallIntegerField()
 	text = models.TextField()
+	
+	def sorted_answers(self):
+	    return self.answer_set.order_by('letter')
+	    
 
 class ExamGroup(models.Model):
 	name = models.TextField()
 	date = models.DateField()
 	active = models.BooleanField()
 	problems = models.ManyToManyField(Problem)
+	examination_time = models.IntegerField()
 	
 	def finished_students(self):
 	    return self.userprofile_set.filter(test_status=2)
@@ -56,6 +61,8 @@ class UserProfile(models.Model):
     test_date = models.DateTimeField()
     exam_group = models.ForeignKey(ExamGroup)
     problems = models.ManyToManyField(Problem, through='AnswerSheet')
+    # Correlate this to the User table. This lets us extend properties of authenticated users.
+    user = models.ForeignKey(User, unique=True)
     
     def has_not_started(self):
         return (self.test_status == 0)
@@ -66,9 +73,19 @@ class UserProfile(models.Model):
     def has_finished(self):
         return (self.test_status == 2)
     
-    # Correlate this to the User table. This lets us extend properties of authenticated users.
-    user = models.ForeignKey(User, unique=True)
+    def time_left(self):
+        '''Returns how much time the user has before his/her exam will be turned in.'''
+        
+        exam_time = self.exam_group.examination_time
+        
+        time_difference = (datetime.now() - self.test_date).total_seconds()
+        if time_difference > exam_time:
+            self.end_exam()
+            return -1
     
+        return exam_time - time_difference
+        
+        
     def start_exam(self):
         if self.has_not_started():
             self.test_status = 1
@@ -83,6 +100,9 @@ class UserProfile(models.Model):
         
         
     def answer_problem(self, problem, answer):
+        if self.time_left() == -1:
+            return
+            
         answer_sheet = AnswerSheet.objects.get(user_profile=self, problem=problem)
         # TODO: Check for exceptions
         

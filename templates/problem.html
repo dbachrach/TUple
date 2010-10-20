@@ -3,8 +3,8 @@
 <p>{{ problem.text }}</p>
        
 <form>         
-<table id="multipleChoiceTable">   
-	{% for answer in problem.answer_set.all %}  
+<table id="multiple_choice_table">   
+	{% for answer in problem.sorted_answers %}  
     <tr>
 		<td><input type="radio" name="problem_{{ problem.id }}" value="{{ answer.letter|upper }}" onclick="answerSelected('{{ problem.id }}', '{{ answer.id }}');" id="problem_{{ problem.id }}_answer_{{ answer.id }}" {% if 0 %} checked='checked' {% endif %} /></td>
         <td><strong>{{ answer.letter|upper }})</strong></td>

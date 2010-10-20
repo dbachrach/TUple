@@ -106,15 +106,15 @@ table#answerKey {
     float:left;
 }*/
 
-table#answerKeyHeader {
+table#answer_key_header {
     width: 226px;
 }
 
-thead.fixedHeader tr {
+thead.fixed_header tr {
         display: block;
 }
 
-#answerScroller {
+#answer_scroller {
 	height: 382px;
         overflow-x: hidden;
 	overflow-y: scroll;
@@ -122,35 +122,35 @@ thead.fixedHeader tr {
 	border-bottom: 1px solid #C1DAD7;
 }
 
-table#answerKey  {
+table#answer_key  {
 /*        display: block;
   */      
         
         width: 226px;
 }
 /*
-thead.fixedHeader th {
+thead.fixed_header th {
         width: 35px;
 }
-thead.fixedHeader th + th {
+thead.fixed_header th + th {
         width: 35px;
 }
-thead.fixedHeader th + th + th {
+thead.fixed_header th + th + th {
         width: 35px;
 }
-thead.fixedHeader th + th + th + th {
+thead.fixed_header th + th + th + th {
         width: 35px;
 }
-thead.fixedHeader th + th + th + th + th {
+thead.fixed_header th + th + th + th + th {
         width: 35px;
 }
-thead.fixedHeader th + th + th + th + th + th {
+thead.fixed_header th + th + th + th + th + th {
         width: 51px;
 }
 */
 
 
-table#answerKey td {
+table#answer_key td {
         border-right: 1px solid #C1DAD7;
         border-bottom: 1px solid #C1DAD7;
         /*padding: 2px 2px 4px 4px;*/
@@ -173,7 +173,7 @@ tbody.scrollContent td + td + td + td +td + td + td {
 	width: 15px;
 }
 */
-table#answerKeyHeader th {
+table#answer_key_header th {
     color: #4f6b72;
         border-right: 1px solid #C1DAD7;
         border-bottom: 1px solid #C1DAD7;
@@ -183,14 +183,14 @@ table#answerKeyHeader th {
         padding: 2px 0px;
         background: #CAE8EA;
 }
-table#answerKey tr {
+table#answer_key tr {
     background: #fff;
     color: #4f6b72;
       height: 20px;
 
 }
 
-table#answerKey tr.alt {
+table#answer_key tr.alt {
         background: #E5E5E5;
         /*color: #4f6b72;*/
 }
@@ -235,7 +235,7 @@ a:hover {
     color: #000;
 }
 
-.radioButton {
+.radio_button {
    /* width: 8px;
     height: 8px;*/
 }

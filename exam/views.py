@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from exam_settings import EXAM_SETTINGS
 from django.template import RequestContext
+from django.utils import simplejson
 from TUple.exam.models import Problem, ExamGroup
 
 # TODO: Handle retakes
@@ -53,7 +54,11 @@ def exam(request):
     if !request.user.get_user_profile().is_in_progress():
         return HttpResponseRedirect('/')
         
-    return render_to_response("exam.html", {'problems' : Problem.objects.all()}, context_instance=RequestContext(request))
+    time_left = request.user.get_user_profile().time_left()  
+    if time_left == -1:
+        return HttpResponseRedirect('/finished/')
+        
+    return render_to_response("exam.html", {'problems' : Problem.objects.all(), 'time_left' : time_left}, context_instance=RequestContext(request))
 
 
 
@@ -79,17 +84,44 @@ def closed(request):
 
 
 
-@check_closed
-@login_required
-def problem(request, problem_id):
+
+def get_problem_for_index(problem_index):
+    # TODO: This is passed an index. we need to find the problem id from that index
+    problem_id = some_id
     try:
         problem = Problem.objects.get(id=problem_id)
+        return problem
     except Problem.DoesNotExist:
         # TODO: Return error
         return HttpResponse("error")
     except Problem.MultipleObjectsReturned:
         # TODO: Return error
         return HttpResponse("error")
+
+
+@check_closed
+@login_required
+def hotkeys(request, problem_index):
+    problem = get_problem_for_index(problem_index)
+    if problem is None:
+        # TODO: Better error
+        return HttpResponse("error")
+
+    # Generate a JSON response that lists the problem id, and all its answer ids and letters
+    answers = {}
+    for answer in problem.sorted_answers():
+        answers[answer.id] = answer.letter
+    result = {'problem_id' : problem.id, 'answers' : answers}
+    return HttpResponse(simplejson.dumps(result), mimetype="application/json")
+
+@check_closed
+@login_required
+def problem(request, problem_index):
+    problem = get_problem_for_index(problem_index)
+    if problem is None:
+        # TODO: Better error
+        return HttpResponse("error")
+    
         
     # TODO: Make sure user is authorized to access problem with id=problem_id
 
