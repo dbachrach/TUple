@@ -20,11 +20,11 @@ function startTest(num_questions, time_left) {
 }
 
 function initializeKeyboardShortcuts() {
-    $(document).bind('keydown', {keys : 'left'}, function (evt) {
+    $(document).bind('keydown', {keys: 'left'}, function (evt) {
 	    prevQuestion();
 	    return false;
 	});
-	$(document).bind('keydown', {keys : 'right'}, function (evt) {
+	$(document).bind('keydown', {keys: 'right'}, function (evt) {
 	    nextQuestion();
 	    return false;
 	});
@@ -59,7 +59,7 @@ function changeQuestion() {
 	    var answers = data['answers'];
 	    for (var answer_id in answers) {
 	        var letter = answers[answer_id];
-	        $(document).bind('keydown', {keys : letter, answer : answer_id},  function (evt) {
+	        $(document).bind('keydown', {keys: letter, answer: answer_id},  function (evt) {
         	    answerSelected(problem_id, evt.data.answer);
         	    return false;
         	});
@@ -190,7 +190,7 @@ function answerSelected(question_id, answer_id) {
 	$('#problem_' + questionNum + '_answer_' + answer_id).attr('checked', true);
 	
 	// Send an AJAX request to save the answer
-	$.post('/problem/' + questionNum + '/', {answer : answer_id});
+	$.post('/problem/' + questionNum + '/', {answer: answer_id});
 }
 
 function checkFinished() {

@@ -43,7 +43,7 @@ def instructions(request, popup=False):
     exam_group = request.user.get_profile().exam_group
     problem_count = exam_group.sorted_problems().count()
     exam_length = exam_group.get_examination_time_string()
-    return render_to_response("instructions.html", {'popup' : popup, 'problem_count' : problem_count, 'exam_length' : exam_length}, context_instance=RequestContext(request))
+    return render_to_response("instructions.html", {'popup': popup, 'problem_count': problem_count, 'exam_length': exam_length}, context_instance=RequestContext(request))
 
 
 @check_closed
@@ -70,9 +70,9 @@ def exam(request):
     problems = request.user.get_profile().exam_group.sorted_problems()
     chosen_answers = map(request.user.get_profile().get_answer_for_problem, problems)
 
-    problem_data = map(lambda p, c : {'problem' : p, 'chosen_answer' : c}, problems, chosen_answers)
+    problem_data = map(lambda p, c : {'problem': p, 'chosen_answer': c}, problems, chosen_answers)
     
-    return render_to_response("exam.html", {'problem_data' : problem_data, 'time_left' : time_left}, context_instance=RequestContext(request))
+    return render_to_response("exam.html", {'problem_data': problem_data, 'time_left': time_left}, context_instance=RequestContext(request))
 
 
 @check_closed
@@ -116,7 +116,7 @@ def hotkeys(request, problem_index):
     answers = {}
     for answer in problem.sorted_answers():
         answers[answer.id] = answer.letter
-    result = {'problem_id' : problem.id, 'answers' : answers}
+    result = {'problem_id': problem.id, 'answers': answers}
     return HttpResponse(simplejson.dumps(result), mimetype="application/json")
 
 
@@ -144,7 +144,7 @@ def problem(request, problem_index):
 @login_required 
 def get_problem(request, problem):  
     chosen_answer = request.user.get_profile().get_answer_for_problem(problem)
-    return render_to_response("problem.html", {'problem' : problem, 'chosen_answer' : chosen_answer}, context_instance=RequestContext(request))
+    return render_to_response("problem.html", {'problem': problem, 'chosen_answer': chosen_answer}, context_instance=RequestContext(request))
 
     
 @check_closed
@@ -194,4 +194,4 @@ def admin(request, group_name=None):
             return HttpResponse("error: multiple groups with naame " + group_name)
           
     stats = exam_group.calculate_statistics()
-    return render_to_response("admin.html", {'stats' : stats, 'problems' : exam_group.problems.all()}, context_instance=RequestContext(request))
+    return render_to_response("admin.html", {'stats': stats, 'problems': exam_group.problems.all()}, context_instance=RequestContext(request))

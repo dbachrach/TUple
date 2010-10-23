@@ -10,10 +10,10 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
 
-    (r'^$', login, {'template_name' : 'home.html'}),
+    (r'^$', login, {'template_name': 'home.html'}),
     (r'^didlogin/$', views.didlogin),
     (r'^instructions/$', views.instructions),
-	(r'^popup/instructions/$', views.instructions, {'popup' : True}),
+	(r'^popup/instructions/$', views.instructions, {'popup': True}),
     (r'^start/$', views.start),
     (r'^exam/$', views.exam),
 	(r'^end/$', views.end),

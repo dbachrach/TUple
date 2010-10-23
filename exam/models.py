@@ -110,7 +110,7 @@ class UserProfile(models.Model):
             self.save()
         
     def end_exam(self):
-        ''' Ends the exam for a user. The test status is set to 2, and the user's score is calculated. '''
+        '''Ends the exam for a user. The test status is set to 2, and the user's score is calculated.'''
         if self.is_in_progress():
             self.update_score()
             self.test_status = 2
@@ -125,7 +125,7 @@ class UserProfile(models.Model):
         return answer_sheet.answer
         
     def answer_problem(self, problem, answer):
-        ''' Marks the user's response to problem as answer. A user must be currently taking the exam. ''' 
+        '''Marks the user's response to problem as answer. A user must be currently taking the exam.''' 
         if not self.is_in_progress():
             return
         if self.time_left() == -1:
@@ -140,7 +140,7 @@ class UserProfile(models.Model):
         answer_sheet.save()
         
     def update_score(self):
-    	''' Calculates the user's score, saves it to UserProfile.score and returns the score.'''    	
+    	'''Calculates the user's score, saves it to UserProfile.score and returns the score.'''    	
     	new_score = AnswerSheet.objects.filter(user_profile=self, answer__correct=True).count()
     	self.score = new_score
     	self.save()
