@@ -8,21 +8,9 @@ from django.utils import simplejson
 from django.contrib import messages
 from TUple.exam.models import Problem, ExamGroup, Answer
 
-
-
-
 import logging
 LOG_FILENAME = 'example.log'
 logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
 
 # TODO: Handle retakes
@@ -52,8 +40,10 @@ def didlogin(request):
 @check_closed
 @login_required
 def instructions(request, popup=False):
-    return render_to_response("instructions.html", {'popup' : popup}, context_instance=RequestContext(request))
-
+    exam_group = request.user.get_profile().exam_group
+    problem_count = exam_group.sorted_problems().count()
+    exam_length = exam_group.get_examination_time_string()
+    return render_to_response("instructions.html", {'popup' : popup, 'problem_count' : problem_count, 'exam_length' : exam_length}, context_instance=RequestContext(request))
 
 
 @check_closed
@@ -85,7 +75,6 @@ def exam(request):
     return render_to_response("exam.html", {'problem_data' : problem_data, 'time_left' : time_left}, context_instance=RequestContext(request))
 
 
-
 @check_closed
 @login_required
 def end(request):
@@ -105,8 +94,6 @@ def finished(request):
 
 def closed(request):
     return render_to_response('closed.html', context_instance=RequestContext(request))
-
-
 
 
 def get_problem_for_index(request, problem_index):
@@ -132,6 +119,7 @@ def hotkeys(request, problem_index):
     result = {'problem_id' : problem.id, 'answers' : answers}
     return HttpResponse(simplejson.dumps(result), mimetype="application/json")
 
+
 @check_closed
 @login_required
 def problem(request, problem_index):
@@ -150,7 +138,6 @@ def problem(request, problem_index):
     else:
         # TODO: Error?
         return HttpResponse("error")
-
 
 
 @check_closed
@@ -184,8 +171,6 @@ def post_problem(request, problem):
     return HttpResponse('')
         
         
-
-
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin(request, group_name=None):

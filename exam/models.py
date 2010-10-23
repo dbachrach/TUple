@@ -3,16 +3,10 @@ from django.contrib.auth.models import User
 from django.db.models import Avg, StdDev, Max, Min
 from datetime import datetime
 
-
-
-
 # TODO: Consolidate where logging is
 import logging
 LOG_FILENAME = 'example.log'
 logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
-
-
-
 
 
 class Problem(models.Model):
@@ -21,7 +15,6 @@ class Problem(models.Model):
 	
 	def __unicode__(self):
 	    return u'Problem #%d' % (self.number)
-	    
 	    
 	def sorted_answers(self):
 	    return self.answer_set.order_by('letter')
@@ -36,15 +29,15 @@ class ExamGroup(models.Model):
 	
 	def __unicode__(self):
 	    return u'Group %s' % (self.name)
-	    
 	
 	def sorted_problems(self):
 	    return self.problems.order_by('number')
 	    
-	    
 	def finished_students(self):
 	    return self.userprofile_set.filter(test_status=2)
 	    
+	def get_examination_time_string(self):
+	    return '%s seconds' % self.examination_time # TODO: make this into a pretty string. For example 3600 should print out as 1 hour
 	    
 	def calculate_statistics(self):
 		'''Calculates various statistics for this exam group. The statistics are returned as an dictionary of statistic names to values.
@@ -84,12 +77,10 @@ class UserProfile(models.Model):
     test_date = models.DateTimeField()
     exam_group = models.ForeignKey(ExamGroup)
     problems = models.ManyToManyField(Problem, through='AnswerSheet')
-    # Correlate this to the User table. This lets us extend properties of authenticated users.
-    user = models.ForeignKey(User, unique=True)
+    user = models.ForeignKey(User, unique=True) # Correlate this to the User table. This lets us extend properties of authenticated users.
     
     def __unicode__(self):
 	    return u'UserProfile (%s)' % (self.user)
-	    
 	    
     def has_not_started(self):
         return (self.test_status == 0)
@@ -112,7 +103,6 @@ class UserProfile(models.Model):
     
         return int(exam_time - time_difference)
         
-        
     def start_exam(self):
         if self.has_not_started():
             self.test_status = 1
@@ -126,7 +116,6 @@ class UserProfile(models.Model):
             self.test_status = 2
             self.save()
             
-        
     def get_answer_for_problem(self, problem):
         try:    
             answer_sheet = AnswerSheet.objects.get(user_profile=self, problem=problem)
@@ -134,7 +123,6 @@ class UserProfile(models.Model):
             return None
         
         return answer_sheet.answer
-        
         
     def answer_problem(self, problem, answer):
         ''' Marks the user's response to problem as answer. A user must be currently taking the exam. ''' 
@@ -151,18 +139,9 @@ class UserProfile(models.Model):
         answer_sheet.answer = answer
         answer_sheet.save()
         
-        
     def update_score(self):
-    	''' Calculates the user's score, saves it to UserProfile.score and returns the score.'''
-    	new_score = 0
-    	
+    	''' Calculates the user's score, saves it to UserProfile.score and returns the score.'''    	
     	new_score = AnswerSheet.objects.filter(user_profile=self, answer__correct=True).count()
-    	
-    	
-#    	score = self.answer_sheet.filter(correct=True).count()
-#    	for answer_sheet in self.answersheet_set.all():
-#    		if answer_sheet.answer.correct:
-#    			score = score + 1
     	self.score = new_score
     	self.save()
     	return new_score
@@ -186,5 +165,3 @@ class AnswerSheet(models.Model):
 	def __unicode__(self):
 	    return u'Sheet (%s, %s)' % (self.user_profile, self.problem)
 		
-
-

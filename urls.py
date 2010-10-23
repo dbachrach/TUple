@@ -4,9 +4,9 @@ import os.path
 from django.conf import settings
 from TUple.exam import views
 
-# Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
+
 
 urlpatterns = patterns('',
 
@@ -27,10 +27,6 @@ urlpatterns = patterns('',
     
     (r'^admin/$', views.admin),
 
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
     (r'^admin-django/', include(admin.site.urls)),
 )
 

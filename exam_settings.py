@@ -4,5 +4,6 @@ EXAM_SETTINGS = {
     'copyright_owner' : "Trinity University",
     'copyright_start' : "2008",
     'copyright_end' : date.today().year,
-    'exam_closed' : False
+    'exam_closed' : False,
+    'contact_email' : 'sbachrac@trinity.edu'
 }
