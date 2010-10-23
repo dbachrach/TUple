@@ -9,6 +9,12 @@
 <p class="error">Login failed. Please try again. If you continue to have problems, email <a href=\"mailto:sbachrac@trinity.edu\">sbachrach@trinity.edu</a>.</p>
 {% endif %}
 
+{% if messages %}
+{% for message in messages %}
+<p class="error">{{ message }}</p>
+{% endfor %}
+{% endif %}
+
 <form method="post" action="{% url django.contrib.auth.views.login %}">
 {% csrf_token %}
 <table id="login">

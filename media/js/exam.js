@@ -2,6 +2,7 @@
 var oldQuestionNum = 0;
 var questionNum = 1;
 var question_count = 0;
+var hr = 0;
 var min = 0;
 var sec = 0;
 
@@ -9,8 +10,9 @@ function startTest(num_questions, time_left) {
 	questionNum = 1;
 	question_count = num_questions
 	
-	min = time_left / 60;
-	sec = time_left % 60;
+	hr = parseInt(time_left / 3600);
+	min = parseInt((time_left % 3600) / 60);
+	sec = parseInt((time_left % 3600) % 60);
 	
 	changeQuestion();
 	updateTimer();
@@ -18,34 +20,12 @@ function startTest(num_questions, time_left) {
 }
 
 function initializeKeyboardShortcuts() {
-    $(document).bind('keydown', 'left', function (evt) {
+    $(document).bind('keydown', {keys : 'left'}, function (evt) {
 	    prevQuestion();
 	    return false;
 	});
-	$(document).bind('keydown', 'right', function (evt) {
+	$(document).bind('keydown', {keys : 'right'}, function (evt) {
 	    nextQuestion();
-	    return false;
-	});
-	
-	// TODO: Bind these letters to their answers. We are going to need to do this dynamically. When we select a question, we should unbind the previous letters, and the bind all of the problem.answer_set.letter's. This way, answerSelected second parameter can be the id of that answer.
-	$(document).bind('keydown', 'a', function (evt) {
-	    answerSelected(questionNum, 'A');
-	    return false;
-	});
-	$(document).bind('keydown', 'b', function (evt) {
-	    answerSelected(questionNum, 'B');
-	    return false;
-	});
-	$(document).bind('keydown', 'c', function (evt) {
-	    answerSelected(questionNum, 'C');
-	    return false;
-	});
-	$(document).bind('keydown', 'd', function (evt) {
-	    answerSelected(questionNum, 'D');
-	    return false;
-	});
-	$(document).bind('keydown', 'e', function (evt) {
-	    answerSelected(questionNum, 'E');
 	    return false;
 	});
 }
@@ -79,9 +59,8 @@ function changeQuestion() {
 	    var answers = data['answers'];
 	    for (var answer_id in answers) {
 	        var letter = answers[answer_id];
-	        
-	        $(document).bind('keydown', letter, function (evt) {
-        	    answerSelected(problem_id, answer_id);
+	        $(document).bind('keydown', {keys : letter, answer : answer_id},  function (evt) {
+        	    answerSelected(problem_id, evt.data.answer);
         	    return false;
         	});
 	    }
@@ -178,6 +157,7 @@ function selectQuestion(q) {
 }
 
 function updateTimer() {
+    // TODO: Handle hours
 	sec = sec - 1;
 	if (sec == -1) {
 		sec = 59;
@@ -203,17 +183,14 @@ function timer_done() {
 	$('#answer_key_form').submit();
 }
 
-function answerSelected(question_id, answer_value) {
-	// Select the appropriate radio button in the table
-	
-	// TODO: We've changed answer_value to be the id, so we don't need to lowercase it
-	$('#row' + question_id + '-input' + answer_value.toLowerCase()).attr('checked', true);
-	
-	// Select the appropriate radio button in the problem list
-	$('#problem' + question_id + '-input' + answer_value.toLowerCase()).attr('checked', true);
+// TODO: Document and/or remove that the question_id is not used and we implicitly assume the current question is being selected.
+function answerSelected(question_id, answer_id) {
+	// Select the appropriate radio button
+	$('#answer_form_problem_' + questionNum + '_answer_' + answer_id).attr('checked', true);
+	$('#problem_' + questionNum + '_answer_' + answer_id).attr('checked', true);
 	
 	// Send an AJAX request to save the answer
-	$.post('/problem/' + question_id + '/', {answer : answer_value});
+	$.post('/problem/' + questionNum + '/', {answer : answer_id});
 }
 
 function checkFinished() {

@@ -5,12 +5,30 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from exam_settings import EXAM_SETTINGS
 from django.template import RequestContext
 from django.utils import simplejson
-from TUple.exam.models import Problem, ExamGroup
+from django.contrib import messages
+from TUple.exam.models import Problem, ExamGroup, Answer
+
+
+
+
+import logging
+LOG_FILENAME = 'example.log'
+logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 # TODO: Handle retakes
 def check_closed(f):
     def _inner(*args, **kwargs):
-        if EXAM_SETTINGS['exam_closed']
+        if EXAM_SETTINGS['exam_closed']:
             return closed(*args, **kwargs)
         else:
             return f(*args, **kwargs)
@@ -22,10 +40,11 @@ def check_closed(f):
 def didlogin(request):
     if request.user.is_staff:
         return HttpResponseRedirect('/admin/')
-    elif request.user.get_user_profile().is_in_progress():
+    elif request.user.get_profile().is_in_progress():
         return HttpResponseRedirect('/exam/')
-    elif request.user.get_user_profile().has_finished():
-        return HttpResponseRedirect('/') # TODO: Append a message, saying they have already finished the exam
+    elif request.user.get_profile().has_finished():
+        messages.info(request, 'Login failed. You have already completed the test. You may not login again.')
+        return HttpResponseRedirect('/')
     else:
         return HttpResponseRedirect('/instructions/')
     
@@ -40,7 +59,7 @@ def instructions(request, popup=False):
 @check_closed
 @login_required
 def start(request):
-    request.user.get_user_profile().start_exam()
+    request.user.get_profile().start_exam()
     
     if request.method == 'POST':
         return HttpResponseRedirect('/exam/')
@@ -51,21 +70,26 @@ def start(request):
 @check_closed
 @login_required    
 def exam(request):
-    if !request.user.get_user_profile().is_in_progress():
+    if not request.user.get_profile().is_in_progress():
         return HttpResponseRedirect('/')
         
-    time_left = request.user.get_user_profile().time_left()  
+    time_left = request.user.get_profile().time_left()  
     if time_left == -1:
         return HttpResponseRedirect('/finished/')
         
-    return render_to_response("exam.html", {'problems' : Problem.objects.all(), 'time_left' : time_left}, context_instance=RequestContext(request))
+    problems = request.user.get_profile().exam_group.sorted_problems()
+    chosen_answers = map(request.user.get_profile().get_answer_for_problem, problems)
+
+    problem_data = map(lambda p, c : {'problem' : p, 'chosen_answer' : c}, problems, chosen_answers)
+    
+    return render_to_response("exam.html", {'problem_data' : problem_data, 'time_left' : time_left}, context_instance=RequestContext(request))
 
 
 
 @check_closed
 @login_required
 def end(request):
-    request.user.get_user_profile().end_exam()
+    request.user.get_profile().end_exam()
     
     if request.method == 'POST':
         return HttpResponseRedirect('/finished/')
@@ -85,27 +109,21 @@ def closed(request):
 
 
 
-def get_problem_for_index(problem_index):
-    # TODO: This is passed an index. we need to find the problem id from that index
-    problem_id = some_id
+def get_problem_for_index(request, problem_index):
     try:
-        problem = Problem.objects.get(id=problem_id)
+        problem = request.user.get_profile().exam_group.problems.get(number=problem_index)
         return problem
-    except Problem.DoesNotExist:
-        # TODO: Return error
-        return HttpResponse("error")
-    except Problem.MultipleObjectsReturned:
-        # TODO: Return error
-        return HttpResponse("error")
+    except Problem.DoesNotExist, Problem.MultipleObjectsReturned:
+        return None
 
 
 @check_closed
 @login_required
 def hotkeys(request, problem_index):
-    problem = get_problem_for_index(problem_index)
+    problem = get_problem_for_index(request, problem_index)
     if problem is None:
         # TODO: Better error
-        return HttpResponse("error")
+        return HttpResponse("Problem not found")
 
     # Generate a JSON response that lists the problem id, and all its answer ids and letters
     answers = {}
@@ -117,10 +135,10 @@ def hotkeys(request, problem_index):
 @check_closed
 @login_required
 def problem(request, problem_index):
-    problem = get_problem_for_index(problem_index)
+    problem = get_problem_for_index(request, problem_index)
     if problem is None:
         # TODO: Better error
-        return HttpResponse("error")
+        return HttpResponse("Problem not found")
     
         
     # TODO: Make sure user is authorized to access problem with id=problem_id
@@ -138,25 +156,31 @@ def problem(request, problem_index):
 @check_closed
 @login_required 
 def get_problem(request, problem):  
-    return render_to_response("problem.html", {'problem' : problem}, context_instance=RequestContext(request))
+    chosen_answer = request.user.get_profile().get_answer_for_problem(problem)
+    return render_to_response("problem.html", {'problem' : problem, 'chosen_answer' : chosen_answer}, context_instance=RequestContext(request))
 
-
-
+    
 @check_closed
 @login_required 
 def post_problem(request, problem):
     if 'answer' in request.POST and request.POST['answer']:
         answer_id = request.POST['answer']
-        answer = Answer.objects.get(id=answer_id) 
-        # TODO: Handle exceptions
+        try:
+            answer = Answer.objects.get(id=answer_id) 
+        except Answer.DoesNotExist:
+            # TODO: Return error
+            return HttpResponse("error: no active group exists")
+        except Answer.MultipleObjectsReturned:
+            # TODO: Return error
+            return HttpResponse("error: multiple active groups exist")
         
-        # TODO: Do any validation on answer
+        # Ensure the user has provided an appropriate answer to the problem.
         if problem != answer.problem:
             # TODO: Error
             return HttpResponse("Error: problem != answer.problem")
             
         # Save answer to user's answer sheet
-        request.user.get_user_profile().answer_problem(problem, answer)
+        request.user.get_profile().answer_problem(problem, answer)
     return HttpResponse('')
         
         

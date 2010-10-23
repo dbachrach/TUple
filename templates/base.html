@@ -13,15 +13,7 @@
 <div id="page">
     <img id="header_img" src="/media/images/header.png" alt="{{ header_img_title }}" width="800" height="72" />
     <div id="content">
-        <div id="contentBorder">
-            {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-            
+        <div id="contentBorder">            
             {% block content %}{% endblock %}
         </div>
     </div>

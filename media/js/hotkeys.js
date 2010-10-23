@@ -34,12 +34,12 @@
 
 	function keyHandler( handleObj ) {
 		// Only care when a possible input has been specified
-		if ( typeof handleObj.data !== "string" ) {
-			return;
-		}
-
+        // if ( typeof handleObj.data !== "string" ) {
+        //  return;
+        // }
+        
 		var origHandler = handleObj.handler,
-			keys = handleObj.data.toLowerCase().split(" ");
+			keys = handleObj.data.keys.toLowerCase().split(" ");
 
 		handleObj.handler = function( event ) {
 			// Don't fire in text-accepting inputs that we didn't directly bind to
