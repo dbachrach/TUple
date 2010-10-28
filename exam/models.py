@@ -52,8 +52,8 @@ class ExamGroup(models.Model):
 	    
 	def calculate_statistics(self):
 		'''Calculates various statistics for this exam group. The statistics are returned as an dictionary of statistic names to values.
-			The statistics available are:
-		   		question_count, finished_students_count, current_students_count, unstarted_students_count, total_students_count, 
+		   The statistics available are:
+		        question_count, finished_students_count, current_students_count, unstarted_students_count, total_students_count, 
 		   		finished_students_percentage, current_students_percentage, unstarted_students_percentage,
 		   		standard_deviation, average_score, high_score, low_score, average_score_percentage, high_score_percentage, low_score_percentage'''
 		   		
@@ -107,7 +107,12 @@ class UserProfile(models.Model):
         return (self.test_status == 1)
         
     def has_finished(self):
+        '''Returns True if the user has compoleted the exam.'''
         return (self.test_status == 2)
+        
+    def is_in_active_exam_group(self):
+        '''Returns True if the user is in the active exam group. A user must be in an active exam group to take an exam.'''
+        return (self.exam_group.active)
     
     def time_left(self):
         '''Returns how much time the user has before his/her exam will be turned in.'''
