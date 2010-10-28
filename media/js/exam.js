@@ -15,11 +15,10 @@ function startTest(num_questions, time_left) {
 	sec = parseInt((time_left % 3600) % 60);
 	
 	changeQuestion();
-	updateTimer();
-	initializeKeyboardShortcuts();    
+	updateTimer(); 
 }
 
-function initializeKeyboardShortcuts() {
+function bindArrowShortcuts() {
     $(document).bind('keydown', {keys: 'left'}, function (evt) {
 	    prevQuestion();
 	    return false;
@@ -34,26 +33,13 @@ function changeQuestion() {
 
 	// Load the new question
 	$.get('/problem/' + questionNum + '/', function(data) {
-        // if (oldQuestionNum < questionNum) {
-        //     $('#question-left').html(data);
-        //             // $('#question-right').fadeIn('fast');
-        //             // $('#question-left').fadeOut('fast');
-        // }
-        // else if (oldQuestionNum > questionNum) {
-        //     $('#question-left').html(data);
-        //             // $('#question-left').fadeIn('fast');
-        //             // $('#question-right').fadeOut('fast');
-        // }
-        // else {
-        //     $('#question-center').html(data);
-        // }
 		$('#question').html(data);
 	});
 	
 	// Binds shortcut keys for each of the answers to this problem
-	// TODO: Unbind previous hotkeys
+	$(document).unbind('keydown');
+	bindArrowShortcuts();
 	$.getJSON('/hotkeys/' + questionNum + '/', function(data) {
-	    
 	    problem_id = data['problem_id']
 	    
 	    var answers = data['answers'];
@@ -91,7 +77,6 @@ function changeQuestion() {
 		$('#pipe_symbol').fadeIn("fast");
 	}
 
-	
 	// Reset the previous row to its unselected state
 	if (oldQuestionNum != 0) { 
 		var i = '#answer_form_row_' + oldQuestionNum;

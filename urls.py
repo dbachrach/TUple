@@ -23,7 +23,7 @@ urlpatterns = patterns('',
 	(r'^problem/(.+)/$', views.problem),
 	(r'^hotkeys/(.+)/$', views.hotkeys),
 	
-	(r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': '/media/images/favicon.ico'}),
+	(r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': settings.MEDIA_URL + 'images/favicon.ico'}),
     
     (r'^admin/$', views.admin),
 

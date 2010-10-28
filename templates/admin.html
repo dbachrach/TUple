@@ -4,30 +4,131 @@
 {{ block.super }} Admin
 {% endblock %}
 
+{% block head_additions %}
+<style>
+
+.bubbleInfo {
+    position: relative;
+}
+
+.popup {
+    position: absolute;
+    display: none; /* keeps the popup hidden if no JS available */
+	background-color: #EAEAEA;
+	padding: 15px;
+	width: 300px;
+	text-align: left;
+    border: 1px solid #A2BDC0; 
+	-moz-box-shadow: 0px 3px 8px #555;
+	-webkit-box-shadow: 0px 3px 8px #555;
+	box-shadow: 0px 3px 8px #555;
+}
+
+.answer_popup td {
+    border: 0;
+    padding: 0;
+    text-align: left;
+    margin:0;
+}
+
+.answer_popup tr {
+    background: transparent;
+    color: #000;
+    height: 20px;
+
+}
+
+</style>
+<script type="text/javascript" src="{{ media_url }}js/jquery.js"></script> 
+<script type="text/javascript" src="{{ media_url }}js/qtip.js"></script>
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+	
+	$('.bubbleInfo').each(function () {
+	    // options
+	    var distance = 10;
+	    var time = 250;
+	    var hideDelay = 500;
+
+	    var hideDelayTimer = null;
+
+	    // tracker
+	    var beingShown = false;
+	    var shown = false;
+
+	    var trigger = $('.trigger', this);
+	    var popup = $('.popup', this).css('opacity', 0);
+
+	    // set the mouseover and mouseout on both element
+	    $([trigger.get(0), popup.get(0)]).mouseover(function () {
+	      // stops the hide event if we move from the trigger to the popup element
+	      if (hideDelayTimer) clearTimeout(hideDelayTimer);
+
+	      // don't trigger the animation again if we're being shown, or already visible
+	      if (beingShown || shown) {
+	        return;
+	      } else {
+	        beingShown = true;
+
+	        // reset position of popup box
+	        popup.css({
+	          top: -150,
+	          left: -33,
+	          display: 'block' // brings the popup back in to view
+	        })
+
+	        // (we're using chaining on the popup) now animate it's opacity and position
+	        .animate({
+	          top: '-=' + distance + 'px',
+	          opacity: .9
+	        }, time, 'swing', function() {
+	          // once the animation is complete, set the tracker variables
+	          beingShown = false;
+	          shown = true;
+	        });
+	      }
+	    }).mouseout(function () {
+	      // reset the timer if we get fired again - avoids double animations
+	      if (hideDelayTimer) clearTimeout(hideDelayTimer);
+
+	      // store the timer so that it can be cleared in the mouseover if required
+	      hideDelayTimer = setTimeout(function () {
+	        hideDelayTimer = null;
+	        popup.animate({
+	          top: '-=' + distance + 'px',
+	          opacity: 0
+	        }, time, 'swing', function () {
+	          // once the animate is complete, set the tracker variables
+	          shown = false;
+	          // hide the popup entirely after the effect (opacity alone doesn't do the job)
+	          popup.css('display', 'none');
+	        });
+	      }, hideDelay);
+	    });
+	  });
+});
+
+</script>
+{% endblock %}
+
 {% block content %}
 
 
-<form action="admin.php" method="get">
-<p style="text-align:right; font-size:10px;">Select class year:
-<select name="Year">
-
-<?php
-        foreach ($validYears as $aYear) {
-                if ($aYear == $year) {
-                        echo "<option selected='selected'>$aYear</option>";
-                }
-                else {
-                        echo "<option>$aYear</option>";                }
-        }
-?>
-
-</select>
-<input type="submit" value="Go" />
-</p>
+<form action="/admin/" method="get">
+	<p style="text-align:right; font-size:10px;">Change exam group:
+		<select name="group">
+			{% for group in exam_groups %}
+				<option {% ifequal group exam_group %} selected="selected" {% endifequal %}>{{ group.name }}</option>
+			{% endfor %}
+		</select>
+		<input type="submit" value="Change" />
+	</p>
 </form>
 
-
 <h1>Stats</h1>
+{% if stats %}
 <ul>
 	<li><strong>{{ stats.finished_students_count }}</strong> student{{ stats.finished_students_count|pluralize:" has,s have" }} taken the test out of <strong>{{ stats.total_students_count }}</strong> student{{ stats.total_students_count|pluralize }} (<strong>{{ stats.finished_students_percentage|floatformat }}%</strong>). Currently, <strong>{{ stats.current_students_count }}</strong> student{{ stats.current_students_count|pluralize:" is,s are" }} taking the test right now.</li>
     <li>The average score is <strong>{{ stats.average_score_percentage|floatformat }}% ({{ stats.average_score }} out of {{ stats.question_count }})</strong>.</li>
@@ -35,7 +136,9 @@
 	<li>The highest score is <strong>{{ stats.high_score_percentage|floatformat }}% ({{ stats.high_score }} out of {{ stats.question_count }})</strong>.</li>           
 	<li>The lowest score is <strong>{{ stats.low_score_percentage|floatformat }}% ({{ stats.low_score }} out of {{ stats.question_count }})</strong>.</li>
 </ul>
-
+{% else %}
+<p>This group has no questions or no students yet. To view statistics, you must have assigned both problems and students to this group. Click <a href="">here</a> to configure this group.</p>
+{% endif %}
 
 <h1>Grades</h1>
 <p>Download a <a href="/admin/grades/{{ year }}/csv/">CSV file</a> of all students scores to import into Excel. You can also view student scores as a <a href="/admin/grades/{{ year }}/">webpage</a>.</p>
@@ -49,7 +152,7 @@
 <p>This is a breakdown of student answers for all questions. A CSV file of this data may be found <a href="/admin/distribution/{{ year }}/csv/">here</a>.</p>
 
 <table id="answer_key_header" cellpadding="0" cellspacing="0" style="width:700px">
-	<caption>Number of graded exams: {{ finished_students_count }}</caption>
+	<caption>Number of graded exams: {{ stats.finished_students_count }}</caption>
 	<thead>
 		<tr>
 			<th class="left_td" style="width:100px" width="100px">#</th>
@@ -68,19 +171,34 @@
 		{% for problem in problems %}
 		<tr id="answer_form_row_{{ problem.id }}" class="{% if forloop.counter|divisibleby:2 %}alt{% endif %}">
 			<!-- TODO: Make the question clickable to view what the question is -->
-			<td class="left_td" style="width:100px" width="100px"><strong>{{ problem.id }}</strong></td>
-               <td style="width:100px" width="100px">{{ problems.answered_a_percentage|floatformat }}% {% if problem.correct_solution == 'a' %}<img src="images/checkmark.gif" style="height:12px;width:12px;">{% endif %} {% if problems.asnwered_a_count > 0 %} <br />({{ problems.asnwered_a_count }}) {% endif %}</td>
-               <td style="width:100px" width="100px">{{ problems.answered_b_percentage|floatformat }}% {% if problem.correct_solution == 'b' %}<img src="images/checkmark.gif" style="height:12px;width:12px;">{% endif %} {% if problems.asnwered_b_count > 0 %} <br />({{ problems.asnwered_b_count }}) {% endif %}</td>
-               <td style="width:100px" width="100px">{{ problems.answered_c_percentage|floatformat }}% {% if problem.correct_solution == 'c' %}<img src="images/checkmark.gif" style="height:12px;width:12px;">{% endif %} {% if problems.asnwered_c_count > 0 %} <br />({{ problems.asnwered_c_count }}) {% endif %}</td>
-               <td style="width:100px" width="100px">{{ problems.answered_d_percentage|floatformat }}% {% if problem.correct_solution == 'd' %}<img src="images/checkmark.gif" style="height:12px;width:12px;">{% endif %} {% if problems.asnwered_d_count > 0 %} <br />({{ problems.asnwered_d_count }}) {% endif %}</td>
-               <td style="width:100px" width="100px">{{ problems.answered_e_percentage|floatformat }}% {% if problem.correct_solution == 'e' %}<img src="images/checkmark.gif" style="height:12px;width:12px;">{% endif %} {% if problems.asnwered_e_count > 0 %} <br />({{ problems.asnwered_e_count }}) {% endif %}</td>
-               <td style="wdith:100px" width="100px">{{ problems.unanswered_percentage|floatformat }}% {% if unanswered_count > 0 %} <br />({{ problems.unanswered_count }}) {% endif %}</td>
+			<td class="left_td" style="width:100px" width="100px">
+				<div class="bubbleInfo">
+					<div class="trigger">
+						<strong>{{ problem.number }}</strong>
+					</div>
+					<div class="popup">
+				    	<h1>Problem #{{ problem.number }}</h1>
+						<p>{{ problem.text }}</p>
+						<table class="answer_popup">   
+							{% for answer in problem.sorted_answers %}  
+						    <tr>
+						        <td><strong>{{ answer.letter|upper }})</strong></td>
+						        <td>{{ answer.text }}</td>
+						    </tr>
+						    {% endfor %}
+						</table>
+				  	</div>
+				</div>
+			</td>
+			
+			{% for answer in problem.sorted_answers %}
+            <td style="width:100px" width="100px">{{ answer.chosen_percentage|floatformat }}% {% if answer.correct %}<img src="{{ media_url }}images/checkmark.gif" style="height:12px;width:12px;">{% endif %} {% if answer.chosen_count > 0 %} <br />({{ answer.chosen_count }}) {% endif %}</td>
+			{% endfor %}
+
+            <td style="wdith:100px" width="100px">{{ problem.unanswered_percentage|floatformat }}% {% if unanswered_count > 0 %} <br />({{ problem.unanswered_count }}) {% endif %}</td>
 		</tr>
 		{% endfor %}
 	</tbody>
 </table>
-
-
-
 
 {% endblock %}

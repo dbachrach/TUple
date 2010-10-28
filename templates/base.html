@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" href="/media/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{{ media_url }}style.css" type="text/css" media="screen" />
     <title>{{ exam_name }}</title>
 
 	{% block head_additions %}
@@ -11,7 +11,7 @@
 </head>
 <body>
 <div id="page">
-    <img id="header_img" src="/media/images/header.png" alt="{{ exam_name }}" width="800" height="72" />
+    <img id="header_img" src="{{ media_url }}images/header.png" alt="{{ exam_name }}" width="800" height="72" />
     <div id="content">
         <div id="contentBorder">            
             {% block content %}{% endblock %}

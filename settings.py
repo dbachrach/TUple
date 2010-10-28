@@ -51,7 +51,7 @@ MEDIA_ROOT = '' # os.path.join(os.path.dirname(__file__), 'media').replace('\\',
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = ''
+MEDIA_URL = '/media/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -87,7 +87,7 @@ TEMPLATE_DIRS = (
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
-    #'exam.context_processors.media_url', # TODO: Use media_url in templates
+    'exam.context_processors.media_url',
     'exam.context_processors.exam_settings',
 )
 

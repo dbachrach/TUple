@@ -18,6 +18,15 @@ class Problem(models.Model):
 	    
 	def sorted_answers(self):
 	    return self.answer_set.order_by('letter')
+	
+	def unanswered_count(self):
+	    return AnswerSheet.objects.filter(problem=self, answer=None).count()
+	
+	def unanswered_percentage(self):
+	    return float(self.unanswered_count() / self.response_count() * 100.0)
+	    
+	def response_count(self):
+	    return AnswerSheet.objects.filter(problem=self).count()
 	    
 
 class ExamGroup(models.Model):
@@ -28,12 +37,14 @@ class ExamGroup(models.Model):
 	examination_time = models.IntegerField()
 	
 	def __unicode__(self):
-	    return u'Group %s' % (self.name)
+	    return u'%s' % (self.name)
 	
 	def sorted_problems(self):
+	    '''Returns the problems for this group in their correct order.'''
 	    return self.problems.order_by('number')
 	    
 	def finished_students(self):
+	    '''Returns the list of students in this group who have finished the exam.'''
 	    return self.userprofile_set.filter(test_status=2)
 	    
 	def get_examination_time_string(self):
@@ -47,12 +58,17 @@ class ExamGroup(models.Model):
 		   		standard_deviation, average_score, high_score, low_score, average_score_percentage, high_score_percentage, low_score_percentage'''
 		   		
 		question_count = self.problems.count()
+		total_students_count = self.userprofile_set.count()
+		
+		if question_count == 0 or total_students_count == 0:
+		    return None
+		
 		finished_students = self.finished_students()
 		
 		finished_students_count = finished_students.count()
 		current_students_count = self.userprofile_set.filter(test_status=1).count()
 		unstarted_students_count = self.userprofile_set.filter(test_status=0).count()
-		total_students_count = self.userprofile_set.count()
+		
 		
 		finished_students_percentage = float(finished_students_count) / float(total_students_count) * 100
 		current_students_percentage = float(current_students_count) / float(total_students_count) * 100
@@ -83,9 +99,11 @@ class UserProfile(models.Model):
 	    return u'UserProfile (%s)' % (self.user)
 	    
     def has_not_started(self):
+        '''Returns True if the user has not begun the exam.'''
         return (self.test_status == 0)
     
     def is_in_progress(self):
+        '''Returns True if the user is currently taking the exam.'''
         return (self.test_status == 1)
         
     def has_finished(self):
@@ -93,30 +111,43 @@ class UserProfile(models.Model):
     
     def time_left(self):
         '''Returns how much time the user has before his/her exam will be turned in.'''
-        
         exam_time = self.exam_group.examination_time
         
         time_difference = (datetime.now() - self.test_date).total_seconds()
         if time_difference > exam_time:
             self.end_exam()
             return -1
-    
+            
         return int(exam_time - time_difference)
         
     def start_exam(self):
+        '''Marks the user as currently in progress. The current time is also recorded as the start date for the user.
+           A user must have not started the exam for these actions to take effect.'''
         if self.has_not_started():
             self.test_status = 1
             self.test_date = datetime.now()
             self.save()
         
     def end_exam(self):
-        '''Ends the exam for a user. The test status is set to 2, and the user's score is calculated.'''
+        '''Marks the user as finished, and the user's score is calculated.
+           A user must be currently in progress for these actions to take effect.'''
         if self.is_in_progress():
             self.update_score()
             self.test_status = 2
             self.save()
-            
+    
+    def get_problem_at_number(self, problem_number):
+        '''Returns Problem #x. If no problem is found at this number, returns None.
+           The user is authorized to view and answer the returned problem.'''
+        try:
+            # TODO: Can we just do self.problems.get(number=problem_number) ?
+            problem = self.exam_group.problems.get(number=problem_number)
+            return problem
+        except Problem.DoesNotExist, Problem.MultipleObjectsReturned:
+            return None
+                    
     def get_answer_for_problem(self, problem):
+        '''Returns the user's answer for the given problem.'''
         try:    
             answer_sheet = AnswerSheet.objects.get(user_profile=self, problem=problem)
         except AnswerSheet.DoesNotExist, AnswerSheet.MultipleObjectsReturned:
@@ -156,8 +187,16 @@ class Answer(models.Model):
 	def __unicode__(self):
 	    return u'Answer %s' % (self.letter)
 	
+	def chosen_count(self):
+	    # TODO: This should make sure that only users who are finished with the exam are counted
+	    return AnswerSheet.objects.filter(problem=self.problem, answer=self).count()
+	
+	def chosen_percentage(self):
+	    return float(self.chosen_count() / self.problem.response_count() * 100.0) # TODO: Denominator
+	    	
 	
 class AnswerSheet(models.Model):
+    # TODO: When we do queries on answer sheet, we need to make sure that the quries only take place on one exam group
 	user_profile = models.ForeignKey(UserProfile)
 	problem = models.ForeignKey(Problem)
 	answer = models.ForeignKey(Answer)

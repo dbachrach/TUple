@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
 {% block head_additions %}
-<script type="text/javascript" src="/media/js/jquery.js"></script> 
-<script type="text/javascript" src="/media/js/hotkeys.js"></script>   
-<script type="text/javascript" src="/media/js/exam.js"></script> 
+<script type="text/javascript" src="{{ media_url }}js/jquery.js"></script> 
+<script type="text/javascript" src="{{ media_url }}js/hotkeys.js"></script>   
+<script type="text/javascript" src="{{ media_url }}js/exam.js"></script> 
 <script type="text/javascript">
 
 $(document).ready(function() {
@@ -28,7 +28,7 @@ $(document).ready(function() {
 	});
 	
 	$("#periodic_table").click(function() {
-		window.open('/media/images/ptable.gif','Periodic Table','width=806,height=580');
+		window.open('{{ media_url }}images/ptable.gif','Periodic Table','width=806,height=580');
 		return false;
 	});
 	
@@ -67,11 +67,11 @@ $(document).ready(function() {
 
 	<p id="problem_navigation">
 		<a id="prev_link" href="#" class="rollover">
-			<img src="/media/images/prv.png" hover="/media/images/prv_h.png" alt="Previous" id="prev_img" /> Previous Question
+			<img src="{{ media_url }}images/prv.png" hover="{{ media_url }}images/prv_h.png" alt="Previous" id="prev_img" /> Previous Question
 		</a>
 		<span id="pipe_symbol"> | </span>
 		<a id="next_link" href="#" class="rollover">
-			Next Question <img src="/media/images/nxt.png" hover="/media/images/nxt_h.png" alt="Next" id="next_img" />
+			Next Question <img src="{{ media_url }}images/nxt.png" hover="{{ media_url }}images/nxt_h.png" alt="Next" id="next_img" />
 		</a>
 	</p>
 	
@@ -84,7 +84,7 @@ $(document).ready(function() {
 		</div>
 
 	 	<a href="#">
-		  	<img src="/media/images/ptable.png" alt="Periodic Table" />
+		  	<img src="{{ media_url }}images/ptable.png" alt="Periodic Table" />
 		</a>
 	</div>
 </div>

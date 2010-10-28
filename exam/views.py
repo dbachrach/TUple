@@ -68,8 +68,11 @@ def exam(request):
         return HttpResponseRedirect('/finished/')
         
     problems = request.user.get_profile().exam_group.sorted_problems()
+    
+    # Creates a list of each problem's selected answer
     chosen_answers = map(request.user.get_profile().get_answer_for_problem, problems)
 
+    # Combines the problems and their chosen answer into a single list where each element is a dictionary containting the problem and the selected answer
     problem_data = map(lambda p, c : {'problem': p, 'chosen_answer': c}, problems, chosen_answers)
     
     return render_to_response("exam.html", {'problem_data': problem_data, 'time_left': time_left}, context_instance=RequestContext(request))
@@ -96,26 +99,19 @@ def closed(request):
     return render_to_response('closed.html', context_instance=RequestContext(request))
 
 
-def get_problem_for_index(request, problem_index):
-    try:
-        problem = request.user.get_profile().exam_group.problems.get(number=problem_index)
-        return problem
-    except Problem.DoesNotExist, Problem.MultipleObjectsReturned:
-        return None
-
-
 @check_closed
 @login_required
 def hotkeys(request, problem_index):
-    problem = get_problem_for_index(request, problem_index)
+    problem = request.user.get_profile().get_problem_at_number(problem_index)
     if problem is None:
         # TODO: Better error
         return HttpResponse("Problem not found")
-
+        
     # Generate a JSON response that lists the problem id, and all its answer ids and letters
     answers = {}
     for answer in problem.sorted_answers():
         answers[answer.id] = answer.letter
+        
     result = {'problem_id': problem.id, 'answers': answers}
     return HttpResponse(simplejson.dumps(result), mimetype="application/json")
 
@@ -123,13 +119,10 @@ def hotkeys(request, problem_index):
 @check_closed
 @login_required
 def problem(request, problem_index):
-    problem = get_problem_for_index(request, problem_index)
+    problem = request.user.get_profile().get_problem_at_number(problem_index)
     if problem is None:
         # TODO: Better error
         return HttpResponse("Problem not found")
-    
-        
-    # TODO: Make sure user is authorized to access problem with id=problem_id
 
     if request.method == 'POST':
         return post_problem(request, problem)
@@ -173,17 +166,9 @@ def post_problem(request, problem):
         
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin(request, group_name=None):
-    if group_name is None:
-        try:
-            exam_group = ExamGroup.objects.get(active=True)
-        except ExamGroup.DoesNotExist:
-            # TODO: Return error
-            return HttpResponse("error: no active group exists")
-        except ExamGroup.MultipleObjectsReturned:
-            # TODO: Return error
-            return HttpResponse("error: multiple active groups exist")
-    else:
+def admin(request):
+    if 'group' in request.GET and request.GET['group']:
+        group_name = request.GET['group']
         try:
             exam_group = ExamGroup.objects.get(name=group_name)
         except ExamGroup.DoesNotExist:
@@ -192,6 +177,15 @@ def admin(request, group_name=None):
         except ExamGroup.MultipleObjectsReturned:
             # TODO: Return error
             return HttpResponse("error: multiple groups with naame " + group_name)
+    else:
+        try:
+            exam_group = ExamGroup.objects.get(active=True)
+        except ExamGroup.DoesNotExist:
+            # TODO: Return error
+            return HttpResponse("error: no active group exists")
+        except ExamGroup.MultipleObjectsReturned:
+            # TODO: Return error
+            return HttpResponse("error: multiple active groups exist")
           
     stats = exam_group.calculate_statistics()
-    return render_to_response("admin.html", {'stats': stats, 'problems': exam_group.problems.all()}, context_instance=RequestContext(request))
+    return render_to_response("admin.html", {'stats': stats, 'problems': exam_group.sorted_problems(), 'exam_group': exam_group, 'exam_groups': ExamGroup.objects.all()}, context_instance=RequestContext(request))
