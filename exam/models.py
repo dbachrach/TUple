@@ -41,7 +41,7 @@ class ExamGroup(models.Model):
 	active = models.BooleanField()
 	problems = models.ManyToManyField(Problem)
 	examination_time = models.IntegerField()
-	answers_per_problem = models.SmallIntegerField()
+	#answers_per_problem = models.SmallIntegerField()
 	
 	def __unicode__(self):
 	    return u'%s' % (self.name)

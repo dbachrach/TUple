@@ -12,6 +12,7 @@ import logging
 LOG_FILENAME = 'example.log'
 logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
     
+# TODO: Make admins have a user profile
 
 # TODO: Handle retakes
 def check_closed(f):
@@ -69,8 +70,11 @@ def exam(request):
     time_left = request.user.get_profile().time_left()  
     if time_left == -1:
         return HttpResponseRedirect('/finished/')
-        
-    problems = request.user.get_profile().exam_group.sorted_problems()
+    
+    exam_group = request.user.get_profile().exam_group
+    problems = exam_group.sorted_problems()
+    
+    exam_answers_per_problem = 5 # TODO: exam_group.answers_per_problem
     
     # Creates a list of each problem's selected answer
     chosen_answers = map(request.user.get_profile().get_answer_for_problem, problems)
@@ -78,7 +82,7 @@ def exam(request):
     # Combines the problems and their chosen answer into a single list where each element is a dictionary containting the problem and the selected answer
     problem_data = map(lambda p, c : {'problem': p, 'chosen_answer': c}, problems, chosen_answers)
     
-    return render_to_response("exam.html", {'problem_data': problem_data, 'time_left': time_left}, context_instance=RequestContext(request))
+    return render_to_response("exam.html", {'problem_data': problem_data, 'time_left': time_left, 'exam_answers_per_problem': exam_answers_per_problem}, context_instance=RequestContext(request))
 
 
 @check_closed

@@ -34,6 +34,7 @@ function changeQuestion() {
 	// Load the new question
 	$.get('/problem/' + questionNum + '/', function(data) {
 		$('#question').html(data);
+		MathJax.Hub.Queue(["Typeset",MathJax.Hub,"question"]);
 	});
 	
 	// Binds shortcut keys for each of the answers to this problem
@@ -142,14 +143,19 @@ function selectQuestion(q) {
 }
 
 function updateTimer() {
-    // TODO: Handle hours
 	sec = sec - 1;
 	if (sec == -1) {
 		sec = 59;
 		min = min - 1;
 		if(min==-1) {
+		    min = 59;
+		    hr = hr - 1;
 			timer_done();
 		}
+	}
+	var hr_d = "";
+	if (hr > 0) {
+	    hr_d = hr + ":";
 	}
 	var min_d = min;
 	if (min < 10) {
@@ -160,7 +166,7 @@ function updateTimer() {
 		sec_d = "0" + sec;
 	}
 	
-	$('#timer_string').html(min_d + ":" + sec_d);
+	$('#timer_string').html(hr_d + min_d + ":" + sec_d);
 	setTimeout("updateTimer()",1000);
 }
 
@@ -168,8 +174,9 @@ function timer_done() {
 	$('#answer_key_form').submit();
 }
 
-// TODO: Document and/or remove that the question_id is not used and we implicitly assume the current question is being selected.
 function answerSelected(question_id, answer_id) {
+    // Right now question_id is not used. We assume that the question_id is questionNum since a user can only answer the current question.
+    
 	// Select the appropriate radio button
 	$('#answer_form_problem_' + questionNum + '_answer_' + answer_id).attr('checked', true);
 	$('#problem_' + questionNum + '_answer_' + answer_id).attr('checked', true);
