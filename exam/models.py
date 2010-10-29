@@ -17,16 +17,22 @@ class Problem(models.Model):
 	    return u'Problem #%d' % (self.number)
 	    
 	def sorted_answers(self):
+	    '''Returns the answers for this problem in sorted order (i.e. A, B, C, D, E).'''
 	    return self.answer_set.order_by('letter')
 	
 	def unanswered_count(self):
-	    return AnswerSheet.objects.filter(problem=self, answer=None).count()
+	    return AnswerSheet.objects.filter(problem=self, answer=None, user_profile__test_status=2).count()
 	
 	def unanswered_percentage(self):
 	    return float(self.unanswered_count() / self.response_count() * 100.0)
 	    
+	# TODO: unanswered_count needs to know which exam group it is to process for
+    # TODO: Let's get rid of unanswered_percentage and just divide by exam_group.finished_students().count()
+    # TODO: We don't need response count. Let's just use exam_group.finished_students().count()
+    	
 	def response_count(self):
-	    return AnswerSheet.objects.filter(problem=self).count()
+	    '''Returns the total number of '''
+	    return AnswerSheet.objects.filter(problem=self, user_profile__test_status=2).count()
 	    
 
 class ExamGroup(models.Model):
@@ -35,6 +41,7 @@ class ExamGroup(models.Model):
 	active = models.BooleanField()
 	problems = models.ManyToManyField(Problem)
 	examination_time = models.IntegerField()
+	answers_per_problem = models.SmallIntegerField()
 	
 	def __unicode__(self):
 	    return u'%s' % (self.name)
@@ -192,11 +199,14 @@ class Answer(models.Model):
 	    return u'Answer %s' % (self.letter)
 	
 	def chosen_count(self):
-	    # TODO: This should make sure that only users who are finished with the exam are counted
-	    return AnswerSheet.objects.filter(problem=self.problem, answer=self).count()
+	    '''Returns the number of times this answer choice was chosen.'''
+	    return AnswerSheet.objects.filter(problem=self.problem, answer=self, user_profile__test_status=2).count()
 	
+	# TODO: chosen_count needs to know which exam group it is to process for
+	# TODO: Let's get rid of chosen_percentage and just divide by exam_group.finished_students().count()
 	def chosen_percentage(self):
-	    return float(self.chosen_count() / self.problem.response_count() * 100.0) # TODO: Denominator
+	    '''Returns the percentage for how many times this specific answer choice was chosen out of all responses for the problem.'''
+	    return float(self.chosen_count() / self.problem.response_count() * 100.0)
 	    	
 	
 class AnswerSheet(models.Model):
