@@ -48,7 +48,7 @@ class ExamGroup(models.Model):
 	    return self.userprofile_set.filter(test_status=2)
 	    
 	def get_examination_time_string(self):
-	    return '%s seconds' % self.examination_time # TODO: make this into a pretty string. For example 3600 should print out as 1 hour
+	    return '%d minutes' % int(self.examination_time / 60)
 	    
 	def calculate_statistics(self):
 		'''Calculates various statistics for this exam group. The statistics are returned as an dictionary of statistic names to values.
@@ -145,8 +145,7 @@ class UserProfile(models.Model):
         '''Returns Problem #x. If no problem is found at this number, returns None.
            The user is authorized to view and answer the returned problem.'''
         try:
-            # TODO: Can we just do self.problems.get(number=problem_number) ?
-            problem = self.exam_group.problems.get(number=problem_number)
+            problem = self.problems.get(number=problem_number)
             return problem
         except Problem.DoesNotExist, Problem.MultipleObjectsReturned:
             return None

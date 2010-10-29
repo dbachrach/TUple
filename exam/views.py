@@ -28,7 +28,7 @@ def check_closed(f):
 def didlogin(request):
     if request.user.is_staff:
         return HttpResponseRedirect('/admin/')
-    if !request.user.get_profile().is_in_active_exam_group():
+    if not request.user.get_profile().is_in_active_exam_group():
         messages.info(request, 'Login failed. You are not allowed to take this exam currently.')
         return HttpResponseRedirect('/')
     elif request.user.get_profile().is_in_progress():
