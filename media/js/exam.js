@@ -147,10 +147,12 @@ function updateTimer() {
 	if (sec == -1) {
 		sec = 59;
 		min = min - 1;
-		if(min==-1) {
+		if(min == -1) {
 		    min = 59;
 		    hr = hr - 1;
-			timer_done();
+		    if (hr == -1) {
+		        timer_done();
+		    }
 		}
 	}
 	var hr_d = "";

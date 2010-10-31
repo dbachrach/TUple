@@ -26,6 +26,9 @@ urlpatterns = patterns('',
 	(r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': settings.MEDIA_URL + 'images/favicon.ico'}),
     
     (r'^admin/$', views.admin),
+    (r'^admin/distribution/(.+)/csv/$', views.distribution_csv),
+    (r'^admin/grades/(.+)/$', views.grades),
+    (r'^admin/grades/(.+)/csv/$', views.grades_csv),
 
     (r'^admin-django/', include(admin.site.urls)),
 )

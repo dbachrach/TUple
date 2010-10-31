@@ -7,6 +7,7 @@ from django.template import RequestContext
 from django.utils import simplejson
 from django.contrib import messages
 from TUple.exam.models import Problem, ExamGroup, Answer
+import csv
 
 import logging
 LOG_FILENAME = 'example.log'
@@ -183,7 +184,7 @@ def admin(request):
             return HttpResponse("error: no group with name " + group_name)
         except ExamGroup.MultipleObjectsReturned:
             # TODO: Return error
-            return HttpResponse("error: multiple groups with naame " + group_name)
+            return HttpResponse("error: multiple groups with name " + group_name)
     else:
         try:
             exam_group = ExamGroup.objects.get(active=True)
@@ -196,3 +197,56 @@ def admin(request):
           
     stats = exam_group.calculate_statistics()
     return render_to_response("admin.html", {'stats': stats, 'problems': exam_group.sorted_problems(), 'exam_group': exam_group, 'exam_groups': ExamGroup.objects.all()}, context_instance=RequestContext(request))
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def distribution_csv(request, group):
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=distribution.csv'
+    
+    writer = csv.writer(response)
+    # TODO: Handle 4 and 5 answers (A,B,C,D and A,B,C,D,E)
+    writer.writerow(['Problem Number', 'Question', 'A', 'B', 'C', 'D', 'E', 'Unanswered', 'Correct'])
+    
+    return response
+    
+    
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def grades_csv(request, group_name):
+    try:
+        exam_group = ExamGroup.objects.get(name=group_name)
+    except ExamGroup.DoesNotExist:
+        # TODO: Return error
+        return HttpResponse("error: no group with name " + group_name)
+    except ExamGroup.MultipleObjectsReturned:
+        # TODO: Return error
+        return HttpResponse("error: multiple groups with name " + group_name)
+        
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=grades.csv'
+    
+    writer = csv.writer(response)
+    writer.writerow(['Name', 'Score'])
+    
+    for student in exam_group.finished_students().order_by(user__username):
+        writer.writerow([student.user.username, student.score])
+    
+    return response
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def grades(request, group_name):
+    try:
+        exam_group = ExamGroup.objects.get(name=group_name)
+    except ExamGroup.DoesNotExist:
+        # TODO: Return error
+        return HttpResponse("error: no group with name " + group_name)
+    except ExamGroup.MultipleObjectsReturned:
+        # TODO: Return error
+        return HttpResponse("error: multiple groups with name " + group_name)
+        
+    return render_to_response("admin_grades.html", {'finished_students': exam_group.finished_students().order_by('score')}, context_instance=RequestContext(request))
+    
