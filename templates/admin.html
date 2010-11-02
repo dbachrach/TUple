@@ -1,8 +1,5 @@
-{% extends "base.html" %}
+{% extends "base_admin.html" %}
 
-{% block title %}
-{{ block.super }} Admin
-{% endblock %}
 
 {% block head_additions %}
 <style>
@@ -113,7 +110,7 @@ $(document).ready(function() {
 </script>
 {% endblock %}
 
-{% block content %}
+{% block content_admin %}
 
 
 <form action="/admin/" method="get">
