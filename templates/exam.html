@@ -4,6 +4,7 @@
 <script type="text/javascript" src="{{ media_url }}js/jquery.js"></script> 
 <script type="text/javascript" src="{{ media_url }}js/hotkeys.js"></script>   
 <script type="text/javascript" src="{{ media_url }}js/exam.js"></script> 
+<script type="text/javascript" src="{{ media_url }}js/mathjax/MathJax.js"></script>
 <script type="text/javascript">
 
 $(document).ready(function() {
@@ -47,7 +48,6 @@ $(document).ready(function() {
    	startTest({{ problem_data|length }}, {{ time_left }});
 });
 </script>
- 
 {% endblock %}
 
 {% block content %}
@@ -88,7 +88,7 @@ $(document).ready(function() {
 		</a>
 	</div>
 </div>
-	
+
 <div id="right_col">
 	<form id="answer_key_form" action="/end/" method="post">
 		<div id="overflow_table">
@@ -100,8 +100,15 @@ $(document).ready(function() {
                        	<th width="35">A</th>
                        	<th width="35">B</th>
                        	<th width="35">C</th>
+                       	
+                       	{% ifequal exam_answers_per_problem 4 %}
+                       	<th width="51">D</th>
+                       	{% endifequal %}
+                       	
+                       	{% ifequal exam_answers_per_problem 5 %}
                        	<th width="35">D</th>
                        	<th width="51">E</th>
+                       	{% endifequal %}
                    </tr>
 				</thead>
 			</table>

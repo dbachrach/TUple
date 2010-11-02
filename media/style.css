@@ -22,7 +22,7 @@ body {
         font-size: 16px;
         position: relative;
         top: 5px;
-        left: 470px;
+        left: 450px;
 }
 
 #content {
@@ -217,7 +217,7 @@ a:hover {
 }
 
 #question {
-    height: 250px;
+    /*height: 250px;*/
     margin-top: -30px;
 }
 

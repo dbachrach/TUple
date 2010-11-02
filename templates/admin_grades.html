@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ block.super }} Admin
+{% endblock %}
+
+{% block content %}
+<h1>Grades</h1>
+
+<table id="answer_key_header" cellpadding="0" cellspacing="0" style="width:300px">
+    <caption>Number of graded exams: {{ finished_students.count }}</caption>
+    <thead>
+        <tr>
+            <th class="left_td" style="width:200px" width="200px">Last Name</th>
+            <th style="width:100px" width="100px">Grade</th>
+        </tr>
+        </thead>
+</table>
+<table id="answer_key" cellpadding="0" cellspacing="0" style="width:300px">
+<tbody>
+
+{% for student in finished_students %}
+    <tr>
+        <td class="left_td" style="width:200px" width="200px">{{ student.user.username }}</td>
+        <td style="width:100px" width="100px">{{ student.score }}</td>
+    </tr>
+{% endfor %}
+
+</tbody>
+</table>
+{% endblock %}
