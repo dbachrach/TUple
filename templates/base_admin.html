@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ block.super }} Admin
+{% endblock %}
+
+{% block content %}
+<ul style="float:left">
+	<li><a href="">Exam Settings</a></li>
+	<li><a href="">View Results</a></li>
+	<li><a href="">Edit Groups</a></li>
+</ul>
+
+<div style="float:right">
+	{% block content_admin %}
+	
+	{% endblock %}
+</div>
+
+<div style="clear:both"></div>
+	
+{% endblock %}
