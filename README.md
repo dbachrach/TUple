@@ -1,6 +1,26 @@
-## What is it?
+# TUple
 
-TUple is an easy to use, open-source Placement Exam system for universities or businesses. TUple is currently in active development.
+**TUple** is an easy to use, open-source Placement Exam system for universities or businesses. TUple is currently in active development.
+
+## Requirements
+
+* Django 1.2.3+
+* Python 2.7+
+
+## Dependencies
+
+TUple takes advantage of some great tools, which are included in this distribution. 
+
+* MathJax
+* JQuery
+
+## Setup
+
+A description on how to setup TUple.
+
+## Customization
+
+How to customize TUple
 
 ## License
 
