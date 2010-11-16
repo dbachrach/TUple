@@ -190,12 +190,14 @@ table.display tr.heading2 td {
 	border-bottom: 1px solid #aaa;
 }
 
-table.display td {
-	padding: 2px 0px;
+table td {
+	padding: 4px 5px;
 	border-right: 1px solid #C1DAD7;
     border-bottom: 1px solid #C1DAD7;
-    text-align: center;
-    margin:0;
+}
+
+table td.left {
+    border-left: 1px solid #C1DAD7;
 }
 
 table.display td.center {
@@ -228,11 +230,12 @@ table.display td.center {
  */
 
 tr.odd {
-	background-color: #E5E5E5;
-}
-
-tr.even {
 	background-color: #fff;
+	color: #4f6b72;
+}
+ 
+tr.even {
+	background-color: #E5E5E5;
 	color: #4f6b72;
 }
 
@@ -327,6 +330,7 @@ table.display tr.odd.row_selected td {
  * Sorting classes for columns
  */
 /* For the standard odd/even */
+/*
 tr.odd td.sorting_1 {
 	background-color: #D3D6FF;
 }
@@ -350,7 +354,7 @@ tr.even td.sorting_2 {
 tr.even td.sorting_3 {
 	background-color: #F9F9FF;
 }
-
+*/
 
 
 /*

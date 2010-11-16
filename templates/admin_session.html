@@ -5,8 +5,8 @@
 <style>
 
 @import "{{ media_url }}css/jquery-ui-1.8.6.custom.css";
-/*@import "http://www.datatables.net/media/css/jui_themes/overcast/jquery-ui-1.7.2.custom.css";*/
 @import "{{ media_url }}js/datatables/media/css/demo_table_jui.css";
+@import "{{ media_url }}js/tabletools/css/TableTools.css";
 
 .bubbleInfo {
     position: relative;
@@ -43,17 +43,31 @@
 <script type="text/javascript" src="{{ media_url }}js/jquery.js"></script> 
 <script type="text/javascript" src="{{ media_url }}js/qtip.js"></script>
 <script type="text/javascript" src="{{ media_url }}js/datatables/media/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="{{ media_url }}js/tabletools/ZeroClipboard/ZeroClipboard.js"></script>
+<script type="text/javascript" src="{{ media_url }}js/tabletools/js/TableTools.min.js"></script>
+
 
 <script type="text/javascript">
 
 $(document).ready(function() {
+	TableToolsInit.oFeatures.bXls = false;
+	TableToolsInit.oFeatures.bCopy = false;
+	TableToolsInit.oFeatures.bPrint = false;
+	TableToolsInit.oBom.bXls = false;
+	// TableToolsInit.iButtonHeight = 16;
+	// TableToolsInit.iButtonWidth = 16;
+	TableToolsInit.sSwfPath = "/media/js/tabletools/swf/ZeroClipboard.swf"
 	
-	$('#answer_key111').dataTable( {
+	$('.data_table').dataTable( {
+		"bAutoWidth": false,
 	    "bJQueryUI": true,
 	    "bStateSave": true,
 	    "sScrollY": "200px",
-        "bPaginate": true,
-        "bLengthChange": true
+        "bPaginate": false,
+        "bLengthChange": false,
+		//"sPaginationType": "full_numbers"
+		"bScrollCollapse": true,
+		"sDom": '<"H"lTfr>t<"F"ip>'
 	});
 	
 	$('.bubbleInfo').each(function () {
@@ -164,10 +178,25 @@ $(document).ready(function() {
 
 <h1>Grades</h1>
 <p>Download a <a href="/admin/grades/{{ group.name }}/csv/">CSV file</a> of all students scores to import into Excel. You can also view student scores as a <a href="/admin/grades/{{ group.name }}/">webpage</a>.</p>
-<ul>
-	<li>Lookup a student's grade by last name: <input type="text" /> <input type="submit" value="Lookup" /></li>
-    <li>Lookup a student's grade by Student ID #: <input type="text" /> <input type="submit" value="Lookup" /></li>
-</ul>
+
+<p>&nbsp;</p>
+
+<table id="grades_table" class="data_table display" cellspacing="0" cellpadding="0">
+    <thead>
+        <tr>
+            <th>Last Name</th>
+            <th>Grade</th>
+        </tr>
+        </thead>
+		<tbody>
+			{% for student in finished_students %}
+			    <tr>
+			        <td class="left">{{ student.user.username }}</td>
+			        <td>{{ student.score }}</td>
+			    </tr>
+			{% endfor %}
+	</tbody>
+</table>
 
 
 <h1>Question Distributions</h1>
@@ -188,7 +217,6 @@ $(document).ready(function() {
 	</thead>
 </table>
 <table id="answer_key" cellpadding="0" cellspacing="0" style="width:700px">
-    <caption>Number of graded exams: {{ stats.finished_students_count }}</caption>
 	<tbody>
 	    {% for problem in problems %}
 	    <tr id="answer_form_row_{{ problem.id }}" class="{% if forloop.counter|divisibleby:2 %}alt{% endif %}">
@@ -229,7 +257,7 @@ $(document).ready(function() {
 
 <p>&nbsp;</p>
 <!-- TODO: Handle 4 and 5 answer tables -->
-<table id="answer_key111" cellpadding="0" cellspacing="0" style="width:700px">
+<table id="answer_key111" class="data_table display" cellspacing="0" cellpadding="0">
     <!--<caption>Number of graded exams: {{ stats.finished_students_count }}</caption>-->
 	<thead>
 		<tr>
@@ -246,7 +274,7 @@ $(document).ready(function() {
 	    {% for problem in problems %}
 	    <tr>
 	        <!-- TODO: Make the question clickable to view what the question is -->
-			<td>
+			<td class="left">
 				<strong>{{ problem.number }}</strong>
 			</td>
 			
