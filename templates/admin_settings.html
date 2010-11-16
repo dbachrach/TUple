@@ -1,0 +1,10 @@
+{% extends "base_admin.html" %}
+
+{% block content_admin %}
+
+<form action="/admin/settings/" method="post">
+{{ form.as_p }}
+<input type="submit" value="Save" />
+</form>
+
+{% endblock %}

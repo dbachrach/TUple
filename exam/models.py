@@ -1,13 +1,30 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Avg, StdDev, Max, Min
-from datetime import datetime
+from datetime import datetime, date
+from django.forms import ModelForm
 
 # TODO: Consolidate where logging is
 import logging
 LOG_FILENAME = 'example.log'
 logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 
+
+class Exam(models.Model):
+    name = models.CharField(max_length=100)
+    copyright_owner = models.CharField(max_length=100)
+    copyright_start = models.PositiveSmallIntegerField()
+    contact_email = models.EmailField()
+    
+    def __unicode(self):
+        return u'%s' % (exam_name)
+        
+    def copyright_end(self):
+        return date.today().year
+        
+class ExamForm(ModelForm):
+    class Meta:
+        model = Exam
 
 class Problem(models.Model):
 	number = models.PositiveSmallIntegerField()
@@ -29,6 +46,7 @@ class Problem(models.Model):
 	# TODO: unanswered_count needs to know which exam group it is to process for
     # TODO: Let's get rid of unanswered_percentage and just divide by exam_group.finished_students().count()
     # TODO: We don't need response count. Let's just use exam_group.finished_students().count()
+    # TODO: Check for div by zero when no students have taken exam
     	
 	def response_count(self):
 	    '''Returns the total number of '''
@@ -36,7 +54,7 @@ class Problem(models.Model):
 	    
 
 class ExamGroup(models.Model):
-	name = models.TextField()
+	name = models.CharField(max_length=100)
 	date = models.DateField()
 	active = models.BooleanField()
 	problems = models.ManyToManyField(Problem)

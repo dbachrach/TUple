@@ -6,7 +6,7 @@ from exam_settings import EXAM_SETTINGS
 from django.template import RequestContext
 from django.utils import simplejson
 from django.contrib import messages
-from TUple.exam.models import Problem, ExamGroup, Answer
+from TUple.exam.models import Problem, ExamGroup, Answer, Exam, ExamForm
 import csv
 
 import logging
@@ -171,12 +171,31 @@ def post_problem(request, problem):
         request.user.get_profile().answer_problem(problem, answer)
     return HttpResponse('')
         
-        
+     
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin(request):
-    if 'group' in request.GET and request.GET['group']:
-        group_name = request.GET['group']
+def admin(request):     
+    return HttpResponseRedirect('/admin/sessions/')
+   
+    
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def admin_sessions(request):  
+    try:
+        exam_group = ExamGroup.objects.get(active=True)
+    except ExamGroup.DoesNotExist:
+        # TODO: Return error
+        return HttpResponse("error: no active group exists")
+    except ExamGroup.MultipleObjectsReturned:
+        # TODO: Return error
+        return HttpResponse("error: multiple active groups exist")
+    return HttpResponseRedirect('/admin/sessions/' + exam_group.name + '/')
+            
+    
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def admin_session(request, group_name):
+    if group_name:
         try:
             exam_group = ExamGroup.objects.get(name=group_name)
         except ExamGroup.DoesNotExist:
@@ -186,19 +205,39 @@ def admin(request):
             # TODO: Return error
             return HttpResponse("error: multiple groups with name " + group_name)
     else:
-        try:
-            exam_group = ExamGroup.objects.get(active=True)
-        except ExamGroup.DoesNotExist:
-            # TODO: Return error
-            return HttpResponse("error: no active group exists")
-        except ExamGroup.MultipleObjectsReturned:
-            # TODO: Return error
-            return HttpResponse("error: multiple active groups exist")
+        # TODO: Return error
+        return HttpRespone("error: no group name provided " + group_name)
           
     stats = exam_group.calculate_statistics()
-    return render_to_response("admin.html", {'stats': stats, 'problems': exam_group.sorted_problems(), 'exam_group': exam_group, 'exam_groups': ExamGroup.objects.all()}, context_instance=RequestContext(request))
+    return render_to_response("admin_session.html", {'stats': stats, 'problems': exam_group.sorted_problems(), 'exam_group': exam_group, 'exam_groups': ExamGroup.objects.all()}, context_instance=RequestContext(request))
 
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def admin_add_session(request):
+    pass
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def admin_edit_session(request):
+    pass
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def admin_trends(request):
+    pass
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def admin_settings(request):
+    the_exam = Exam.objects.all()[0]
+    if request.method == 'POST':
+        form = ExamForm(request.POST, instance=the_exam)
+        if form.is_valid():
+            form.save()
+            messages.info(request, 'Settings saved.')
+            return HttpResponseRedirect("/admin/settings/?saved")
+    else:
+        form = ExamForm(instance=the_exam)
 
+    return render_to_response("admin_settings.html", {'form': form}, context_instance=RequestContext(request))
+            
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def distribution_csv(request, group):

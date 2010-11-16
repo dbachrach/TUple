@@ -4,6 +4,10 @@
 {% block head_additions %}
 <style>
 
+@import "{{ media_url }}css/jquery-ui-1.8.6.custom.css";
+/*@import "http://www.datatables.net/media/css/jui_themes/overcast/jquery-ui-1.7.2.custom.css";*/
+@import "{{ media_url }}js/datatables/media/css/demo_table_jui.css";
+
 .bubbleInfo {
     position: relative;
 }
@@ -38,10 +42,19 @@
 </style>
 <script type="text/javascript" src="{{ media_url }}js/jquery.js"></script> 
 <script type="text/javascript" src="{{ media_url }}js/qtip.js"></script>
+<script type="text/javascript" src="{{ media_url }}js/datatables/media/js/jquery.dataTables.min.js"></script>
 
 <script type="text/javascript">
 
 $(document).ready(function() {
+	
+	$('#answer_key111').dataTable( {
+	    "bJQueryUI": true,
+	    "bStateSave": true,
+	    "sScrollY": "200px",
+        "bPaginate": true,
+        "bLengthChange": true
+	});
 	
 	$('.bubbleInfo').each(function () {
 	    // options
@@ -112,7 +125,7 @@ $(document).ready(function() {
 
 {% block content_admin %}
 
-
+<!--
 <form action="/admin/" method="get">
 	<p style="text-align:right; font-size:10px;">Change exam group:
 		<select name="group">
@@ -123,7 +136,19 @@ $(document).ready(function() {
 		<input type="submit" value="Change" />
 	</p>
 </form>
+-->
 
+<p>
+{% for group in exam_groups %}
+	<a href="/admin/sessions/{{ group.name }}/">{% ifequal group exam_group %} <b> {% endifequal %} {{ group.name }} {% ifequal group exam_group %} </b> {% endifequal %}</a> | 
+{% endfor %}
+ <a href="/admin/sessions/add/"> Add new session</a>
+</p>
+
+<div>
+    <h1>{{ exam_group.name }}</h1>
+    <div style="float:right"><a href="/admin/sessions/{{ exam_group.name }}/edit/">Edit Session</a></div>
+    <p>&nbsp;</p>
 <h1>Stats</h1>
 {% if stats %}
 <ul>
@@ -162,13 +187,12 @@ $(document).ready(function() {
         	</tr>
 	</thead>
 </table>
-
-<!-- TODO: Handle 4 and 5 answer tables -->
 <table id="answer_key" cellpadding="0" cellspacing="0" style="width:700px">
+    <caption>Number of graded exams: {{ stats.finished_students_count }}</caption>
 	<tbody>
-		{% for problem in problems %}
-		<tr id="answer_form_row_{{ problem.id }}" class="{% if forloop.counter|divisibleby:2 %}alt{% endif %}">
-			<!-- TODO: Make the question clickable to view what the question is -->
+	    {% for problem in problems %}
+	    <tr id="answer_form_row_{{ problem.id }}" class="{% if forloop.counter|divisibleby:2 %}alt{% endif %}">
+	        <!-- TODO: Make the question clickable to view what the question is -->
 			<td class="left_td" style="width:100px" width="100px">
 				<div class="bubbleInfo">
 					<div class="trigger">
@@ -192,11 +216,53 @@ $(document).ready(function() {
 			{% for answer in problem.sorted_answers %}
             <td style="width:100px" width="100px">{{ answer.chosen_percentage|floatformat }}% {% if answer.correct %}<img src="{{ media_url }}images/checkmark.gif" style="height:12px;width:12px;">{% endif %} {% if answer.chosen_count > 0 %} <br />({{ answer.chosen_count }}) {% endif %}</td>
 			{% endfor %}
-
-            <td style="wdith:100px" width="100px">{{ problem.unanswered_percentage|floatformat }}% {% if unanswered_count > 0 %} <br />({{ problem.unanswered_count }}) {% endif %}</td>
-		</tr>
+			
+			<td style="wdith:100px" width="100px">{{ problem.unanswered_percentage|floatformat }}% {% if unanswered_count > 0 %} <br />({{ problem.unanswered_count }}) {% endif %}</td>
+	    </tr>
+	    {% empty %}
+		    <!-- TODO: Handle 4 & 5 problems here. The colspan needs to change. Also make this look prettier and centered -->
+		    <tr><td colspan="7">No Problems</td></tr>
 		{% endfor %}
 	</tbody>
 </table>
+
+
+<p>&nbsp;</p>
+<!-- TODO: Handle 4 and 5 answer tables -->
+<table id="answer_key111" cellpadding="0" cellspacing="0" style="width:700px">
+    <!--<caption>Number of graded exams: {{ stats.finished_students_count }}</caption>-->
+	<thead>
+		<tr>
+			<th>#</th>
+               <th>A</th>
+               <th>B</th>
+               <th>C</th>
+               <th>D</th>
+               <th>E</th>
+               <th>Unanswered</th>
+        	</tr>
+	</thead>
+	<tbody>
+	    {% for problem in problems %}
+	    <tr>
+	        <!-- TODO: Make the question clickable to view what the question is -->
+			<td>
+				<strong>{{ problem.number }}</strong>
+			</td>
+			
+			{% for answer in problem.sorted_answers %}
+            <td>{{ answer.chosen_percentage|floatformat }}% {% if answer.correct %}<img src="{{ media_url }}images/checkmark.gif" style="height:12px;width:12px;">{% endif %} {% if answer.chosen_count > 0 %} <br />({{ answer.chosen_count }}) {% endif %}</td>
+			{% endfor %}
+			
+			<td>{{ problem.unanswered_percentage|floatformat }}% {% if unanswered_count > 0 %} <br />({{ problem.unanswered_count }}) {% endif %}</td>
+	    </tr>
+	    {% empty %}
+		    <!-- TODO: Handle 4 & 5 problems here. The colspan needs to change. Also make this look prettier and centered -->
+		    <tr><td colspan="7">No Problems</td></tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+</div>
 
 {% endblock %}
