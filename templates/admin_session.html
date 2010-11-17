@@ -177,10 +177,10 @@ $(document).ready(function() {
 {% endif %}
 
 <h1>Grades</h1>
-<p>Download a <a href="/admin/grades/{{ group.name }}/csv/">CSV file</a> of all students scores to import into Excel. You can also view student scores as a <a href="/admin/grades/{{ group.name }}/">webpage</a>.</p>
 
 <p>&nbsp;</p>
 
+<!-- TODO: Clicking a student should show their specific answers to each problem -->
 <table id="grades_table" class="data_table display" cellspacing="0" cellpadding="0">
     <thead>
         <tr>
@@ -198,64 +198,11 @@ $(document).ready(function() {
 	</tbody>
 </table>
 
+<!-- TODO: Show graph of scores -->
 
 <h1>Question Distributions</h1>
 <p>This is a breakdown of student answers for all questions. A CSV file of this data may be found <a href="/admin/distribution/{{ group.name }}/csv/">here</a>.</p>
 
-<table id="answer_key_header" cellpadding="0" cellspacing="0" style="width:700px">
-	<caption>Number of graded exams: {{ stats.finished_students_count }}</caption>
-	<thead>
-		<tr>
-			<th class="left_td" style="width:100px" width="100px">#</th>
-               <th style="width:100px" width="100px">A</th>
-               <th style="width:100px" width="100px">B</th>
-               <th style="width:100px" width="100px">C</th>
-               <th style="width:100px" width="100px">D</th>
-               <th style="width:100px" width="100px">E</th>
-               <th style="width:100px" width="100px">Unanswered</th>
-        	</tr>
-	</thead>
-</table>
-<table id="answer_key" cellpadding="0" cellspacing="0" style="width:700px">
-	<tbody>
-	    {% for problem in problems %}
-	    <tr id="answer_form_row_{{ problem.id }}" class="{% if forloop.counter|divisibleby:2 %}alt{% endif %}">
-	        <!-- TODO: Make the question clickable to view what the question is -->
-			<td class="left_td" style="width:100px" width="100px">
-				<div class="bubbleInfo">
-					<div class="trigger">
-						<strong>{{ problem.number }}</strong>
-					</div>
-					<div class="popup">
-				    	<h1>Problem #{{ problem.number }}</h1>
-						<p>{{ problem.text }}</p>
-						<table class="answer_popup">   
-							{% for answer in problem.sorted_answers %}  
-						    <tr>
-						        <td><strong>{{ answer.letter|upper }})</strong></td>
-						        <td>{{ answer.text }}</td>
-						    </tr>
-						    {% endfor %}
-						</table>
-				  	</div>
-				</div>
-			</td>
-			
-			{% for answer in problem.sorted_answers %}
-            <td style="width:100px" width="100px">{{ answer.chosen_percentage|floatformat }}% {% if answer.correct %}<img src="{{ media_url }}images/checkmark.gif" style="height:12px;width:12px;">{% endif %} {% if answer.chosen_count > 0 %} <br />({{ answer.chosen_count }}) {% endif %}</td>
-			{% endfor %}
-			
-			<td style="wdith:100px" width="100px">{{ problem.unanswered_percentage|floatformat }}% {% if unanswered_count > 0 %} <br />({{ problem.unanswered_count }}) {% endif %}</td>
-	    </tr>
-	    {% empty %}
-		    <!-- TODO: Handle 4 & 5 problems here. The colspan needs to change. Also make this look prettier and centered -->
-		    <tr><td colspan="7">No Problems</td></tr>
-		{% endfor %}
-	</tbody>
-</table>
-
-
-<p>&nbsp;</p>
 <!-- TODO: Handle 4 and 5 answer tables -->
 <table id="answer_key111" class="data_table display" cellspacing="0" cellpadding="0">
     <!--<caption>Number of graded exams: {{ stats.finished_students_count }}</caption>-->
