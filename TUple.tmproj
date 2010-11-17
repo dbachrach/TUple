@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>exam/models.py</string>
+	<string>templates/admin_session.html</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -18,7 +18,7 @@
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
-	<integer>200</integer>
+	<integer>299</integer>
 	<key>metaData</key>
 	<dict>
 		<key>LICENSE</key>
@@ -49,14 +49,42 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
+		<key>exam/admin.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>24</integer>
+				<key>line</key>
+				<integer>8</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>exam/context_processors.py</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>8</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 		<key>exam/models.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>7</integer>
+				<integer>8</integer>
 				<key>line</key>
-				<integer>204</integer>
+				<integer>12</integer>
 			</dict>
 			<key>columnSelection</key>
 			<false/>
@@ -67,16 +95,16 @@
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
-				<integer>3</integer>
+				<integer>6</integer>
 				<key>line</key>
-				<integer>204</integer>
+				<integer>12</integer>
 			</dict>
 			<key>selectTo</key>
 			<dict>
 				<key>column</key>
-				<integer>7</integer>
+				<integer>10</integer>
 				<key>line</key>
-				<integer>204</integer>
+				<integer>12</integer>
 			</dict>
 		</dict>
 		<key>exam/views.py</key>
@@ -84,28 +112,44 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>31</integer>
+				<integer>44</integer>
 				<key>line</key>
-				<integer>226</integer>
+				<integer>211</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>215</integer>
+			<integer>188</integer>
 		</dict>
 		<key>exam_settings.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>12</integer>
+				<integer>22</integer>
 				<key>line</key>
-				<integer>5</integer>
+				<integer>10</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>42</integer>
+				<key>line</key>
+				<integer>10</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>22</integer>
+				<key>line</key>
+				<integer>10</integer>
+			</dict>
 		</dict>
 		<key>example.log</key>
 		<dict>
@@ -121,6 +165,78 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
+		<key>media/js/datatables/examples/basic_init/themes.html</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>3</integer>
+				<key>line</key>
+				<integer>10</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>10</integer>
+				<key>line</key>
+				<integer>11</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>3</integer>
+				<key>line</key>
+				<integer>10</integer>
+			</dict>
+		</dict>
+		<key>media/js/datatables/media/css/demo_page.css</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>26</integer>
+		</dict>
+		<key>media/js/datatables/media/css/demo_table.css</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>media/js/datatables/media/css/demo_table_jui.css</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>199</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>160</integer>
+		</dict>
 		<key>media/js/exam.js</key>
 		<dict>
 			<key>caret</key>
@@ -134,6 +250,20 @@
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>138</integer>
+		</dict>
+		<key>media/style.css</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>19</integer>
+				<key>line</key>
+				<integer>124</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>105</integer>
 		</dict>
 		<key>settings.py</key>
 		<dict>
@@ -149,34 +279,92 @@
 			<key>firstVisibleLine</key>
 			<integer>70</integer>
 		</dict>
-		<key>templates/admin.html</key>
+		<key>templates/admin_grades.html</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>12</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>170</integer>
+				<integer>0</integer>
 			</dict>
 			<key>columnSelection</key>
 			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>134</integer>
+			<integer>0</integer>
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
-				<integer>8</integer>
+				<integer>14</integer>
 				<key>line</key>
-				<integer>170</integer>
+				<integer>26</integer>
 			</dict>
 			<key>selectTo</key>
 			<dict>
 				<key>column</key>
-				<integer>12</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>170</integer>
+				<integer>0</integer>
+			</dict>
+		</dict>
+		<key>templates/admin_session.html</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>templates/admin_settings.html</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>32</integer>
+				<key>line</key>
+				<integer>6</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>templates/base_admin.html</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>14</integer>
+				<key>line</key>
+				<integer>11</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>9</integer>
+				<key>line</key>
+				<integer>11</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>22</integer>
+				<key>line</key>
+				<integer>11</integer>
 			</dict>
 		</dict>
 		<key>urls.py</key>
@@ -184,44 +372,33 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>39</integer>
+				<integer>27</integer>
 				<key>line</key>
-				<integer>29</integer>
+				<integer>20</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>36</integer>
-				<key>line</key>
-				<integer>29</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>42</integer>
-				<key>line</key>
-				<integer>29</integer>
-			</dict>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>media/js/exam.js</string>
-		<string>exam/views.py</string>
-		<string>README.md</string>
-		<string>settings.py</string>
-		<string>LICENSE</string>
-		<string>example.log</string>
-		<string>exam_settings.py</string>
 		<string>exam/models.py</string>
-		<string>templates/admin.html</string>
+		<string>exam/admin.py</string>
+		<string>exam_settings.py</string>
+		<string>templates/base_admin.html</string>
+		<string>templates/admin_session.html</string>
+		<string>media/js/datatables/media/css/demo_table_jui.css</string>
+		<string>media/js/datatables/media/css/demo_page.css</string>
+		<string>media/js/datatables/media/css/demo_table.css</string>
+		<string>media/style.css</string>
+		<string>media/js/datatables/examples/basic_init/themes.html</string>
+		<string>templates/admin_settings.html</string>
 		<string>urls.py</string>
+		<string>templates/admin_grades.html</string>
+		<string>exam/views.py</string>
+		<string>exam/context_processors.py</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<false/>
@@ -242,10 +419,63 @@
 					<key>subItems</key>
 					<dict/>
 				</dict>
+				<key>media</key>
+				<dict>
+					<key>isExpanded</key>
+					<true/>
+					<key>subItems</key>
+					<dict>
+						<key>css</key>
+						<dict>
+							<key>isExpanded</key>
+							<true/>
+							<key>subItems</key>
+							<dict/>
+						</dict>
+						<key>js</key>
+						<dict>
+							<key>isExpanded</key>
+							<true/>
+							<key>subItems</key>
+							<dict>
+								<key>datatables</key>
+								<dict>
+									<key>isExpanded</key>
+									<true/>
+									<key>subItems</key>
+									<dict>
+										<key>media</key>
+										<dict>
+											<key>isExpanded</key>
+											<true/>
+											<key>subItems</key>
+											<dict>
+												<key>css</key>
+												<dict>
+													<key>isExpanded</key>
+													<true/>
+													<key>subItems</key>
+													<dict/>
+												</dict>
+											</dict>
+										</dict>
+									</dict>
+								</dict>
+							</dict>
+						</dict>
+					</dict>
+				</dict>
+				<key>templates</key>
+				<dict>
+					<key>isExpanded</key>
+					<true/>
+					<key>subItems</key>
+					<dict/>
+				</dict>
 			</dict>
 		</dict>
 	</dict>
 	<key>windowFrame</key>
-	<string>{{322, 166}, {1368, 948}}</string>
+	<string>{{448, 151}, {1368, 948}}</string>
 </dict>
 </plist>

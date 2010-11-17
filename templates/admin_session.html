@@ -40,11 +40,14 @@
 }
 
 </style>
+<!--[if IE]><script language="javascript" type="text/javascript" src="{{ media_url }}js/flot/excanvas.min.js"></script><![endif]-->
 <script type="text/javascript" src="{{ media_url }}js/jquery.js"></script> 
 <script type="text/javascript" src="{{ media_url }}js/qtip.js"></script>
 <script type="text/javascript" src="{{ media_url }}js/datatables/media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="{{ media_url }}js/tabletools/ZeroClipboard/ZeroClipboard.js"></script>
 <script type="text/javascript" src="{{ media_url }}js/tabletools/js/TableTools.min.js"></script>
+<script language="javascript" type="text/javascript" src="{{ media_url }}js/flot/jquery.flot.js"></script>
+<script language="javascript" type="text/javascript" src="{{ media_url }}js/flot/jquery.flot.selection.js"></script>
 
 
 <script type="text/javascript">
@@ -70,6 +73,94 @@ $(document).ready(function() {
 		"sDom": '<"H"lTfr>t<"F"ip>'
 	});
 	
+	
+	var d1 = [];
+        for (var i = 0; i < 30; i++)
+            d1.push([i, (Math.sin(i) + 1) * 4]);
+
+
+    var plot = $.plot($("#grades_graph"), [
+            { 
+                label: "",  
+                data: d1, 
+                bars: { 
+                    show: true, 
+                    // fillColor: { 
+                    //     colors: [ { opacity: 0.8 }, { opacity: 0.1 } ] 
+                    // },     
+                },
+                color: "#CAE8EA"
+            }
+        ], {
+            // series: {
+            //     lines: { show: true },
+            //     points: { show: true }
+            // },
+            xaxis: {
+                ticks: 30,
+                min: 0,
+                max: 30
+            },
+            yaxis: {
+                ticks: 10,
+                min: 0,
+                max: 10
+            },
+            grid: {
+                            backgroundColor: { colors: ["#fff", "#eee"] },
+                            hoverable: true, 
+                            borderWidth: 1,
+                            // borderColor: null,
+                            // tickColor: null
+                        },
+            selection: { mode: "x" }
+        });
+        
+        function showTooltip(x, y, contents) {
+            $('<div id="tooltip">' + contents + '</div>').css( {
+                position: 'absolute',
+                display: 'none',
+                top: y + 5,
+                left: x + 5,
+                border: '1px solid #fdd',
+                padding: '2px',
+                'background-color': '#fee',
+                opacity: 0.80
+            }).appendTo("body").fadeIn(200);
+        }
+        
+        var previousPoint = null;
+        $("#grades_graph").bind("plothover", function (event, pos, item) {
+
+            if (item) {
+                if (previousPoint != item.datapoint) {
+                    previousPoint = item.datapoint;
+
+                    $("#tooltip").remove();
+                    var x = item.datapoint[0].toFixed(0),
+                        y = item.datapoint[1].toFixed(0);
+
+                    showTooltip(item.pageX, item.pageY,
+                                y + " students scored " + x);
+                }
+            }
+            else {
+                $("#tooltip").remove();
+                previousPoint = null;            
+            }
+            
+        });
+        
+        
+        $("#grades_graph").bind("plotselected", function (event, ranges) {
+            x = ranges.xaxis.from;
+            y = ranges.xaxis.to;
+        });
+
+        $("#grades_graph").bind("plotunselected", function (event) {
+            
+        });
+
 	$('.bubbleInfo').each(function () {
 	    // options
 	    var distance = 10;
@@ -198,6 +289,7 @@ $(document).ready(function() {
 	</tbody>
 </table>
 
+<div id="grades_graph" style="width:600px;height:300px;"></div>
 <!-- TODO: Show graph of scores -->
 
 <h1>Question Distributions</h1>
