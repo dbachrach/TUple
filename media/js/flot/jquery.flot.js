@@ -122,7 +122,12 @@
                     clickable: false,
                     hoverable: false,
                     autoHighlight: true, // highlight in case mouse is near
-                    mouseActiveRadius: 10 // how far the mouse can be away to activate an item
+                    mouseActiveRadius: 10, // how far the mouse can be away to activate an item
+                    
+                    verticalLinesX1: true, 
+                    verticalLinesX2: true, 
+                    horizontalLinesY1: true, 
+                    horizontalLinesY2: true,
                 },
                 hooks: {}
             },
@@ -1176,44 +1181,95 @@
             ctx.strokeStyle = options.grid.tickColor;
             ctx.beginPath();
             var v, axis = axes.xaxis;
-            for (i = 0; i < axis.ticks.length; ++i) {
+            
+            if ( options.grid.verticalLinesX1 )
+            {
+              for (i = 0; i < axis.ticks.length; ++i) {
                 v = axis.ticks[i].v;
                 if (v <= axis.min || v >= axes.xaxis.max)
                     continue;   // skip those lying on the axes
 
                 ctx.moveTo(Math.floor(axis.p2c(v)) + ctx.lineWidth/2, 0);
                 ctx.lineTo(Math.floor(axis.p2c(v)) + ctx.lineWidth/2, plotHeight);
+              }
             }
 
             axis = axes.yaxis;
-            for (i = 0; i < axis.ticks.length; ++i) {
+            if ( options.grid.horizontalLinesY1 )
+            {
+              for (i = 0; i < axis.ticks.length; ++i) {
                 v = axis.ticks[i].v;
                 if (v <= axis.min || v >= axis.max)
                     continue;
 
                 ctx.moveTo(0, Math.floor(axis.p2c(v)) + ctx.lineWidth/2);
                 ctx.lineTo(plotWidth, Math.floor(axis.p2c(v)) + ctx.lineWidth/2);
+              }
             }
 
             axis = axes.x2axis;
-            for (i = 0; i < axis.ticks.length; ++i) {
+            if ( options.grid.verticalLinesX2 )
+            {
+              for (i = 0; i < axis.ticks.length; ++i) {
                 v = axis.ticks[i].v;
                 if (v <= axis.min || v >= axis.max)
                     continue;
-    
+
                 ctx.moveTo(Math.floor(axis.p2c(v)) + ctx.lineWidth/2, -5);
                 ctx.lineTo(Math.floor(axis.p2c(v)) + ctx.lineWidth/2, 5);
+              }
             }
 
             axis = axes.y2axis;
-            for (i = 0; i < axis.ticks.length; ++i) {
+            if ( options.grid.horizontalLinesY2 )
+            {
+              for (i = 0; i < axis.ticks.length; ++i) {
                 v = axis.ticks[i].v;
                 if (v <= axis.min || v >= axis.max)
                     continue;
 
                 ctx.moveTo(plotWidth-5, Math.floor(axis.p2c(v)) + ctx.lineWidth/2);
                 ctx.lineTo(plotWidth+5, Math.floor(axis.p2c(v)) + ctx.lineWidth/2);
+              }
             }
+            // for (i = 0; i < axis.ticks.length; ++i) {
+            //                 v = axis.ticks[i].v;
+            //                 if (v <= axis.min || v >= axes.xaxis.max)
+            //                     continue;   // skip those lying on the axes
+            // 
+            //                 ctx.moveTo(Math.floor(axis.p2c(v)) + ctx.lineWidth/2, 0);
+            //                 ctx.lineTo(Math.floor(axis.p2c(v)) + ctx.lineWidth/2, plotHeight);
+            //             }
+            // 
+            //             axis = axes.yaxis;
+            //             for (i = 0; i < axis.ticks.length; ++i) {
+            //                 v = axis.ticks[i].v;
+            //                 if (v <= axis.min || v >= axis.max)
+            //                     continue;
+            // 
+            //                 ctx.moveTo(0, Math.floor(axis.p2c(v)) + ctx.lineWidth/2);
+            //                 ctx.lineTo(plotWidth, Math.floor(axis.p2c(v)) + ctx.lineWidth/2);
+            //             }
+            // 
+            //             axis = axes.x2axis;
+            //             for (i = 0; i < axis.ticks.length; ++i) {
+            //                 v = axis.ticks[i].v;
+            //                 if (v <= axis.min || v >= axis.max)
+            //                     continue;
+            //     
+            //                 ctx.moveTo(Math.floor(axis.p2c(v)) + ctx.lineWidth/2, -5);
+            //                 ctx.lineTo(Math.floor(axis.p2c(v)) + ctx.lineWidth/2, 5);
+            //             }
+            // 
+            //             axis = axes.y2axis;
+            //             for (i = 0; i < axis.ticks.length; ++i) {
+            //                 v = axis.ticks[i].v;
+            //                 if (v <= axis.min || v >= axis.max)
+            //                     continue;
+            // 
+            //                 ctx.moveTo(plotWidth-5, Math.floor(axis.p2c(v)) + ctx.lineWidth/2);
+            //                 ctx.lineTo(plotWidth+5, Math.floor(axis.p2c(v)) + ctx.lineWidth/2);
+            //             }
             
             ctx.stroke();
             

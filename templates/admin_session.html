@@ -75,91 +75,101 @@ $(document).ready(function() {
 	
 	
 	var d1 = [];
-        for (var i = 0; i < 30; i++)
-            d1.push([i, (Math.sin(i) + 1) * 4]);
+    for (var i = 0; i <= 30; i++)
+        d1.push([i, (Math.sin(i) + 1) * 4]);
 
 
     var plot = $.plot($("#grades_graph"), [
-            { 
-                label: "",  
-                data: d1, 
-                bars: { 
-                    show: true, 
-                    // fillColor: { 
-                    //     colors: [ { opacity: 0.8 }, { opacity: 0.1 } ] 
-                    // },     
-                },
-                color: "#CAE8EA"
-            }
+        { 
+            label: "",  
+            data: d1, 
+            bars: { 
+                show: true, 
+                fill: true,
+                lineWidth: 1,
+                align: "center",
+            },
+            color: "#C1DAD7",
+        }
         ], {
-            // series: {
-            //     lines: { show: true },
-            //     points: { show: true }
-            // },
             xaxis: {
                 ticks: 30,
-                min: 0,
-                max: 30
+                min: -.5,
+                max: 30.5,
             },
             yaxis: {
                 ticks: 10,
                 min: 0,
-                max: 10
+                max: 10,
             },
             grid: {
-                            backgroundColor: { colors: ["#fff", "#eee"] },
-                            hoverable: true, 
-                            borderWidth: 1,
-                            // borderColor: null,
-                            // tickColor: null
-                        },
-            selection: { mode: "x" }
-        });
+                backgroundColor: { colors: ["#fff", "#eee"] },
+                hoverable: true, 
+                clickable: true,
+                borderWidth: 1,
+                borderColor: "#C1DAD7",
+                verticalLinesX1: false,
+            },
+            selection: { 
+                mode: "x" ,
+            }
+    });
         
-        function showTooltip(x, y, contents) {
-            $('<div id="tooltip">' + contents + '</div>').css( {
-                position: 'absolute',
-                display: 'none',
-                top: y + 5,
-                left: x + 5,
-                border: '1px solid #fdd',
-                padding: '2px',
-                'background-color': '#fee',
-                opacity: 0.80
-            }).appendTo("body").fadeIn(200);
+    function showTooltip(x, y, contents) {
+        $('<div id="tooltip">' + contents + '</div>').css( {
+            position: 'absolute',
+            display: 'none',
+            top: y + 5,
+            left: x + 5,
+            border: '1px solid #fdd',
+            padding: '2px',
+            'background-color': '#fee',
+            opacity: 0.80
+        }).appendTo("body").fadeIn(200);
+    }
+    
+    var previousPoint = null;
+    $("#grades_graph").bind("plothover", function (event, pos, item) {
+
+        if (item) {
+            if (previousPoint != item.datapoint) {
+                previousPoint = item.datapoint;
+
+                $("#tooltip").remove();
+                var x = item.datapoint[0].toFixed(0),
+                    y = item.datapoint[1].toFixed(0);
+
+                showTooltip(item.pageX, item.pageY,
+                            y + " students scored " + x);
+            }
+        }
+        else {
+            $("#tooltip").remove();
+            previousPoint = null;            
         }
         
-        var previousPoint = null;
-        $("#grades_graph").bind("plothover", function (event, pos, item) {
-
-            if (item) {
-                if (previousPoint != item.datapoint) {
-                    previousPoint = item.datapoint;
-
-                    $("#tooltip").remove();
-                    var x = item.datapoint[0].toFixed(0),
-                        y = item.datapoint[1].toFixed(0);
-
-                    showTooltip(item.pageX, item.pageY,
-                                y + " students scored " + x);
-                }
-            }
-            else {
-                $("#tooltip").remove();
-                previousPoint = null;            
-            }
-            
-        });
+    });
+    
+    $("#grades_graph").bind("plotclick", function (event, pos, item) {
+        // secondary axis coordinates if present are in pos.x2, pos.y2,
+        // if you need global screen coordinates, they are pos.pageX, pos.pageY
         
+        // TODO: Set pass/fail mark. If they clicked anywhere not in a bar, then unset the pass fail mark
+        if (item) {
+          highlight(item.series, item.datapoint);
+        }
+    });
         
-        $("#grades_graph").bind("plotselected", function (event, ranges) {
-            x = ranges.xaxis.from;
-            y = ranges.xaxis.to;
-        });
+    $("#grades_graph").bind("plotselected", function (event, ranges) {
+        x = ranges.xaxis.from;
+        y = ranges.xaxis.to;
+        
+        // TODO: Filter based on this range
+    });
 
-        $("#grades_graph").bind("plotunselected", function (event) {
-            
-        });
+    $("#grades_graph").bind("plotunselected", function (event) {
+        // TODO: Unset filter or pass fail mark
+    });
 
 	$('.bubbleInfo').each(function () {
 	    // options
@@ -289,8 +299,7 @@ $(document).ready(function() {
 	</tbody>
 </table>
 
-<div id="grades_graph" style="width:600px;height:300px;"></div>
-<!-- TODO: Show graph of scores -->
+<div id="grades_graph" style="width:650px;height:300px; margin:0 auto;"></div>
 
 <h1>Question Distributions</h1>
 <p>This is a breakdown of student answers for all questions. A CSV file of this data may be found <a href="/admin/distribution/{{ group.name }}/csv/">here</a>.</p>
