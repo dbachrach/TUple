@@ -207,11 +207,17 @@ def admin_session(request, group_name):
     else:
         # TODO: Return error
         return HttpRespone("error: no group name provided " + group_name)
-          
-    stats = exam_group.calculate_statistics()
     
-    finished_students = exam_group.finished_students().order_by('score')
-    return render_to_response("admin_session.html", {'stats': stats, 'problems': exam_group.sorted_problems(), 'exam_group': exam_group, 'exam_groups': ExamGroup.objects.all(), 'finished_students': finished_students}, context_instance=RequestContext(request))
+    return render_to_response("admin_session.html", 
+        {
+            'stats': exam_group.calculate_statistics(), 
+            'problems': exam_group.sorted_problems(), 
+            'problem_count': exam_group.problem_count(),
+            'exam_group': exam_group, 
+            'exam_groups': ExamGroup.objects.all(), 
+            'finished_students': exam_group.finished_students().order_by('score'),
+            'grades_distribution':  exam_group.grade_distribution(),
+        }, context_instance=RequestContext(request))
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
