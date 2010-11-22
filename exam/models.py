@@ -74,6 +74,13 @@ class ExamGroup(models.Model):
 	    
 	def get_examination_time_string(self):
 	    return '%d minutes' % int(self.examination_time / 60)
+	
+	def problem_count(self):
+	    return self.sorted_problems().count()	   
+	         
+	def grade_distribution(self):
+	    problem_count = self.problem_count()
+	    return [[i, self.finished_students().filter(score=i).count()] for i in xrange(problem_count + 1)]
 	    
 	def calculate_statistics(self):
 		'''Calculates various statistics for this exam group. The statistics are returned as an dictionary of statistic names to values.

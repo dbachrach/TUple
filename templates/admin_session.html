@@ -81,6 +81,7 @@ $(document).ready(function() {
     for (var i = 0; i <= 30; i++)
         d1.push([i, (Math.sin(i) + 1) * 4]);
 
+	d1 = eval('{{ grades_distribution }}');
 
     var plot = $.plot($("#grades_graph"), [
         { 
@@ -96,14 +97,18 @@ $(document).ready(function() {
         }
         ], {
             xaxis: {
-                ticks: 30,
+                ticks: {{ problem_count }},
+				tickSize: 1,
+				tickDecimals: 0,
                 min: -.5,
-                max: 30.5,
+                max: {{ problem_count }} + 0.5,
             },
             yaxis: {
-                ticks: 10,
+                // ticks: 10,
                 min: 0,
-                max: 10,
+				tickSize: 1,
+				tickDecimals: 0,
+                // max: 10,
             },
             grid: {
                 backgroundColor: { colors: ["#fff", "#eee"] },
