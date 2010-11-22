@@ -50,7 +50,7 @@
  *
  * http://docs.jquery.com/UI/Theming/API
  *
- * To view and modify this theme, visit http://jqueryui.com/themeroller/?ffDefault=Verdana,%20Arial,%20Sans-Serif&fwDefault=bold&fsDefault=1.1em&cornerRadius=6px&bgColorHeader=EAEAEA&bgTextureHeader=01_flat.png&bgImgOpacityHeader=35&borderColorHeader=c1dad7&fcHeader=4f6b72&iconColorHeader=999999&bgColorContent=cae8ea&bgTextureContent=04_highlight_hard.png&bgImgOpacityContent=50&borderColorContent=c1dad7&fcContent=4f6b72&iconColorContent=999999&bgColorDefault=cae8ea&bgTextureDefault=02_glass.png&bgImgOpacityDefault=60&borderColorDefault=c1dad7&fcDefault=4f6b72&iconColorDefault=4f6b72&bgColorHover=f8f8f8&bgTextureHover=02_glass.png&bgImgOpacityHover=100&borderColorHover=bbbbbb&fcHover=4f6b72&iconColorHover=4f6b72&bgColorActive=c1dad7&bgTextureActive=04_highlight_hard.png&bgImgOpacityActive=75&borderColorActive=c1dad7&fcActive=4f6b72&iconColorActive=454545&bgColorHighlight=eeeeee&bgTextureHighlight=01_flat.png&bgImgOpacityHighlight=55&borderColorHighlight=ffffff&fcHighlight=444444&iconColorHighlight=444444&bgColorError=c0402a&bgTextureError=01_flat.png&bgImgOpacityError=55&borderColorError=c0402a&fcError=ffffff&iconColorError=fbc856&bgColorOverlay=eeeeee&bgTextureOverlay=01_flat.png&bgImgOpacityOverlay=0&opacityOverlay=80&bgColorShadow=aaaaaa&bgTextureShadow=01_flat.png&bgImgOpacityShadow=0&opacityShadow=60&thicknessShadow=4px&offsetTopShadow=-4px&offsetLeftShadow=-4px&cornerRadiusShadow=0pxdow=0px
+ * To view and modify this theme, visit http://jqueryui.com/themeroller/?ffDefault=Verdana,%20Arial,%20Sans-Serif&fwDefault=bold&fsDefault=1.1em&cornerRadius=6px&bgColorHeader=E3F4F6&bgTextureHeader=03_highlight_soft.png&bgImgOpacityHeader=30&borderColorHeader=c1dad7&fcHeader=4f6b72&iconColorHeader=4f6b72&bgColorContent=cae8ea&bgTextureContent=04_highlight_hard.png&bgImgOpacityContent=50&borderColorContent=c1dad7&fcContent=4f6b72&iconColorContent=999999&bgColorDefault=cae8ea&bgTextureDefault=02_glass.png&bgImgOpacityDefault=60&borderColorDefault=c1dad7&fcDefault=4f6b72&iconColorDefault=4f6b72&bgColorHover=f8f8f8&bgTextureHover=02_glass.png&bgImgOpacityHover=100&borderColorHover=bbbbbb&fcHover=4f6b72&iconColorHover=4f6b72&bgColorActive=c1dad7&bgTextureActive=04_highlight_hard.png&bgImgOpacityActive=75&borderColorActive=c1dad7&fcActive=4f6b72&iconColorActive=454545&bgColorHighlight=eeeeee&bgTextureHighlight=01_flat.png&bgImgOpacityHighlight=55&borderColorHighlight=ffffff&fcHighlight=444444&iconColorHighlight=444444&bgColorError=c0402a&bgTextureError=01_flat.png&bgImgOpacityError=55&borderColorError=c0402a&fcError=ffffff&iconColorError=fbc856&bgColorOverlay=eeeeee&bgTextureOverlay=01_flat.png&bgImgOpacityOverlay=0&opacityOverlay=80&bgColorShadow=aaaaaa&bgTextureShadow=01_flat.png&bgImgOpacityShadow=0&opacityShadow=60&thicknessShadow=4px&offsetTopShadow=-4px&offsetLeftShadow=-4px&cornerRadiusShadow=0pxdow=0px
  */
 
 
@@ -61,7 +61,7 @@
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: Verdana, Arial, Sans-Serif; font-size: 1em; }
 .ui-widget-content { border: 1px solid #c1dad7; background: #cae8ea url(images/ui-bg_highlight-hard_50_cae8ea_1x100.png) 50% top repeat-x; color: #4f6b72; }
 .ui-widget-content a { color: #4f6b72; }
-.ui-widget-header { border: 1px solid #c1dad7; background: #eaeaea url(images/ui-bg_flat_35_eaeaea_40x100.png) 50% 50% repeat-x; color: #4f6b72; font-weight: bold; }
+.ui-widget-header { border: 1px solid #c1dad7; background: #e3f4f6 url(images/ui-bg_highlight-soft_30_e3f4f6_1x100.png) 50% 50% repeat-x; color: #4f6b72; font-weight: bold; }
 .ui-widget-header a { color: #4f6b72; }
 
 /* Interaction states
@@ -91,7 +91,7 @@
 /* states and images */
 .ui-icon { width: 16px; height: 16px; background-image: url(images/ui-icons_999999_256x240.png); }
 .ui-widget-content .ui-icon {background-image: url(images/ui-icons_999999_256x240.png); }
-.ui-widget-header .ui-icon {background-image: url(images/ui-icons_999999_256x240.png); }
+.ui-widget-header .ui-icon {background-image: url(images/ui-icons_4f6b72_256x240.png); }
 .ui-state-default .ui-icon { background-image: url(images/ui-icons_4f6b72_256x240.png); }
 .ui-state-hover .ui-icon, .ui-state-focus .ui-icon {background-image: url(images/ui-icons_4f6b72_256x240.png); }
 .ui-state-active .ui-icon {background-image: url(images/ui-icons_454545_256x240.png); }

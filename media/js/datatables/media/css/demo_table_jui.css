@@ -361,9 +361,9 @@ tr.even td.sorting_3 {
  * Row highlighting example
  */
 tbody tr.even:hover, #example tbody tr.even td.highlighted {
-	background-color: green;
+	background-color: rgb(206, 226, 223);
 }
 
 tbody tr.odd:hover, #example tbody tr.odd td.highlighted {
-	background-color: green;
+	background-color: rgb(206, 226, 223);
 }
