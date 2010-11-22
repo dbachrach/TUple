@@ -61,6 +61,11 @@ $(document).ready(function() {
 	TableToolsInit.iButtonWidth = 12;
 	TableToolsInit.sSwfPath = "/media/js/tabletools/swf/ZeroClipboard.swf"
 	
+	// TODO: Hook up the table's filter into the graph (bar chart)
+	
+	// TODO: Try to make the border below the header on the tables 1 px.
+	
+	
 	var grades_table = $('.data_table').dataTable( {
 		"bAutoWidth": false,
 	    "bJQueryUI": true,
@@ -68,12 +73,8 @@ $(document).ready(function() {
 	    "sScrollY": "200px",
         "bPaginate": false,
         "bLengthChange": false,
-		//"sPaginationType": "full_numbers"
 		"bScrollCollapse": true,
-		//"sDom": '<"H"lfr>t<"F"ip>'
-		//"sDom": 't<"F"ipfT>'
 		"sDom": '<"H"lfr>t'
-		//"sDom": 't'
 	});
 	
 	$.fn.dataTableExt.afnFiltering.push(
@@ -102,11 +103,7 @@ $(document).ready(function() {
 	);
 	
 	
-	var d1 = [];
-    for (var i = 0; i <= 30; i++)
-        d1.push([i, (Math.sin(i) + 1) * 4]);
-
-	d1 = eval('{{ grades_distribution }}');
+	var d1 = eval('{{ grades_distribution }}');
 
     var plot = $.plot($("#grades_graph"), [
         { 
@@ -129,11 +126,9 @@ $(document).ready(function() {
                 max: {{ problem_count }} + 0.5,
             },
             yaxis: {
-                // ticks: 10,
                 min: 0,
 				tickSize: 1,
 				tickDecimals: 0,
-                // max: 10,
             },
             grid: {
                 backgroundColor: { colors: ["#fff", "#eee"] },
@@ -148,19 +143,19 @@ $(document).ready(function() {
             }
     });
         
-    function showTooltip(x, y, contents) {
-        $('<div id="tooltip">' + contents + '</div>').css( {
-            position: 'absolute',
-            display: 'none',
-            top: y + 5,
-            left: x + 5,
-            border: '1px solid #fdd',
-            padding: '2px',
-            'background-color': '#fee',
-            opacity: 0.80
-        }).appendTo("body").fadeIn(200);
-    }
-    
+    // function showTooltip(x, y, contents) {
+    //     $('<div id="tooltip">' + contents + '</div>').css( {
+    //         position: 'absolute',
+    //         display: 'none',
+    //         top: y + 5,
+    //         left: x + 5,
+    //         border: '1px solid #fdd',
+    //         padding: '2px',
+    //         'background-color': '#fee',
+    //         opacity: 0.80
+    //     }).appendTo("body").fadeIn(200);
+    // }
+    // 
     // var previousPoint = null;
     // $("#grades_graph").bind("plothover", function (event, pos, item) {
     // 
@@ -286,8 +281,8 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block content_admin %}
-<div id="range-low">abc</div>
-<div id="range-high">def</div>
+<div id="range-low" style="display:none"></div>
+<div id="range-high" style="display:none"></div>
 <!--
 <form action="/admin/" method="get">
 	<p style="text-align:right; font-size:10px;">Change exam group:
@@ -329,7 +324,6 @@ $(document).ready(function() {
 
 <p>&nbsp;</p>
 
-<!-- TODO: Clicking a student should show their specific answers to each problem -->
 <table id="grades_table" class="data_table display" cellspacing="0" cellpadding="0">
     <thead>
         <tr>
@@ -340,14 +334,14 @@ $(document).ready(function() {
 		<tbody>
 			{% for student in finished_students %}
 			    <tr>
-			        <td class="left">{{ student.user.username }}</td>
+			        <td class="left"><a href="/admin/students/{{ student.id }}/">{{ student.user.username }}</a></td>
 			        <td>{{ student.score }}</td>
 			    </tr>
 			{% endfor %}
 	</tbody>
 </table>
 
-<div id="grades_graph" style="width:650px;height:300px; margin:0 auto;"></div>
+<div id="grades_graph" class="data_table" style="width:650px;height:300px; margin:0 auto;"></div>
 
 <h1>Question Distributions</h1>
 <p>This is a breakdown of student answers for all questions. A CSV file of this data may be found <a href="/admin/distribution/{{ group.name }}/csv/">here</a>.</p>

@@ -6,7 +6,7 @@ from exam_settings import EXAM_SETTINGS
 from django.template import RequestContext
 from django.utils import simplejson
 from django.contrib import messages
-from TUple.exam.models import Problem, ExamGroup, Answer, Exam, ExamForm
+from TUple.exam.models import Problem, ExamGroup, Answer, Exam, ExamForm, UserProfile
 import csv
 
 import logging
@@ -223,14 +223,17 @@ def admin_session(request, group_name):
 @user_passes_test(lambda u: u.is_staff)
 def admin_add_session(request):
     pass
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_edit_session(request):
     pass
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_trends(request):
     pass
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_settings(request):
@@ -245,6 +248,28 @@ def admin_settings(request):
         form = ExamForm(instance=the_exam)
 
     return render_to_response("admin_settings.html", {'form': form}, context_instance=RequestContext(request))
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def admin_student(request, student_id):
+    if student_id:
+        try:
+            student = UserProfile.objects.get(id=student_id)
+        except UserProfile.DoesNotExist:
+            # TODO: Return error
+            return HttpResponse("error: no student with id " + student_id)
+        except UserProfile.MultipleObjectsReturned:
+            # TODO: Return error
+            return HttpResponse("error: multiple students with id " + student_id)
+    else:
+        # TODO: Return error
+        return HttpRespone("error: no student id provided " + student_id)
+    
+    return render_to_response("admin_student.html", 
+        {
+            'student': student,
+            'answer_sheets': student.answer_sheets(),
+        }, context_instance=RequestContext(request))
             
 # @login_required
 # @user_passes_test(lambda u: u.is_staff)

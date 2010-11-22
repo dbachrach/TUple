@@ -30,6 +30,8 @@ urlpatterns = patterns('',
     (r'^admin/sessions/add/$', views.admin_add_session),
     (r'^admin/sessions/(.+)/edit/$', views.admin_edit_session),
     (r'^admin/sessions/(.+)/$', views.admin_session),
+
+	(r'^admin/students/(.+)/$', views.admin_student),
     
     (r'^admin/trends/$', views.admin_trends),
     (r'^admin/settings/$', views.admin_settings),

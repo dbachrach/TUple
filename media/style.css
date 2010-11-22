@@ -245,3 +245,8 @@ color: #FFF;
 #instructions {
 	margin: 20px;
 }
+
+.data_table a {
+	text-decoration: underline;
+	color: #4f6b72;
+}
