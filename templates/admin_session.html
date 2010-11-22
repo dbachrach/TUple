@@ -61,7 +61,7 @@ $(document).ready(function() {
 	// TableToolsInit.iButtonWidth = 16;
 	TableToolsInit.sSwfPath = "/media/js/tabletools/swf/ZeroClipboard.swf"
 	
-	$('.data_table').dataTable( {
+	var grades_table = $('.data_table').dataTable( {
 		"bAutoWidth": false,
 	    "bJQueryUI": true,
 	    "bStateSave": true,
@@ -72,6 +72,31 @@ $(document).ready(function() {
 		"bScrollCollapse": true,
 		"sDom": '<"H"lTfr>t<"F"ip>'
 	});
+	
+	$.fn.dataTableExt.afnFiltering.push(
+		function( oSettings, aData, iDataIndex ) {
+			var iMin = $('#range-low').html();
+			var iMax = $('#range-high').html();
+			var grade = aData[1]*1;
+			if ( iMin == "" && iMax == "" )
+			{
+				return true;
+			}
+			else if ( iMin == "" && grade <= iMax )
+			{
+				return true;
+			}
+			else if ( iMin <= grade && "" == iMax )
+			{
+				return true;
+			}
+			else if ( iMin <= grade && grade <= iMax )
+			{
+				return true;
+			}
+			return false;
+		}
+	);
 	
 	
 	var d1 = [];
@@ -133,47 +158,61 @@ $(document).ready(function() {
         }).appendTo("body").fadeIn(200);
     }
     
-    var previousPoint = null;
-    $("#grades_graph").bind("plothover", function (event, pos, item) {
-
-        if (item) {
-            if (previousPoint != item.datapoint) {
-                previousPoint = item.datapoint;
-
-                $("#tooltip").remove();
-                var x = item.datapoint[0].toFixed(0),
-                    y = item.datapoint[1].toFixed(0);
-
-                showTooltip(item.pageX, item.pageY,
-                            y + " students scored " + x);
-            }
-        }
-        else {
-            $("#tooltip").remove();
-            previousPoint = null;            
-        }
-        
-    });
+    // var previousPoint = null;
+    // $("#grades_graph").bind("plothover", function (event, pos, item) {
+    // 
+    //     if (item) {
+    //         if (previousPoint != item.datapoint) {
+    //             previousPoint = item.datapoint;
+    // 
+    //             $("#tooltip").remove();
+    //             var x = item.datapoint[0].toFixed(0),
+    //                 y = item.datapoint[1].toFixed(0);
+    // 
+    //             showTooltip(item.pageX, item.pageY,
+    //                         y + " students scored " + x);
+    //         }
+    //     }
+    //     else {
+    //         $("#tooltip").remove();
+    //         previousPoint = null;            
+    //     }
+    //     
+    // });
     
     $("#grades_graph").bind("plotclick", function (event, pos, item) {
         // secondary axis coordinates if present are in pos.x2, pos.y2,
         // if you need global screen coordinates, they are pos.pageX, pos.pageY
         
-        // TODO: Set pass/fail mark. If they clicked anywhere not in a bar, then unset the pass fail mark
         if (item) {
-          highlight(item.series, item.datapoint);
+			plot.unhighlight();
+          	plot.highlight(item.series, item.datapoint);
+			$('#range-low').html(item.datapoint[0]);
+			$('#range-high').html("");
+			grades_table.fnDraw();
         }
     });
         
     $("#grades_graph").bind("plotselected", function (event, ranges) {
-        x = ranges.xaxis.from;
-        y = ranges.xaxis.to;
-        
-        // TODO: Filter based on this range
+        x = Math.round(ranges.xaxis.from);
+        y = Math.round(ranges.xaxis.to);
+		
+		plot.unhighlight();
+		i = x;
+		while (i <= y) {
+			plot.highlight(0, i);
+			i++;
+		}
+		$('#range-low').html(x);
+		$('#range-high').html(y);
+		grades_table.fnDraw();
     });
 
     $("#grades_graph").bind("plotunselected", function (event) {
-        // TODO: Unset filter or pass fail mark
+		plot.unhighlight();
+        $('#range-low').html("");
+		$('#range-high').html("");
+		grades_table.fnDraw();
     });
 
 	$('.bubbleInfo').each(function () {
@@ -244,7 +283,8 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block content_admin %}
-
+<div id="range-low">abc</div>
+<div id="range-high">def</div>
 <!--
 <form action="/admin/" method="get">
 	<p style="text-align:right; font-size:10px;">Change exam group:
