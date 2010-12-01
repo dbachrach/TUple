@@ -81,7 +81,7 @@ $(document).ready(function() {
 		function( oSettings, aData, iDataIndex ) {
 			var iMin = $('#range-low').html();
 			var iMax = $('#range-high').html();
-			var grade = aData[1]*1;
+			var grade = aData[2]*1;
 			if ( iMin == "" && iMax == "" )
 			{
 				return true;
@@ -328,26 +328,28 @@ $(document).ready(function() {
     <thead>
         <tr>
             <th>Last Name</th>
+			<th>Student ID</th>
             <th>Grade</th>
         </tr>
         </thead>
 		<tbody>
 			{% for student in finished_students %}
 			    <tr>
-			        <td class="left"><a href="/admin/students/{{ student.id }}/">{{ student.user.username }}</a></td>
+			        <td class="left"><a href="/admin/students/{{ student.id }}/">{{ student.user.last_name }}</a></td>
+					<td><a href="/admin/students/{{ student.id }}/">{{ student.user.get_profile.student_id }}</a></td>
 			        <td>{{ student.score }}</td>
 			    </tr>
 			{% endfor %}
 	</tbody>
 </table>
 
-<div id="grades_graph" class="data_table" style="width:650px;height:300px; margin:0 auto;"></div>
+<div id="grades_graph" style="width:650px;height:300px; margin:0 auto;"></div>
 
 <h1>Question Distributions</h1>
 <p>This is a breakdown of student answers for all questions. A CSV file of this data may be found <a href="/admin/distribution/{{ group.name }}/csv/">here</a>.</p>
 
 <!-- TODO: Handle 4 and 5 answer tables -->
-<table id="answer_key111" class="data_table display" cellspacing="0" cellpadding="0">
+<table class="data_table display" cellspacing="0" cellpadding="0">
     <!--<caption>Number of graded exams: {{ stats.finished_students_count }}</caption>-->
 	<thead>
 		<tr>
@@ -376,7 +378,7 @@ $(document).ready(function() {
 	    </tr>
 	    {% empty %}
 		    <!-- TODO: Handle 4 & 5 problems here. The colspan needs to change. Also make this look prettier and centered -->
-		    <tr><td colspan="7">No Problems</td></tr>
+		    <!--<tr><td colspan="7">No Problems</td></tr>-->
 		{% endfor %}
 	</tbody>
 </table>

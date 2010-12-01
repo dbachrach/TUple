@@ -47,8 +47,9 @@ $(document).ready(function() {
 
 <h1>Answers</h1>
 
-{{ student.user.username }} scored {{ student.score }}.
+{{ student.user.last_name }} scored {{ student.score }}.
 
+<!-- TODO: For all tables, if there are no rows, then mark the only td as 'leftCell' -->
 <table id="answers_table" class="data_table display" cellspacing="0" cellpadding="0">
     <thead>
         <tr>

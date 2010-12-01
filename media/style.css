@@ -156,8 +156,7 @@ table#answer_key tr {
 }
 
 table#answer_key tr.alt {
-        background: #E5E5E5;
-        /*color: #4f6b72;*/
+        background: #F5F5F5;
 }
 
 .left_td {

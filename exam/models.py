@@ -123,14 +123,14 @@ class ExamGroup(models.Model):
     
 
 class UserProfile(models.Model):
+    student_id = models.CharField(max_length=20)
     test_status = models.SmallIntegerField() # 0 = Not Started, 1 = In Progress, 2 = Finished
     score = models.IntegerField(default=0)
-    test_date = models.DateTimeField()
+    test_date = models.DateTimeField(null=True)
     exam_group = models.ForeignKey(ExamGroup)
     problems = models.ManyToManyField(Problem, through='AnswerSheet')
     user = models.ForeignKey(User, unique=True) # Correlate this to the User table. This lets us extend properties of authenticated users.
     
-# TODO: Is it okay that username in the User model object is the last name and therefore not unique
     def __unicode__(self):
         return u'UserProfile (%s)' % (self.user)
         
@@ -249,7 +249,7 @@ class AnswerSheet(models.Model):
     # TODO: When we do queries on answer sheet, we need to make sure that the quries only take place on one exam group
     user_profile = models.ForeignKey(UserProfile)
     problem = models.ForeignKey(Problem)
-    answer = models.ForeignKey(Answer)
+    answer = models.ForeignKey(Answer, null=True)
     
     def __unicode__(self):
         return u'Sheet (%s, %s)' % (self.user_profile, self.problem)
