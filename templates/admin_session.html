@@ -15,14 +15,14 @@
 .popup {
     position: absolute;
     display: none; /* keeps the popup hidden if no JS available */
-	background-color: #EAEAEA;
-	padding: 15px;
-	width: 300px;
-	text-align: left;
+    background-color: #EAEAEA;
+    padding: 15px;
+    width: 300px;
+    text-align: left;
     border: 1px solid #A2BDC0; 
-	-moz-box-shadow: 0px 3px 8px #555;
-	-webkit-box-shadow: 0px 3px 8px #555;
-	box-shadow: 0px 3px 8px #555;
+    -moz-box-shadow: 0px 3px 8px #555;
+    -webkit-box-shadow: 0px 3px 8px #555;
+    box-shadow: 0px 3px 8px #555;
 }
 
 .answer_popup td {
@@ -46,6 +46,7 @@
 <script type="text/javascript" src="{{ media_url }}js/datatables/media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="{{ media_url }}js/tabletools/ZeroClipboard/ZeroClipboard.js"></script>
 <script type="text/javascript" src="{{ media_url }}js/tabletools/js/TableTools.min.js"></script>
+<script type="text/javascript" src="{{ media_url }}js/datatables/media/js/datatables.numhtml.js"></script>
 <script language="javascript" type="text/javascript" src="{{ media_url }}js/flot/jquery.flot.js"></script>
 <script language="javascript" type="text/javascript" src="{{ media_url }}js/flot/jquery.flot.selection.js"></script>
 
@@ -53,57 +54,63 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
-	TableToolsInit.oFeatures.bXls = false;
-	TableToolsInit.oFeatures.bCopy = false;
-	TableToolsInit.oFeatures.bPrint = false;
-	TableToolsInit.oBom.bXls = false;
-	TableToolsInit.iButtonHeight = 12;
-	TableToolsInit.iButtonWidth = 12;
-	TableToolsInit.sSwfPath = "/media/js/tabletools/swf/ZeroClipboard.swf"
-	
-	// TODO: Hook up the table's filter into the graph (bar chart)
-	
-	// TODO: Try to make the border below the header on the tables 1 px.
-	
-	
-	var grades_table = $('.data_table').dataTable( {
-		"bAutoWidth": false,
-	    "bJQueryUI": true,
-	    "bStateSave": true,
-	    "sScrollY": "200px",
+    TableToolsInit.oFeatures.bXls = false;
+    TableToolsInit.oFeatures.bCopy = false;
+    TableToolsInit.oFeatures.bPrint = false;
+    TableToolsInit.oBom.bXls = false;
+    TableToolsInit.iButtonHeight = 12;
+    TableToolsInit.iButtonWidth = 12;
+    TableToolsInit.sSwfPath = "/media/js/tabletools/swf/ZeroClipboard.swf"
+    
+    // TODO: Hook up the table's filter into the graph (bar chart)
+    
+    // TODO: Try to make the border below the header on the tables 1 px.
+    
+    // TODO: Show the CSV export option
+    
+    var grades_table = $('.data_table').dataTable( {
+        "bAutoWidth": false,
+        "bJQueryUI": true,
+        "bStateSave": true,
+        "sScrollY": "200px",
         "bPaginate": false,
         "bLengthChange": false,
-		"bScrollCollapse": true,
-		"sDom": '<"H"lfr>t'
-	});
-	
-	$.fn.dataTableExt.afnFiltering.push(
-		function( oSettings, aData, iDataIndex ) {
-			var iMin = $('#range-low').html();
-			var iMax = $('#range-high').html();
-			var grade = aData[2]*1;
-			if ( iMin == "" && iMax == "" )
-			{
-				return true;
-			}
-			else if ( iMin == "" && grade <= iMax )
-			{
-				return true;
-			}
-			else if ( iMin <= grade && "" == iMax )
-			{
-				return true;
-			}
-			else if ( iMin <= grade && grade <= iMax )
-			{
-				return true;
-			}
-			return false;
-		}
-	);
-	
-	
-	var d1 = eval('{{ grades_distribution }}');
+        "bScrollCollapse": true,
+        "sDom": '<"H"lfr>t',
+        // "aoColumns": [
+        //  null,
+        //  { "sType": "formatted-num-asc" },
+        //  { "sType": "formatted-num-asc" }
+        // ]
+    });
+    
+    $.fn.dataTableExt.afnFiltering.push(
+        function( oSettings, aData, iDataIndex ) {
+            var iMin = $('#range-low').html();
+            var iMax = $('#range-high').html();
+            var grade = aData[2]*1;
+            if ( iMin == "" && iMax == "" )
+            {
+                return true;
+            }
+            else if ( iMin == "" && grade <= iMax )
+            {
+                return true;
+            }
+            else if ( iMin <= grade && "" == iMax )
+            {
+                return true;
+            }
+            else if ( iMin <= grade && grade <= iMax )
+            {
+                return true;
+            }
+            return false;
+        }
+    );
+    
+    
+    var d1 = eval('{{ grades_distribution }}');
 
     var plot = $.plot($("#grades_graph"), [
         { 
@@ -120,15 +127,15 @@ $(document).ready(function() {
         ], {
             xaxis: {
                 ticks: {{ problem_count }},
-				tickSize: 1,
-				tickDecimals: 0,
+                tickSize: 1,
+                tickDecimals: 0,
                 min: -.5,
                 max: {{ problem_count }} + 0.5,
             },
             yaxis: {
                 min: 0,
-				tickSize: 1,
-				tickDecimals: 0,
+                tickSize: 1,
+                tickDecimals: 0,
             },
             grid: {
                 backgroundColor: { colors: ["#fff", "#eee"] },
@@ -183,98 +190,98 @@ $(document).ready(function() {
         // if you need global screen coordinates, they are pos.pageX, pos.pageY
         
         if (item) {
-			plot.unhighlight();
-          	plot.highlight(item.series, item.datapoint);
-			$('#range-low').html(item.datapoint[0]);
-			$('#range-high').html("");
-			grades_table.fnDraw();
+            plot.unhighlight();
+            plot.highlight(item.series, item.datapoint);
+            $('#range-low').html(item.datapoint[0]);
+            $('#range-high').html("");
+            grades_table.fnDraw();
         }
     });
         
     $("#grades_graph").bind("plotselected", function (event, ranges) {
         x = Math.round(ranges.xaxis.from);
         y = Math.round(ranges.xaxis.to);
-		
-		plot.unhighlight();
-		i = x;
-		while (i <= y) {
-			plot.highlight(0, i);
-			i++;
-		}
-		$('#range-low').html(x);
-		$('#range-high').html(y);
-		grades_table.fnDraw();
+        
+        plot.unhighlight();
+        i = x;
+        while (i <= y) {
+            plot.highlight(0, i);
+            i++;
+        }
+        $('#range-low').html(x);
+        $('#range-high').html(y);
+        grades_table.fnDraw();
     });
 
     $("#grades_graph").bind("plotunselected", function (event) {
-		plot.unhighlight();
+        plot.unhighlight();
         $('#range-low').html("");
-		$('#range-high').html("");
-		grades_table.fnDraw();
+        $('#range-high').html("");
+        grades_table.fnDraw();
     });
 
-	$('.bubbleInfo').each(function () {
-	    // options
-	    var distance = 10;
-	    var time = 250;
-	    var hideDelay = 500;
+    $('.bubbleInfo').each(function () {
+        // options
+        var distance = 10;
+        var time = 250;
+        var hideDelay = 500;
 
-	    var hideDelayTimer = null;
+        var hideDelayTimer = null;
 
-	    // tracker
-	    var beingShown = false;
-	    var shown = false;
+        // tracker
+        var beingShown = false;
+        var shown = false;
 
-	    var trigger = $('.trigger', this);
-	    var popup = $('.popup', this).css('opacity', 0);
+        var trigger = $('.trigger', this);
+        var popup = $('.popup', this).css('opacity', 0);
 
-	    // set the mouseover and mouseout on both element
-	    $([trigger.get(0), popup.get(0)]).mouseover(function () {
-	      // stops the hide event if we move from the trigger to the popup element
-	      if (hideDelayTimer) clearTimeout(hideDelayTimer);
+        // set the mouseover and mouseout on both element
+        $([trigger.get(0), popup.get(0)]).mouseover(function () {
+          // stops the hide event if we move from the trigger to the popup element
+          if (hideDelayTimer) clearTimeout(hideDelayTimer);
 
-	      // don't trigger the animation again if we're being shown, or already visible
-	      if (beingShown || shown) {
-	        return;
-	      } else {
-	        beingShown = true;
+          // don't trigger the animation again if we're being shown, or already visible
+          if (beingShown || shown) {
+            return;
+          } else {
+            beingShown = true;
 
-	        // reset position of popup box
-	        popup.css({
-	          top: -150,
-	          left: -33,
-	          display: 'block' // brings the popup back in to view
-	        })
+            // reset position of popup box
+            popup.css({
+              top: -150,
+              left: -33,
+              display: 'block' // brings the popup back in to view
+            })
 
-	        // (we're using chaining on the popup) now animate it's opacity and position
-	        .animate({
-	          top: '-=' + distance + 'px',
-	          opacity: .9
-	        }, time, 'swing', function() {
-	          // once the animation is complete, set the tracker variables
-	          beingShown = false;
-	          shown = true;
-	        });
-	      }
-	    }).mouseout(function () {
-	      // reset the timer if we get fired again - avoids double animations
-	      if (hideDelayTimer) clearTimeout(hideDelayTimer);
+            // (we're using chaining on the popup) now animate it's opacity and position
+            .animate({
+              top: '-=' + distance + 'px',
+              opacity: .9
+            }, time, 'swing', function() {
+              // once the animation is complete, set the tracker variables
+              beingShown = false;
+              shown = true;
+            });
+          }
+        }).mouseout(function () {
+          // reset the timer if we get fired again - avoids double animations
+          if (hideDelayTimer) clearTimeout(hideDelayTimer);
 
-	      // store the timer so that it can be cleared in the mouseover if required
-	      hideDelayTimer = setTimeout(function () {
-	        hideDelayTimer = null;
-	        popup.animate({
-	          top: '-=' + distance + 'px',
-	          opacity: 0
-	        }, time, 'swing', function () {
-	          // once the animate is complete, set the tracker variables
-	          shown = false;
-	          // hide the popup entirely after the effect (opacity alone doesn't do the job)
-	          popup.css('display', 'none');
-	        });
-	      }, hideDelay);
-	    });
-	  });
+          // store the timer so that it can be cleared in the mouseover if required
+          hideDelayTimer = setTimeout(function () {
+            hideDelayTimer = null;
+            popup.animate({
+              top: '-=' + distance + 'px',
+              opacity: 0
+            }, time, 'swing', function () {
+              // once the animate is complete, set the tracker variables
+              shown = false;
+              // hide the popup entirely after the effect (opacity alone doesn't do the job)
+              popup.css('display', 'none');
+            });
+          }, hideDelay);
+        });
+      });
 });
 
 </script>
@@ -283,22 +290,10 @@ $(document).ready(function() {
 {% block content_admin %}
 <div id="range-low" style="display:none"></div>
 <div id="range-high" style="display:none"></div>
-<!--
-<form action="/admin/" method="get">
-	<p style="text-align:right; font-size:10px;">Change exam group:
-		<select name="group">
-			{% for group in exam_groups %}
-				<option {% ifequal group exam_group %} selected="selected" {% endifequal %}>{{ group.name }}</option>
-			{% endfor %}
-		</select>
-		<input type="submit" value="Change" />
-	</p>
-</form>
--->
 
 <p>
 {% for group in exam_groups %}
-	<a href="/admin/sessions/{{ group.name }}/">{% ifequal group exam_group %} <b> {% endifequal %} {{ group.name }} {% ifequal group exam_group %} </b> {% endifequal %}</a> | 
+    <a href="/admin/sessions/{{ group.name }}/">{% ifequal group exam_group %} <b> {% endifequal %} {{ group.name }} {% ifequal group exam_group %} </b> {% endifequal %}</a> | 
 {% endfor %}
  <a href="/admin/sessions/add/"> Add new session</a>
 </p>
@@ -310,11 +305,11 @@ $(document).ready(function() {
 <h1>Stats</h1>
 {% if stats %}
 <ul>
-	<li><strong>{{ stats.finished_students_count }}</strong> student{{ stats.finished_students_count|pluralize:" has,s have" }} taken the test out of <strong>{{ stats.total_students_count }}</strong> student{{ stats.total_students_count|pluralize }} (<strong>{{ stats.finished_students_percentage|floatformat }}%</strong>). Currently, <strong>{{ stats.current_students_count }}</strong> student{{ stats.current_students_count|pluralize:" is,s are" }} taking the test right now.</li>
+    <li><strong>{{ stats.finished_students_count }}</strong> student{{ stats.finished_students_count|pluralize:" has,s have" }} taken the test out of <strong>{{ stats.total_students_count }}</strong> student{{ stats.total_students_count|pluralize }} (<strong>{{ stats.finished_students_percentage|floatformat }}%</strong>). Currently, <strong>{{ stats.current_students_count }}</strong> student{{ stats.current_students_count|pluralize:" is,s are" }} taking the test right now.</li>
     <li>The average score is <strong>{{ stats.average_score_percentage|floatformat }}% ({{ stats.average_score }} out of {{ stats.question_count }})</strong>.</li>
-	<li>The standard deviation is <strong>{{ stats.standard_deviation }}</strong>.</li>
-	<li>The highest score is <strong>{{ stats.high_score_percentage|floatformat }}% ({{ stats.high_score }} out of {{ stats.question_count }})</strong>.</li>           
-	<li>The lowest score is <strong>{{ stats.low_score_percentage|floatformat }}% ({{ stats.low_score }} out of {{ stats.question_count }})</strong>.</li>
+    <li>The standard deviation is <strong>{{ stats.standard_deviation }}</strong>.</li>
+    <li>The highest score is <strong>{{ stats.high_score_percentage|floatformat }}% ({{ stats.high_score }} out of {{ stats.question_count }})</strong>.</li>           
+    <li>The lowest score is <strong>{{ stats.low_score_percentage|floatformat }}% ({{ stats.low_score }} out of {{ stats.question_count }})</strong>.</li>
 </ul>
 {% else %}
 <p>This group has no questions or no students yet. To view statistics, you must have assigned both problems and students to this group. Click <a href="">here</a> to configure this group.</p>
@@ -328,19 +323,19 @@ $(document).ready(function() {
     <thead>
         <tr>
             <th>Last Name</th>
-			<th>Student ID</th>
+            <th>Student ID</th>
             <th>Grade</th>
         </tr>
         </thead>
-		<tbody>
-			{% for student in finished_students %}
-			    <tr>
-			        <td class="left"><a href="/admin/students/{{ student.id }}/">{{ student.user.last_name }}</a></td>
-					<td><a href="/admin/students/{{ student.id }}/">{{ student.user.get_profile.student_id }}</a></td>
-			        <td>{{ student.score }}</td>
-			    </tr>
-			{% endfor %}
-	</tbody>
+        <tbody>
+            {% for student in finished_students %}
+                <tr>
+                    <td class="left"><a href="/admin/students/{{ student.id }}/">{{ student.user.last_name }}</a></td>
+                    <td><a href="/admin/students/{{ student.id }}/">{{ student.user.get_profile.student_id }}</a></td>
+                    <td>{{ student.score }}</td>
+                </tr>
+            {% endfor %}
+    </tbody>
 </table>
 
 <div id="grades_graph" style="width:650px;height:300px; margin:0 auto;"></div>
@@ -351,36 +346,37 @@ $(document).ready(function() {
 <!-- TODO: Handle 4 and 5 answer tables -->
 <table class="data_table display" cellspacing="0" cellpadding="0">
     <!--<caption>Number of graded exams: {{ stats.finished_students_count }}</caption>-->
-	<thead>
-		<tr>
-			<th>#</th>
+    <thead>
+        <tr>
+            <th>#</th>
                <th>A</th>
                <th>B</th>
                <th>C</th>
                <th>D</th>
                <th>E</th>
                <th>Unanswered</th>
-        	</tr>
-	</thead>
-	<tbody>
-	    {% for problem in problems %}
-	    <tr>
-	        <!-- TODO: Make the question clickable to view what the question is -->
-			<td class="left">
-				<strong>{{ problem.number }}</strong>
-			</td>
-			
-			{% for answer in problem.sorted_answers %}
-            <td>{{ answer.chosen_percentage|floatformat }}% {% if answer.correct %}<img src="{{ media_url }}images/checkmark.gif" style="height:12px;width:12px;">{% endif %} {% if answer.chosen_count > 0 %} <br />({{ answer.chosen_count }}) {% endif %}</td>
-			{% endfor %}
-			
-			<td>{{ problem.unanswered_percentage|floatformat }}% {% if unanswered_count > 0 %} <br />({{ problem.unanswered_count }}) {% endif %}</td>
-	    </tr>
-	    {% empty %}
-		    <!-- TODO: Handle 4 & 5 problems here. The colspan needs to change. Also make this look prettier and centered -->
-		    <!--<tr><td colspan="7">No Problems</td></tr>-->
-		{% endfor %}
-	</tbody>
+            </tr>
+    </thead>
+    <tbody>
+        {% for distribution in problem_distributions %}
+        <tr>
+            <!-- TODO: Make the question clickable to view what the question is -->
+            <td class="left">
+                <!-- TODO: These values are not sorted properly -->
+                <strong>{{ distribution.problem.number }}</strong>
+            </td>
+            
+            {% for answer_distr in distribution.answers %}
+            <td>{{ answer_distr.chosen_percentage|floatformat }}% {% if answer_distr.answer.correct %}<img src="{{ media_url }}images/checkmark.gif" style="height:12px;width:12px;">{% endif %} {% if answer_distr.chosen_count > 0 %} <br />({{ answer_distr.chosen_count }}) {% endif %}</td>
+            {% endfor %}
+            
+            <td>{{ distribution.unanswered_percentage|floatformat }}% {% if distribution.unanswered_count > 0 %} <br />({{ distribution.unanswered_count }}) {% endif %}</td>
+        </tr>
+        {% empty %}
+            <!-- TODO: Handle 4 & 5 problems here. The colspan needs to change. Also make this look prettier and centered -->
+            <!--<tr><td colspan="7">No Problems</td></tr>-->
+        {% endfor %}
+    </tbody>
 </table>
 
 </div>

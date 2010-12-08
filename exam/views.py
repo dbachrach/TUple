@@ -217,6 +217,7 @@ def admin_session(request, group_name):
             'exam_groups': ExamGroup.objects.all(), 
             'finished_students': exam_group.finished_students().order_by('score'),
             'grades_distribution':  exam_group.grade_distribution(),
+            'problem_distributions': exam_group.problem_distributions(),
         }, context_instance=RequestContext(request))
 
 @login_required

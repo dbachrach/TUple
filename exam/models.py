@@ -39,21 +39,6 @@ class Problem(models.Model):
     def sorted_answers(self):
         '''Returns the answers for this problem in sorted order (i.e. A, B, C, D, E).'''
         return self.answer_set.order_by('letter')
-    
-    def unanswered_count(self):
-        return AnswerSheet.objects.filter(problem=self, answer=None, user_profile__test_status=2).count()
-    
-    def unanswered_percentage(self):
-        return float(self.unanswered_count() / self.response_count() * 100.0)
-        
-    # TODO: unanswered_count needs to know which exam group it is to process for
-    # TODO: Let's get rid of unanswered_percentage and just divide by exam_group.finished_students().count()
-    # TODO: We don't need response count. Let's just use exam_group.finished_students().count()
-    # TODO: Check for div by zero when no students have taken exam
-        
-    def response_count(self):
-        '''Returns the total number of '''
-        return AnswerSheet.objects.filter(problem=self, user_profile__test_status=2).count()
         
 
 class ExamGroup(models.Model):
@@ -84,6 +69,36 @@ class ExamGroup(models.Model):
     def grade_distribution(self):
         problem_count = self.problem_count()
         return [[i, self.finished_students().filter(score=i).count()] for i in xrange(problem_count + 1)]
+        
+    def problem_distributions(self):
+        '''Return a list of problems and each of its answers with the percentage of student responses for that answer.'''
+        finished_students_count = self.finished_students().count()
+        problem_distribution = []
+        for problem in self.sorted_problems():
+            answers = []
+            response_count = 0
+            for answer in problem.sorted_answers():
+                chosen_count = answer.chosen_count_in_group(self)
+                if finished_students_count > 0:
+                    chosen_percentage = float(float(chosen_count) / float(finished_students_count) * 100.0)
+                else:
+                    chosen_percentage = 0.0
+                answers.append({'answer': answer, 
+                                'chosen_count': chosen_count, 
+                                'chosen_percentage': chosen_percentage})
+                
+                response_count += chosen_count
+            
+            unanswered_count = finished_students_count - response_count
+            if finished_students_count > 0:    
+                unanswered_percentage = float(float(unanswered_count) / float(finished_students_count) * 100.0)
+            else:
+                unanswered_percentage = 0.0
+            problem_distribution.append({'problem': problem, 
+                                         'answers': answers, 
+                                         'unanswered_count': unanswered_count,
+                                         'unanswered_percentage': unanswered_percentage})
+        return problem_distribution
         
     def calculate_statistics(self):
         '''Calculates various statistics for this exam group. The statistics are returned as an dictionary of statistic names to values.
@@ -234,19 +249,15 @@ class Answer(models.Model):
     def __unicode__(self):
         return u'Answer %s' % (self.letter)
     
-    def chosen_count(self):
-        '''Returns the number of times this answer choice was chosen.'''
-        return AnswerSheet.objects.filter(problem=self.problem, answer=self, user_profile__test_status=2).count()
-    
-    # TODO: chosen_count needs to know which exam group it is to process for
-    # TODO: Let's get rid of chosen_percentage and just divide by exam_group.finished_students().count()
-    def chosen_percentage(self):
-        '''Returns the percentage for how many times this specific answer choice was chosen out of all responses for the problem.'''
-        return float(self.chosen_count() / self.problem.response_count() * 100.0)
+    def chosen_count_in_group(self, group):
+        '''Returns the number of times this answer choice was chosen for a given exam group.'''
+        return AnswerSheet.objects.filter(problem=self.problem,
+                                          answer=self,
+                                          user_profile__exam_group=group,
+                                          user_profile__test_status=2).count()
             
     
 class AnswerSheet(models.Model):
-    # TODO: When we do queries on answer sheet, we need to make sure that the quries only take place on one exam group
     user_profile = models.ForeignKey(UserProfile)
     problem = models.ForeignKey(Problem)
     answer = models.ForeignKey(Answer, null=True)
