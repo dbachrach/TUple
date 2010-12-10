@@ -2,6 +2,8 @@
 
 
 {% block head_additions %}
+{{ block.super }}
+
 <style>
 
 @import "{{ media_url }}css/jquery-ui-1.8.6.custom.css";
@@ -58,30 +60,37 @@ $(document).ready(function() {
     TableToolsInit.oFeatures.bCopy = false;
     TableToolsInit.oFeatures.bPrint = false;
     TableToolsInit.oBom.bXls = false;
-    TableToolsInit.iButtonHeight = 12;
-    TableToolsInit.iButtonWidth = 12;
-    TableToolsInit.sSwfPath = "/media/js/tabletools/swf/ZeroClipboard.swf"
+    TableToolsInit.iButtonHeight = 24;
+    TableToolsInit.iButtonWidth = 24;
+    TableToolsInit.sSwfPath = "/media/js/tabletools/swf/ZeroClipboard.swf";
+    TableToolsInit.sTitle = "Grades";
     
     // TODO: Hook up the table's filter into the graph (bar chart)
     
     // TODO: Try to make the border below the header on the tables 1 px.
     
-    // TODO: Show the CSV export option
-    
-    var grades_table = $('.data_table').dataTable( {
+    var grades_table = $('#grades_table').dataTable( {
         "bAutoWidth": false,
         "bJQueryUI": true,
         "bStateSave": true,
-        "sScrollY": "200px",
+        "sScrollY": "325px",
         "bPaginate": false,
         "bLengthChange": false,
         "bScrollCollapse": true,
-        "sDom": '<"H"lfr>t',
-        // "aoColumns": [
-        //  null,
-        //  { "sType": "formatted-num-asc" },
-        //  { "sType": "formatted-num-asc" }
-        // ]
+        "sDom": '<"H"Tf>t',
+    });
+
+    TableToolsInit.sTitle = "Distribution";
+        
+    var distribution_table = $('#distribution_table').dataTable( {
+        "bAutoWidth": false,
+        "bJQueryUI": true,
+        "bStateSave": true,
+        //"sScrollY": "316px",
+        "bPaginate": false,
+        "bLengthChange": false,
+        //"bScrollCollapse": true,
+        "sDom": '<"H"Tf>t',
     });
     
     $.fn.dataTableExt.afnFiltering.push(
@@ -330,8 +339,8 @@ $(document).ready(function() {
         <tbody>
             {% for student in finished_students %}
                 <tr>
-                    <td class="left"><a href="/admin/students/{{ student.id }}/">{{ student.user.last_name }}</a></td>
-                    <td><a href="/admin/students/{{ student.id }}/">{{ student.user.get_profile.student_id }}</a></td>
+                    <td class="left"><a href="/admin/students/{{ student.student_id }}/">{{ student.user.last_name }}</a></td>
+                    <td><a href="/admin/students/{{ student.student_id }}/">{{ student.user.get_profile.student_id }}</a></td>
                     <td>{{ student.score }}</td>
                 </tr>
             {% endfor %}
@@ -344,7 +353,7 @@ $(document).ready(function() {
 <p>This is a breakdown of student answers for all questions. A CSV file of this data may be found <a href="/admin/distribution/{{ group.name }}/csv/">here</a>.</p>
 
 <!-- TODO: Handle 4 and 5 answer tables -->
-<table class="data_table display" cellspacing="0" cellpadding="0">
+<table id="distribution_table" class="data_table display" cellspacing="0" cellpadding="0">
     <!--<caption>Number of graded exams: {{ stats.finished_students_count }}</caption>-->
     <thead>
         <tr>
@@ -361,9 +370,10 @@ $(document).ready(function() {
         {% for distribution in problem_distributions %}
         <tr>
             <!-- TODO: Make the question clickable to view what the question is -->
+            <!-- TODO: These values are not sorted properly -->
             <td class="left">
-                <!-- TODO: These values are not sorted properly -->
-                <strong>{{ distribution.problem.number }}</strong>
+                
+                {{ distribution.problem.number }}
             </td>
             
             {% for answer_distr in distribution.answers %}

@@ -4,11 +4,6 @@ from django.db.models import Avg, StdDev, Max, Min
 from datetime import datetime, date
 from django.forms import ModelForm
 
-# TODO: Consolidate where logging is
-import logging
-LOG_FILENAME = 'example.log'
-logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
-
 
 class Exam(models.Model):
     name = models.CharField(max_length=100)
@@ -49,6 +44,9 @@ class ExamGroup(models.Model):
     examination_time = models.IntegerField()
     #answers_per_problem = models.SmallIntegerField()
     
+    class Meta:
+        ordering = ('-date',)
+            
     def __unicode__(self):
         return u'%s' % (self.name)
     
@@ -136,7 +134,10 @@ class ExamGroup(models.Model):
             low_score_percentage = float(low_score) / float(question_count) * 100
         return locals()
     
-
+class ExamGroupForm(ModelForm):
+    class Meta:
+        model = ExamGroup
+                
 class UserProfile(models.Model):
     student_id = models.CharField(max_length=20)
     test_status = models.SmallIntegerField() # 0 = Not Started, 1 = In Progress, 2 = Finished

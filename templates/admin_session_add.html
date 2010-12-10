@@ -1,0 +1,13 @@
+{% extends "base_admin.html" %}
+
+{% block content_admin %}
+
+<h1>Add new session</h1>
+<div>To create a new session, you must provide a name, examination dates, and test time length. You must also assign problems to this session and choose the students who are in this session.</div>
+
+<form action="/admin/settings/" method="post">
+{{ form.as_p }}
+<input type="submit" value="Create Session" />
+</form>
+
+{% endblock %}

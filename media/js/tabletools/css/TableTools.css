@@ -3,11 +3,11 @@
  * TableTools styles
  */
 .TableTools {
-	padding: 3px 0 3px 3px;
-	border: 1px solid #d0d0d0;
-	background-color: #f0f0f0;
-	float: right;
-	margin-bottom: 1em;
+	padding: 0px 0 0px 0px;
+	/*border: 1px solid #d0d0d0;
+	background-color: #f0f0f0;*/
+	float: left;
+	margin-bottom: 0em;
 }
 
 .TableTools_button {
@@ -18,11 +18,11 @@
 
 .TableTools_csv {
 	background: url(../images/csv.png) no-repeat center center;
-	border: 1px solid #f0f0f0;
+	border: 1px solid rgba(255,255,255,0);
 }
 
 .TableTools_csv_hover {
-	background: url(../images/csv_hover.png) no-repeat center center;
+	background: url(../images/csv.png) no-repeat center center;
 	border: 1px solid #d0d0d0;
 	background-color: #fdfdfd;
 }

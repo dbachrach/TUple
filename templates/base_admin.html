@@ -4,11 +4,20 @@
 {{ block.super }} Admin
 {% endblock %}
 
+{% block head_additions %}
+<link rel="stylesheet" href="{{ media_url }}css/csstabs.css" type="text/css" media="screen" />
+{% endblock %}
+
 {% block content %}
 
-<p>
-    <a href="/admin/sessions/">Sessions</a> | <a href="/admin/trends/">Trends</a> | <a href="/admin/settings/">Settings</a>
-</p>
+<ul id="tabnav">
+    <div class="selected_tab{{ tab_number }}">
+	<li class="tab1"><a href="/admin/sessions/">Sessions</a></li>
+	<li class="tab2"><a href="/admin/trends/">Trends</a></li>
+	<li class="tab3"><a href="/admin/settings/">Settings</a></li>
+	</div>
+</ul>
+
 {% block content_admin %}
 	
 {% endblock %}

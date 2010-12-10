@@ -13,6 +13,7 @@ TUple takes advantage of some great tools, which are included in this distributi
 
 * MathJax
 * JQuery
+* CSS Tabs
 
 ## Setup
 

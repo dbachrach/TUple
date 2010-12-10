@@ -1,0 +1,53 @@
+/* CSS Tabs is licensed under Creative Commons Attribution 3.0 - http://creativecommons.org/licenses/by/3.0/ */
+
+/* begin css tabs */
+
+ul#tabnav { /* general settings */
+text-align: left; /* set to left, right or center */
+margin: 1em 0 1em 0; /* set margins as desired */
+font-size: 14px;
+font-weight: normal;
+border-bottom: 1px solid rgb(91,144,151); /* set border COLOR as desired */
+list-style-type: none;
+padding: 3px 10px 2px 10px; /* THIRD number must change with respect to padding-top (X) below */
+}
+
+ul#tabnav li { /* do not change */
+display: inline;
+}
+
+ul.selected_tab1 li.tab1, ul.selected_tab2 li.tab2, ul.selected_tab3 li.tab3 { /* settings for selected tab */
+border-bottom: 1px solid #E3F4F6; /* set border color to page background color */
+background-color: #E3F4F6; /* set background color to match above border color */
+font-weight: bold;
+}
+
+
+ul#tabnav li a { /* settings for all tab links */
+padding: 3px 4px; /* set padding (tab size) as desired; FIRST number must change with respect to padding-top (X) above */
+border: 1px solid rgb(91,144,151); /* set border COLOR as desired; usually matches border color specified in #tabnav */
+background-color: rgb(201,222,231); /* set unselected tab background color as desired */
+color: rgb(52,82,87); /* set unselected tab link color as desired */
+margin-right: 0px; /* set additional spacing between tabs as desired */
+text-decoration: none;
+border-bottom: none;
+}
+
+ul#tabnav a:hover { /* settings for hover effect */
+background: #fff; /* set desired hover color */
+}
+
+
+ul#tabnav div.selected_tab1 li.tab1 a, ul#tabnav div.selected_tab2 li.tab2 a, ul#tabnav div.selected_tab3 li.tab3 a { /* settings for selected tab link */
+background-color: #E3F4F6; /* set selected tab background color as desired */
+/*color: #000; /* set selected tab link color as desired */
+position: relative;
+font-weight: bold;
+top: 1px;
+padding-top: 4px; /* must change with respect to padding (X) above and below */
+}
+
+
+
+
+

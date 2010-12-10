@@ -6,12 +6,9 @@ from exam_settings import EXAM_SETTINGS
 from django.template import RequestContext
 from django.utils import simplejson
 from django.contrib import messages
-from TUple.exam.models import Problem, ExamGroup, Answer, Exam, ExamForm, UserProfile
+from TUple.exam.models import Problem, ExamGroup, Answer, Exam, ExamForm, UserProfile, ExamGroupForm
+from django.views.generic import create_update
 import csv
-
-import logging
-LOG_FILENAME = 'example.log'
-logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
     
 # TODO: Make admins have a user profile
 
@@ -83,7 +80,9 @@ def exam(request):
     # Combines the problems and their chosen answer into a single list where each element is a dictionary containting the problem and the selected answer
     problem_data = map(lambda p, c : {'problem': p, 'chosen_answer': c}, problems, chosen_answers)
     
-    return render_to_response("exam.html", {'problem_data': problem_data, 'time_left': time_left, 'exam_answers_per_problem': exam_answers_per_problem}, context_instance=RequestContext(request))
+    return render_to_response("exam.html", {'problem_data': problem_data, 
+                                            'time_left': time_left, 
+                                            'exam_answers_per_problem': exam_answers_per_problem}, context_instance=RequestContext(request))
 
 
 @check_closed
@@ -214,16 +213,20 @@ def admin_session(request, group_name):
             'problems': exam_group.sorted_problems(), 
             'problem_count': exam_group.problem_count(),
             'exam_group': exam_group, 
-            'exam_groups': ExamGroup.objects.all(), 
+            'exam_groups': ExamGroup.objects.all(),
             'finished_students': exam_group.finished_students().order_by('score'),
             'grades_distribution':  exam_group.grade_distribution(),
             'problem_distributions': exam_group.problem_distributions(),
+            'tab_number': 1,
         }, context_instance=RequestContext(request))
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_add_session(request):
-    pass
+def admin_add_session(request): 
+    return create_update.create_object(request, form_class=ExamGroupForm,
+                                                            post_save_redirect="/admin/sessions/%(name)s", 
+                                                            template_name="admin_session_add.html",
+                                                            extra_context={'tab_number': 1})
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
@@ -233,29 +236,37 @@ def admin_edit_session(request):
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_trends(request):
-    pass
+    return render_to_response("admin_trends.html", {'tab_number': 2}, context_instance=RequestContext(request))
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_settings(request):
     the_exam = Exam.objects.all()[0]
-    if request.method == 'POST':
-        form = ExamForm(request.POST, instance=the_exam)
-        if form.is_valid():
-            form.save()
-            messages.info(request, 'Settings saved.')
-            return HttpResponseRedirect("/admin/settings/?saved")
-    else:
-        form = ExamForm(instance=the_exam)
-
-    return render_to_response("admin_settings.html", {'form': form}, context_instance=RequestContext(request))
+    return create_update.update_object(request, form_class=ExamForm,
+                                                object_id=the_exam.id,
+                                                post_save_redirect="/admin/settings/", 
+                                                template_name="admin_settings.html",
+                                                extra_context={'tab_number': 3})
+    # the_exam = Exam.objects.all()[0]
+    # if request.method == 'POST':
+    #     form = ExamForm(request.POST, instance=the_exam)
+    #     if form.is_valid():
+    #         form.save()
+    #         messages.info(request, 'Settings saved.')
+    #         return HttpResponseRedirect("/admin/settings/?saved")
+    # else:
+    #     form = ExamForm(instance=the_exam)
+    # 
+    # return render_to_response("admin_settings.html", {'form': form,
+    #                                                   'tab_number': 3}, context_instance=RequestContext(request))
+    
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_student(request, student_id):
     if student_id:
         try:
-            student = UserProfile.objects.get(id=student_id)
+            student = UserProfile.objects.get(student_id=student_id)
         except UserProfile.DoesNotExist:
             # TODO: Return error
             return HttpResponse("error: no student with id " + student_id)
@@ -270,6 +281,8 @@ def admin_student(request, student_id):
         {
             'student': student,
             'answer_sheets': student.answer_sheets(),
+            'question_count': student.exam_group.problem_count(),
+            'tab_number': 1,
         }, context_instance=RequestContext(request))
             
 # @login_required

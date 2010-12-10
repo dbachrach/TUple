@@ -2,6 +2,7 @@
 
 
 {% block head_additions %}
+{{ block.super }}
 <style>
 
 @import "{{ media_url }}css/jquery-ui-1.8.6.custom.css";
@@ -13,7 +14,6 @@
 <script type="text/javascript" src="{{ media_url }}js/datatables/media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="{{ media_url }}js/tabletools/ZeroClipboard/ZeroClipboard.js"></script>
 <script type="text/javascript" src="{{ media_url }}js/tabletools/js/TableTools.min.js"></script>
-
 
 <script type="text/javascript">
 
@@ -28,14 +28,12 @@ $(document).ready(function() {
 	
 	// TODO: Try to make the border below the header on the tables 1 px.
 	
-	
 	var answers_table = $('#answers_table').dataTable( {
 		"bAutoWidth": false,
 	    "bJQueryUI": true,
 	    "bStateSave": true,
         "bPaginate": false,
         "bLengthChange": false,
-		// "bScrollCollapse": true,
 		"sDom": 't',
 	});
 });
@@ -45,11 +43,10 @@ $(document).ready(function() {
 
 {% block content_admin %}
 
-<h1>Answers</h1>
+<h1>Answers for {{ student.user.last_name }}</h1>
 
-{{ student.user.last_name }} scored {{ student.score }}.
+<p>{{ student.user.last_name }} scored {{ student.score }} of {{ question_count }}.</p>
 
-<!-- TODO: For all tables, if there are no rows, then mark the only td as 'leftCell' -->
 <table id="answers_table" class="data_table display" cellspacing="0" cellpadding="0">
     <thead>
         <tr>
@@ -61,7 +58,11 @@ $(document).ready(function() {
 			{% for answer_sheet in answer_sheets %}
 			    <tr>
 			        <td class="left">{{ answer_sheet.problem.number }}</td>
+			        {% if answer_sheet.answer %}
 			        <td>{{ answer_sheet.answer.letter }} {% if answer_sheet.answer.correct %}<img src="{{ media_url }}images/checkmark.gif" style="height:12px;width:12px;">{% endif %}</td>
+			        {% else %}
+			        <td>No response</td>
+			        {% endif %}
 			    </tr>
 			{% endfor %}
 	</tbody>
