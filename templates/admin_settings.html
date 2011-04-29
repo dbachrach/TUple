@@ -2,9 +2,12 @@
 
 {% block content_admin %}
 
+<div class="input_area">
 <form action="/admin/settings/" method="post">
-{{ form.as_p }}
+	{{ form.as_p }}
 <button>Save</button>
 </form>
+</div>
 
 {% endblock %}
+

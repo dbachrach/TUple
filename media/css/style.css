@@ -296,3 +296,22 @@ submit,button{
 submit,button:hover{
     color:#d85054;
 }
+
+.input_area
+{
+    font-size: 12px;
+    color: #444;
+    padding: 10px;
+}
+
+.input_area input[type="text"], .input_area textarea
+{
+    font-size: 13px;
+    color: #000;
+    margin-bottom: 5px;
+    display: block;
+    padding: 4px;
+    border: solid 1px rgb(52,82,87);
+    width: 300px;
+    background-color: #fff;
+}
