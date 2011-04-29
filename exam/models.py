@@ -4,7 +4,6 @@ from django.db.models import Avg, StdDev, Max, Min
 from datetime import datetime, date
 from django.forms import ModelForm
 
-# TODO: Cache calculate statistics and problem distribution calls.
 
 class Exam(models.Model):
     name = models.CharField(max_length=100)

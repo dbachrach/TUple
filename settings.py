@@ -107,3 +107,10 @@ INSTALLED_APPS = (
 AUTH_PROFILE_MODULE = 'exam.UserProfile'
 
 LOGIN_URL = '/'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': '/var/tmp/django_cache',
+    }
+}

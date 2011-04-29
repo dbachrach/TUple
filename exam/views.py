@@ -8,6 +8,7 @@ from django.utils import simplejson
 from django.contrib import messages
 from TUple.exam.models import Problem, ExamGroup, Answer, Exam, ExamForm, UserProfile, ExamGroupForm
 from django.views.generic import create_update
+from django.views.decorators.cache import cache_page
 import csv
 
 
@@ -193,6 +194,7 @@ def admin_sessions(request):
     
 @login_required
 @user_passes_test(lambda u: u.is_staff)
+@cache_page(60 * 5)
 def admin_session(request, group_name):
     if group_name:
         try:
@@ -233,6 +235,7 @@ def admin_edit_session(request):
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
+@cache_page(60 * 5)
 def admin_trends(request):
     # TODO: Trends
     return render_to_response("admin_trends.html", {'tab_number': 2}, context_instance=RequestContext(request))

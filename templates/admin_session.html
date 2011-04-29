@@ -10,41 +10,9 @@
 @import "{{ media_url }}js/datatables/media/css/demo_table_jui.css";
 @import "{{ media_url }}js/tabletools/css/TableTools.css";
 
-.bubbleInfo {
-    position: relative;
-}
-
-.popup {
-    position: absolute;
-    display: none; /* keeps the popup hidden if no JS available */
-    background-color: #EAEAEA;
-    padding: 15px;
-    width: 300px;
-    text-align: left;
-    border: 1px solid #A2BDC0; 
-    -moz-box-shadow: 0px 3px 8px #555;
-    -webkit-box-shadow: 0px 3px 8px #555;
-    box-shadow: 0px 3px 8px #555;
-}
-
-.answer_popup td {
-    border: 0;
-    padding: 0;
-    text-align: left;
-    margin:0;
-}
-
-.answer_popup tr {
-    background: transparent;
-    color: #000;
-    height: 20px;
-
-}
-
 </style>
 <!--[if IE]><script language="javascript" type="text/javascript" src="{{ media_url }}js/flot/excanvas.min.js"></script><![endif]-->
 <script type="text/javascript" src="{{ media_url }}js/jquery.js"></script> 
-<script type="text/javascript" src="{{ media_url }}js/qtip.js"></script>
 <script type="text/javascript" src="{{ media_url }}js/datatables/media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="{{ media_url }}js/tabletools/ZeroClipboard/ZeroClipboard.js"></script>
 <script type="text/javascript" src="{{ media_url }}js/tabletools/js/TableTools.min.js"></script>
@@ -59,13 +27,22 @@
 
 $(document).ready(function() {
 	
-	$('.problem_number_row').hover(function() {
+	// Set up hover cursor for the two tables
+	$('.problem_number_row, .grade_row').hover(function() {
 			$(this).css('cursor','pointer');
 		}, function() {
 			$(this).css('cursor','auto');
 	});
 	
-	$('.problem_number_link, .problem_number_row').click(function() {
+	// Grade clicks
+	$('.grade_row').click(function() {
+		student_info = $(this).attr('student_info');
+		window.location = "/admin/students/" + student_info + "/";
+		return false;
+	});
+	
+	// Question distribution clicks
+	$('.problem_number_row').click(function() {
 		apprise_info = $(this).attr('apprise_info');
 		apprise(apprise_info);
 		return false;
@@ -171,41 +148,6 @@ $(document).ready(function() {
                 mode: "x" ,
             }
     });
-        
-    // function showTooltip(x, y, contents) {
-    //     $('<div id="tooltip">' + contents + '</div>').css( {
-    //         position: 'absolute',
-    //         display: 'none',
-    //         top: y + 5,
-    //         left: x + 5,
-    //         border: '1px solid #fdd',
-    //         padding: '2px',
-    //         'background-color': '#fee',
-    //         opacity: 0.80
-    //     }).appendTo("body").fadeIn(200);
-    // }
-    // 
-    // var previousPoint = null;
-    // $("#grades_graph").bind("plothover", function (event, pos, item) {
-    // 
-    //     if (item) {
-    //         if (previousPoint != item.datapoint) {
-    //             previousPoint = item.datapoint;
-    // 
-    //             $("#tooltip").remove();
-    //             var x = item.datapoint[0].toFixed(0),
-    //                 y = item.datapoint[1].toFixed(0);
-    // 
-    //             showTooltip(item.pageX, item.pageY,
-    //                         y + " students scored " + x);
-    //         }
-    //     }
-    //     else {
-    //         $("#tooltip").remove();
-    //         previousPoint = null;            
-    //     }
-    //     
-    // });
     
     $("#grades_graph").bind("plotclick", function (event, pos, item) {
         // secondary axis coordinates if present are in pos.x2, pos.y2,
@@ -240,72 +182,7 @@ $(document).ready(function() {
         $('#range-low').html("");
         $('#range-high').html("");
         grades_table.fnDraw();
-    });
-
-    $('.bubbleInfo').each(function () {
-        // options
-        var distance = 10;
-        var time = 250;
-        var hideDelay = 500;
-
-        var hideDelayTimer = null;
-
-        // tracker
-        var beingShown = false;
-        var shown = false;
-
-        var trigger = $('.trigger', this);
-        var popup = $('.popup', this).css('opacity', 0);
-
-        // set the mouseover and mouseout on both element
-        $([trigger.get(0), popup.get(0)]).mouseover(function () {
-          // stops the hide event if we move from the trigger to the popup element
-          if (hideDelayTimer) clearTimeout(hideDelayTimer);
-
-          // don't trigger the animation again if we're being shown, or already visible
-          if (beingShown || shown) {
-            return;
-          } else {
-            beingShown = true;
-
-            // reset position of popup box
-            popup.css({
-              top: -150,
-              left: -33,
-              display: 'block' // brings the popup back in to view
-            })
-
-            // (we're using chaining on the popup) now animate it's opacity and position
-            .animate({
-              top: '-=' + distance + 'px',
-              opacity: .9
-            }, time, 'swing', function() {
-              // once the animation is complete, set the tracker variables
-              beingShown = false;
-              shown = true;
-            });
-          }
-        }).mouseout(function () {
-          // reset the timer if we get fired again - avoids double animations
-          if (hideDelayTimer) clearTimeout(hideDelayTimer);
-
-          // store the timer so that it can be cleared in the mouseover if required
-          hideDelayTimer = setTimeout(function () {
-            hideDelayTimer = null;
-            popup.animate({
-              top: '-=' + distance + 'px',
-              opacity: 0
-            }, time, 'swing', function () {
-              // once the animate is complete, set the tracker variables
-              shown = false;
-              // hide the popup entirely after the effect (opacity alone doesn't do the job)
-              popup.css('display', 'none');
-            });
-          }, hideDelay);
-        });
-      });
-
-	
+    });	
 });
 
 </script>
@@ -322,15 +199,12 @@ $(document).ready(function() {
 	</span>
 {% endfor %}
  
-<!-- <span class="sub_group">
-	<a href="/admin/sessions/add/"> Add new session</a>
-</span> -->
 </div>
 
 <div>
-    <!-- <h1>{{ exam_group.name }}</h1> -->
     <div style="float:right"><a href="/admin/sessions/{{ exam_group.name }}/edit/"><button type="button">Edit Session</a> <a href="/admin/sessions/add/"><button type="button">Create New Session</a></div>
     <p>&nbsp;</p>
+
 <h1>Stats</h1>
 {% if stats %}
 <ul>
@@ -358,9 +232,9 @@ $(document).ready(function() {
         </thead>
         <tbody>
             {% for student in finished_students %}
-                <tr>
-                    <td class="left"><a href="/admin/students/{{ student.student_id }}/">{{ student.user.last_name }}</a></td>
-                    <td><a href="/admin/students/{{ student.student_id }}/">{{ student.user.get_profile.student_id }}</a></td>
+                <tr class="grade_row" student_info="{{ student.student_id }}">
+                    <td class="left">{{ student.user.last_name }}</td>
+                    <td>{{ student.user.get_profile.student_id }}</td>
                     <td>{{ student.score }}</td>
                 </tr>
             {% endfor %}
