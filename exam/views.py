@@ -10,14 +10,12 @@ from TUple.exam.models import Problem, ExamGroup, Answer, Exam, ExamForm, UserPr
 from django.views.generic import create_update
 import csv
 
-    
-# TODO: Make admins have a user profile
-# TODO: I added retake priveledge. Make sure it functions properly.
 
 def check_closed(f):
     def _inner(*args, **kwargs):
         active_exam_count = len(ExamGroup.objects.filter(active=True))
         request = args[0]
+        
         if active_exam_count == 0 and not request.user.get_profile().can_retake():
             return closed(*args, **kwargs)
         else:

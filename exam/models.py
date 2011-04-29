@@ -4,6 +4,7 @@ from django.db.models import Avg, StdDev, Max, Min
 from datetime import datetime, date
 from django.forms import ModelForm
 
+# TODO: Cache calculate statistics and problem distribution calls.
 
 class Exam(models.Model):
     name = models.CharField(max_length=100)
@@ -12,7 +13,7 @@ class Exam(models.Model):
     contact_email = models.EmailField()
     
     def __unicode(self):
-        return u'%s' % (exam_name)
+        return u'%s' % (name)
         
     def copyright_end(self):
         return date.today().year
@@ -202,6 +203,7 @@ class UserProfile(models.Model):
         if self.is_in_progress():
             self.update_score()
             self.test_status = 2
+            self.retake = False
             self.save()
     
     def get_problem_at_number(self, problem_number):

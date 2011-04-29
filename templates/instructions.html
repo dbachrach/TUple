@@ -8,7 +8,7 @@
 
 <h1>Instructions</h1>
 
-<p>You are about to take the {{ exam_name }}. The test consists of {{ problem_count }} multiple choice question{{ problem_count|pluralize }} with 5 answers (A through E) for each. You will have {{ exam_length }} to complete the exam.</p>
+<p>You are about to take the {{ name }}. The test consists of {{ problem_count }} multiple choice question{{ problem_count|pluralize }} with 5 answers (A through E) for each. You will have {{ exam_length }} to complete the exam.</p>
 <p>You should have available a pencil, paper and a calculator to work out problems.  You should use no outside resources. A periodic table will be displayed below each question. To view a larger version of the periodic table, simply click the image. A new window will open, which you can keep open for the duration of your exam.</p>
 
 <p>Once you click "Start Test" below, your timer will begin, and you will have {{ exam_length }} to complete the exam. You can submit the exam before time expires by clicking "Finish Test". If you do not finish in the time limit, your test will automatically be submitted for you. Please note that you have exactly {{ exam_length }} from the time you click the "Start Test" button below to complete the exam, or your exam will be automatically graded after {{ exam_length }}.</p>
@@ -28,9 +28,9 @@
 {% endif %}
 
 {% if not popup %}
-<form method="post" action="/start/">
+<form method="post" action="/start/" style="text-align:center">
 	{% csrf_token %}
-   	<input type="submit" value="Start Exam" />
+	<button>Start Exam</button>
 </form>
 {% endif %}
 
