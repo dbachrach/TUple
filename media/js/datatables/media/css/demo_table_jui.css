@@ -190,13 +190,13 @@ table.display tr.heading2 td {
 	border-bottom: 1px solid #aaa;
 }
 
-table td {
+table.display td {
 	padding: 4px 5px;
 	border-right: 1px solid #C1DAD7;
     border-bottom: 1px solid #C1DAD7;
 }
 
-table td.left {
+table.display td.left {
     border-left: 1px solid #C1DAD7;
 }
 
@@ -229,12 +229,12 @@ table.display td.center {
  * DataTables row classes
  */
 
-tr.odd {
+.display tr.odd {
 	background-color: #fff;
 	color: #4f6b72;
 }
  
-tr.even {
+.display tr.even {
 	background-color: #F5F5F5;
 	color: #4f6b72;
 }

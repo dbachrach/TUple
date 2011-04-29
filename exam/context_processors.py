@@ -1,8 +1,12 @@
 from django.conf import settings
-from exam_settings import EXAM_SETTINGS
+from TUple.exam.models import Exam
+from django.core import serializers
 
 def media_url(request):
     return {'media_url': settings.MEDIA_URL}
-    
-def exam_settings(request):
-    return EXAM_SETTINGS
+
+def exam_attrs(request):
+    the_exam = Exam.objects.all()[0]
+    data = serializers.serialize('python', Exam.objects.all())[0]['fields']
+    data['copyright_end'] = the_exam.copyright_end()
+    return data

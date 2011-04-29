@@ -42,7 +42,7 @@ class ExamGroup(models.Model):
     active = models.BooleanField()
     problems = models.ManyToManyField(Problem)
     examination_time = models.IntegerField()
-    #answers_per_problem = models.SmallIntegerField()
+    answers_per_problem = models.SmallIntegerField()
     
     class Meta:
         ordering = ('-date',)
@@ -125,7 +125,13 @@ class ExamGroup(models.Model):
         if finished_students:
             __aggregates = finished_students.aggregate(average_score=Avg('score'), high_score=Max('score'), low_score=Min('score'))
             average_score = int(__aggregates['average_score'])
-            # TODO: (Doesnt work on sqlite) standard_deviation = __aggregates['standard_deviation']    standard_deviation=StdDev('score'),
+            
+            # Standard deviation is not available in Sqlite
+            if 'standard_deviation' in __aggregates:
+                standard_deviation = __aggregates['standard_deviation'] 
+            else:
+                standard_deviation = "not available"
+                
             high_score = __aggregates['high_score']
             low_score = __aggregates['low_score']
             
@@ -146,6 +152,7 @@ class UserProfile(models.Model):
     exam_group = models.ForeignKey(ExamGroup)
     problems = models.ManyToManyField(Problem, through='AnswerSheet')
     user = models.ForeignKey(User, unique=True) # Correlate this to the User table. This lets us extend properties of authenticated users.
+    retake= models.BooleanField()
     
     def __unicode__(self):
         return u'UserProfile (%s)' % (self.user)
@@ -165,6 +172,10 @@ class UserProfile(models.Model):
     def is_in_active_exam_group(self):
         '''Returns True if the user is in the active exam group. A user must be in an active exam group to take an exam.'''
         return (self.exam_group.active)
+        
+    def is_allowed_to_test(self):
+        '''Returns True if the user can take an exam. A user must be either in the active exam group or have the retake priveledge.'''
+        return (self.is_in_active_exam_group() or self.retake)
     
     def time_left(self):
         '''Returns how much time the user has before his/her exam will be turned in.'''
@@ -239,6 +250,15 @@ class UserProfile(models.Model):
         self.score = new_score
         self.save()
         return new_score
+        
+    def can_retake(self):
+        return self.retake
+        
+    def give_retake(self):
+        self.retake = True
+        self.test_status = 0
+        self.test_date = None
+        self.save()
 
 
 class Answer(models.Model):

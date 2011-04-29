@@ -4,7 +4,7 @@
 
 ## Requirements
 
-* Django 1.2.3+
+* Django 1.3+
 * Python 2.7+
 
 ## Dependencies
@@ -14,6 +14,7 @@ TUple takes advantage of some great tools, which are included in this distributi
 * MathJax
 * JQuery
 * CSS Tabs
+* Appraise
 
 ## Setup
 

@@ -13,17 +13,17 @@ urlpatterns = patterns('',
     (r'^$', login, {'template_name': 'home.html'}),
     (r'^didlogin/$', views.didlogin),
     (r'^instructions/$', views.instructions),
-	(r'^popup/instructions/$', views.instructions, {'popup': True}),
+    (r'^popup/instructions/$', views.instructions, {'popup': True}),
     (r'^start/$', views.start),
     (r'^exam/$', views.exam),
-	(r'^end/$', views.end),
+    (r'^end/$', views.end),
     (r'^finished/$', views.finished),
     (r'^closed/$', views.closed),
 
-	(r'^problem/(.+)/$', views.problem),
-	(r'^hotkeys/(.+)/$', views.hotkeys),
-	
-	(r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': settings.MEDIA_URL + 'images/favicon.ico'}),
+    (r'^problem/(.+)/$', views.problem),
+    (r'^hotkeys/(.+)/$', views.hotkeys),
+    
+    (r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': settings.MEDIA_URL + 'images/favicon.ico'}),
     
     (r'^admin/$', views.admin),
     (r'^admin/sessions/$', views.admin_sessions),
@@ -31,7 +31,7 @@ urlpatterns = patterns('',
     (r'^admin/sessions/(.+)/edit/$', views.admin_edit_session),
     (r'^admin/sessions/(.+)/$', views.admin_session),
 
-	(r'^admin/students/(.+)/$', views.admin_student),
+    (r'^admin/students/(.+)/$', views.admin_student),
     
     (r'^admin/trends/$', views.admin_trends),
     (r'^admin/settings/$', views.admin_settings),

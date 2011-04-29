@@ -245,3 +245,54 @@ color: #FFF;
 	text-decoration: underline;
 	color: #4f6b72;
 }
+
+.admin_submenu {
+    margin-top: -14px;
+    padding: 10px 15px;
+    border-left: 1px solid rgb(91,144,151);
+    border-right: 1px solid rgb(91,144,151);
+    border-bottom: 1px solid rgb(91,144,151);
+    font-size: 12px;
+}
+
+.admin_submenu a {
+    color: rgb(52,82,87);
+}
+.admin_submenu a:hover {
+    color: #000;
+}
+
+.admin_submenu .sub_group {
+    padding: 0 5 0 10px;
+    margin: 0 10px;
+}
+
+.admin_submenu .sub_group_selected {
+    padding: 0 10px 0 15px;
+    border-left: 4px solid rgb(52,82,87);
+    border-right: 4px solid rgb(52,82,87);
+    margin: 0 10px;
+    font-size: 16px;
+}
+
+button{
+    border:1px solid #bbb;
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
+    border-radius:3px;
+    -khtml-border-radius:3px;
+    background:#FFF;
+    color:#232d3d;
+    font-size:12px;
+    font-weight:700;
+    text-shadow:0 1px 0 #fff;
+    cursor:pointer;
+    box-shadow:0 1px 2px #ccc;
+    -moz-box-shadow:0 1px 2px #ccc;
+    -webkit-box-shadow:0 1px 2px #ccc;
+    margin:0 3px;
+    padding:4px 10px;
+}
+button:hover{
+    color:#d85054;
+}

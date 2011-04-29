@@ -88,7 +88,7 @@ TEMPLATE_DIRS = (
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
     'exam.context_processors.media_url',
-    'exam.context_processors.exam_settings',
+    'exam.context_processors.exam_attrs',
 )
 
 INSTALLED_APPS = (

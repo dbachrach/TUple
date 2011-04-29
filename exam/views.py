@@ -2,20 +2,23 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
-from exam_settings import EXAM_SETTINGS
+from django.contrib.auth import views as AuthViews
 from django.template import RequestContext
 from django.utils import simplejson
 from django.contrib import messages
 from TUple.exam.models import Problem, ExamGroup, Answer, Exam, ExamForm, UserProfile, ExamGroupForm
 from django.views.generic import create_update
 import csv
+
     
 # TODO: Make admins have a user profile
+# TODO: I added retake priveledge. Make sure it functions properly.
 
-# TODO: Handle retakes
 def check_closed(f):
     def _inner(*args, **kwargs):
-        if EXAM_SETTINGS['exam_closed']:
+        active_exam_count = len(ExamGroup.objects.filter(active=True))
+        request = args[0]
+        if active_exam_count == 0 and not request.user.get_profile().can_retake():
             return closed(*args, **kwargs)
         else:
             return f(*args, **kwargs)
@@ -27,7 +30,7 @@ def check_closed(f):
 def didlogin(request):
     if request.user.is_staff:
         return HttpResponseRedirect('/admin/')
-    if not request.user.get_profile().is_in_active_exam_group():
+    if not request.user.get_profile().is_allowed_to_test():
         messages.info(request, 'Login failed. You are not allowed to take this exam currently.')
         return HttpResponseRedirect('/')
     elif request.user.get_profile().is_in_progress():
@@ -45,7 +48,10 @@ def instructions(request, popup=False):
     exam_group = request.user.get_profile().exam_group
     problem_count = exam_group.sorted_problems().count()
     exam_length = exam_group.get_examination_time_string()
-    return render_to_response("instructions.html", {'popup': popup, 'problem_count': problem_count, 'exam_length': exam_length}, context_instance=RequestContext(request))
+    return render_to_response("instructions.html", {'popup': popup, 
+                                                    'problem_count': problem_count, 
+                                                    'exam_length': exam_length}, 
+                                                    context_instance=RequestContext(request))
 
 
 @check_closed
@@ -72,17 +78,19 @@ def exam(request):
     exam_group = request.user.get_profile().exam_group
     problems = exam_group.sorted_problems()
     
-    exam_answers_per_problem = 5 # TODO: exam_group.answers_per_problem
+    exam_answers_per_problem = exam_group.answers_per_problem
     
     # Creates a list of each problem's selected answer
     chosen_answers = map(request.user.get_profile().get_answer_for_problem, problems)
 
-    # Combines the problems and their chosen answer into a single list where each element is a dictionary containting the problem and the selected answer
+    # Combines the problems and their chosen answer into a single list where each element 
+    # is a dictionary containting the problem and the selected answer
     problem_data = map(lambda p, c : {'problem': p, 'chosen_answer': c}, problems, chosen_answers)
     
     return render_to_response("exam.html", {'problem_data': problem_data, 
                                             'time_left': time_left, 
-                                            'exam_answers_per_problem': exam_answers_per_problem}, context_instance=RequestContext(request))
+                                            'exam_answers_per_problem': exam_answers_per_problem}, 
+                                            context_instance=RequestContext(request))
 
 
 @check_closed
@@ -111,8 +119,7 @@ def closed(request):
 def hotkeys(request, problem_index):
     problem = request.user.get_profile().get_problem_at_number(problem_index)
     if problem is None:
-        # TODO: Better error
-        return HttpResponse("Problem not found")
+        return HttpResponse("")
         
     # Generate a JSON response that lists the problem id, and all its answer ids and letters
     answers = {}
@@ -128,23 +135,23 @@ def hotkeys(request, problem_index):
 def problem(request, problem_index):
     problem = request.user.get_profile().get_problem_at_number(problem_index)
     if problem is None:
-        # TODO: Better error
-        return HttpResponse("Problem not found")
+        return HttpResponse("Problem not found.")
 
     if request.method == 'POST':
         return post_problem(request, problem)
     elif request.method == 'GET':
         return get_problem(request, problem)
     else:
-        # TODO: Error?
-        return HttpResponse("error")
+        return HttpResponse("Error. Not a POST or GET request.")
 
 
 @check_closed
 @login_required 
 def get_problem(request, problem):  
     chosen_answer = request.user.get_profile().get_answer_for_problem(problem)
-    return render_to_response("problem.html", {'problem': problem, 'chosen_answer': chosen_answer}, context_instance=RequestContext(request))
+    return render_to_response("problem.html", {'problem': problem, 
+                                               'chosen_answer': chosen_answer}, 
+                                               context_instance=RequestContext(request))
 
     
 @check_closed
@@ -155,16 +162,13 @@ def post_problem(request, problem):
         try:
             answer = Answer.objects.get(id=answer_id) 
         except Answer.DoesNotExist:
-            # TODO: Return error
-            return HttpResponse("error: no active group exists")
+            return HttpResponse("Error: No active group exists.")
         except Answer.MultipleObjectsReturned:
-            # TODO: Return error
-            return HttpResponse("error: multiple active groups exist")
+            return HttpResponse("Error: Multiple active groups exist.")
         
         # Ensure the user has provided an appropriate answer to the problem.
         if problem != answer.problem:
-            # TODO: Error
-            return HttpResponse("Error: problem != answer.problem")
+            return HttpResponse("Error: Incorrect problem.")
             
         # Save answer to user's answer sheet
         request.user.get_profile().answer_problem(problem, answer)
@@ -183,11 +187,9 @@ def admin_sessions(request):
     try:
         exam_group = ExamGroup.objects.get(active=True)
     except ExamGroup.DoesNotExist:
-        # TODO: Return error
-        return HttpResponse("error: no active group exists")
+        return HttpResponse("Error: No active group exists.")
     except ExamGroup.MultipleObjectsReturned:
-        # TODO: Return error
-        return HttpResponse("error: multiple active groups exist")
+        return HttpResponse("Error: multiple active groups exist.")
     return HttpResponseRedirect('/admin/sessions/' + exam_group.name + '/')
             
     
@@ -198,14 +200,11 @@ def admin_session(request, group_name):
         try:
             exam_group = ExamGroup.objects.get(name=group_name)
         except ExamGroup.DoesNotExist:
-            # TODO: Return error
-            return HttpResponse("error: no group with name " + group_name)
+            return HttpResponse("Error: No group with name " + group_name)
         except ExamGroup.MultipleObjectsReturned:
-            # TODO: Return error
-            return HttpResponse("error: multiple groups with name " + group_name)
+            return HttpResponse("Error: Multiple groups with name " + group_name)
     else:
-        # TODO: Return error
-        return HttpRespone("error: no group name provided " + group_name)
+        return HttpRespone("Error: No group name provided " + group_name)
     
     return render_to_response("admin_session.html", 
         {
@@ -231,11 +230,13 @@ def admin_add_session(request):
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_edit_session(request):
+    # TODO: Edit session
     pass
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_trends(request):
+    # TODO: Trends
     return render_to_response("admin_trends.html", {'tab_number': 2}, context_instance=RequestContext(request))
 
 @login_required
@@ -247,19 +248,6 @@ def admin_settings(request):
                                                 post_save_redirect="/admin/settings/", 
                                                 template_name="admin_settings.html",
                                                 extra_context={'tab_number': 3})
-    # the_exam = Exam.objects.all()[0]
-    # if request.method == 'POST':
-    #     form = ExamForm(request.POST, instance=the_exam)
-    #     if form.is_valid():
-    #         form.save()
-    #         messages.info(request, 'Settings saved.')
-    #         return HttpResponseRedirect("/admin/settings/?saved")
-    # else:
-    #     form = ExamForm(instance=the_exam)
-    # 
-    # return render_to_response("admin_settings.html", {'form': form,
-    #                                                   'tab_number': 3}, context_instance=RequestContext(request))
-    
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
@@ -268,14 +256,11 @@ def admin_student(request, student_id):
         try:
             student = UserProfile.objects.get(student_id=student_id)
         except UserProfile.DoesNotExist:
-            # TODO: Return error
-            return HttpResponse("error: no student with id " + student_id)
+            return HttpResponse("Error: No student with id " + student_id)
         except UserProfile.MultipleObjectsReturned:
-            # TODO: Return error
-            return HttpResponse("error: multiple students with id " + student_id)
+            return HttpResponse("Error: Multiple students with id " + student_id)
     else:
-        # TODO: Return error
-        return HttpRespone("error: no student id provided " + student_id)
+        return HttpRespone("Error: No student id provided " + student_id)
     
     return render_to_response("admin_student.html", 
         {
@@ -284,57 +269,4 @@ def admin_student(request, student_id):
             'question_count': student.exam_group.problem_count(),
             'tab_number': 1,
         }, context_instance=RequestContext(request))
-            
-# @login_required
-# @user_passes_test(lambda u: u.is_staff)
-# def distribution_csv(request, group):
-#     response = HttpResponse(mimetype='text/csv')
-#     response['Content-Disposition'] = 'attachment; filename=distribution.csv'
-#     
-#     writer = csv.writer(response)
-#     # TODO: Handle 4 and 5 answers (A,B,C,D and A,B,C,D,E)
-#     writer.writerow(['Problem Number', 'Question', 'A', 'B', 'C', 'D', 'E', 'Unanswered', 'Correct'])
-#     
-#     # TODO: Write distributions
-#     
-#     return response
-#     
-#     
-# @login_required
-# @user_passes_test(lambda u: u.is_staff)
-# def grades_csv(request, group_name):
-#     try:
-#         exam_group = ExamGroup.objects.get(name=group_name)
-#     except ExamGroup.DoesNotExist:
-#         # TODO: Return error
-#         return HttpResponse("error: no group with name " + group_name)
-#     except ExamGroup.MultipleObjectsReturned:
-#         # TODO: Return error
-#         return HttpResponse("error: multiple groups with name " + group_name)
-#         
-#     response = HttpResponse(mimetype='text/csv')
-#     response['Content-Disposition'] = 'attachment; filename=grades.csv'
-#     
-#     writer = csv.writer(response)
-#     writer.writerow(['Name', 'Score'])
-#     
-#     for student in exam_group.finished_students().order_by(user__username):
-#         writer.writerow([student.user.username, student.score])
-#     
-#     return response
-# 
-# 
-# @login_required
-# @user_passes_test(lambda u: u.is_staff)
-# def grades(request, group_name):
-#     try:
-#         exam_group = ExamGroup.objects.get(name=group_name)
-#     except ExamGroup.DoesNotExist:
-#         # TODO: Return error
-#         return HttpResponse("error: no group with name " + group_name)
-#     except ExamGroup.MultipleObjectsReturned:
-#         # TODO: Return error
-#         return HttpResponse("error: multiple groups with name " + group_name)
-#         
-#     return render_to_response("admin_grades.html", {'finished_students': exam_group.finished_students().order_by('score')}, context_instance=RequestContext(request))
-    
+ 

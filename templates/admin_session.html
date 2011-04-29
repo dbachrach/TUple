@@ -51,11 +51,26 @@
 <script type="text/javascript" src="{{ media_url }}js/datatables/media/js/datatables.numhtml.js"></script>
 <script language="javascript" type="text/javascript" src="{{ media_url }}js/flot/jquery.flot.js"></script>
 <script language="javascript" type="text/javascript" src="{{ media_url }}js/flot/jquery.flot.selection.js"></script>
+<script type="text/javascript" src="{{ media_url }}js/Apprise/apprise-1.5.js"></script>
+<link rel="stylesheet" href="{{ media_url }}js/Apprise/apprise.css" type="text/css" />
 
 
 <script type="text/javascript">
 
 $(document).ready(function() {
+	
+	$('.problem_number_row').hover(function() {
+			$(this).css('cursor','pointer');
+		}, function() {
+			$(this).css('cursor','auto');
+	});
+	
+	$('.problem_number_link, .problem_number_row').click(function() {
+		apprise_info = $(this).attr('apprise_info');
+		apprise(apprise_info);
+		return false;
+	});
+	
     TableToolsInit.oFeatures.bXls = false;
     TableToolsInit.oFeatures.bCopy = false;
     TableToolsInit.oFeatures.bPrint = false;
@@ -64,10 +79,6 @@ $(document).ready(function() {
     TableToolsInit.iButtonWidth = 24;
     TableToolsInit.sSwfPath = "/media/js/tabletools/swf/ZeroClipboard.swf";
     TableToolsInit.sTitle = "Grades";
-    
-    // TODO: Hook up the table's filter into the graph (bar chart)
-    
-    // TODO: Try to make the border below the header on the tables 1 px.
     
     var grades_table = $('#grades_table').dataTable( {
         "bAutoWidth": false,
@@ -128,10 +139,12 @@ $(document).ready(function() {
             bars: { 
                 show: true, 
                 fill: true,
-                lineWidth: 1,
+                lineWidth: 3,
                 align: "center",
             },
-            color: "#C1DAD7",
+            //color: "#C1DAD7",
+            //color: "rgb(201,222,231)",
+            color: "rgb(91,144,151)",
         }
         ], {
             xaxis: {
@@ -291,6 +304,8 @@ $(document).ready(function() {
           }, hideDelay);
         });
       });
+
+	
 });
 
 </script>
@@ -300,16 +315,21 @@ $(document).ready(function() {
 <div id="range-low" style="display:none"></div>
 <div id="range-high" style="display:none"></div>
 
-<p>
+<div class="admin_submenu">
 {% for group in exam_groups %}
-    <a href="/admin/sessions/{{ group.name }}/">{% ifequal group exam_group %} <b> {% endifequal %} {{ group.name }} {% ifequal group exam_group %} </b> {% endifequal %}</a> | 
+    <span class="sub_group{% ifequal group exam_group %}_selected{% endifequal %}">
+	<a href="/admin/sessions/{{ group.name }}/">{% ifequal group exam_group %} <strong> {% endifequal %} {{ group.name }} {% ifequal group exam_group %} </strong> {% endifequal %}</a> 
+	</span>
 {% endfor %}
- <a href="/admin/sessions/add/"> Add new session</a>
-</p>
+ 
+<!-- <span class="sub_group">
+	<a href="/admin/sessions/add/"> Add new session</a>
+</span> -->
+</div>
 
 <div>
-    <h1>{{ exam_group.name }}</h1>
-    <div style="float:right"><a href="/admin/sessions/{{ exam_group.name }}/edit/">Edit Session</a></div>
+    <!-- <h1>{{ exam_group.name }}</h1> -->
+    <div style="float:right"><a href="/admin/sessions/{{ exam_group.name }}/edit/"><button type="button">Edit Session</a> <a href="/admin/sessions/add/"><button type="button">Create New Session</a></div>
     <p>&nbsp;</p>
 <h1>Stats</h1>
 {% if stats %}
@@ -347,14 +367,23 @@ $(document).ready(function() {
     </tbody>
 </table>
 
-<div id="grades_graph" style="width:650px;height:300px; margin:0 auto;"></div>
+<h1>Grade distribution</h1>
+<table style="font-size:10px">
+	<tr>
+		<td># of students</td>
+		<td>
+			<div id="grades_graph" style="width:650px;height:300px; margin:0 auto;"></div>
+		</td>
+	</tr>
+		<td>&nbsp;</td>
+		<td style="text-align:center">Grade</td>
+	</tr>
+</table>
 
 <h1>Question Distributions</h1>
-<p>This is a breakdown of student answers for all questions. A CSV file of this data may be found <a href="/admin/distribution/{{ group.name }}/csv/">here</a>.</p>
+<p>This is a breakdown of student answers for all questions. Click any row to see the question and its answers.</p>
 
-<!-- TODO: Handle 4 and 5 answer tables -->
 <table id="distribution_table" class="data_table display" cellspacing="0" cellpadding="0">
-    <!--<caption>Number of graded exams: {{ stats.finished_students_count }}</caption>-->
     <thead>
         <tr>
             <th>#</th>
@@ -362,17 +391,26 @@ $(document).ready(function() {
                <th>B</th>
                <th>C</th>
                <th>D</th>
+			    {% ifequal exam_group.answers_per_problem 5 %}
                <th>E</th>
+				{% endifequal %}
                <th>Unanswered</th>
             </tr>
     </thead>
     <tbody>
         {% for distribution in problem_distributions %}
-        <tr>
-            <!-- TODO: Make the question clickable to view what the question is -->
-            <!-- TODO: These values are not sorted properly -->
+
+        <tr class="problem_number_row" apprise_info="<p>{{ distribution.problem.text }}</p>
+
+														<table cellspacing='0' cellpadding='5' style='margin: 0 auto''>
+																{% for answer in distribution.problem.sorted_answers %}  
+														    	<tr>
+														        	<td class='left'><strong>{{ answer.letter|upper }})</strong></td>
+														        	<td>{{ answer.text }}</td>
+														    	</tr>
+														    	{% endfor %}
+														</table>">
             <td class="left">
-                
                 {{ distribution.problem.number }}
             </td>
             
@@ -382,13 +420,16 @@ $(document).ready(function() {
             
             <td>{{ distribution.unanswered_percentage|floatformat }}% {% if distribution.unanswered_count > 0 %} <br />({{ distribution.unanswered_count }}) {% endif %}</td>
         </tr>
-        {% empty %}
-            <!-- TODO: Handle 4 & 5 problems here. The colspan needs to change. Also make this look prettier and centered -->
-            <!--<tr><td colspan="7">No Problems</td></tr>-->
+        {% empty %}			
+			{% ifequal exam_group.answers_per_problem 5 %}
+            	<tr><td colspan="6" style='text-align:center'>No Problems</td></tr>
+			{% endifequal %}
+			{% ifequal exam_group.answers_per_problem 5 %}
+				<tr><td colspan="7" style='text-align:center'>No Problems</td></tr>
+			{% endifequal %}
         {% endfor %}
     </tbody>
 </table>
-
 </div>
 
 {% endblock %}
