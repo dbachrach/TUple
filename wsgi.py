@@ -1,6 +1,6 @@
 import os
 import sys
-sys.path.append('/home/dotcloud/current/')
+sys.path.append('/home/dotcloud/current/TUple')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'TUple.settings'
 import django.core.handlers.wsgi
 djangoapplication = django.core.handlers.wsgi.WSGIHandler()
