@@ -16,22 +16,14 @@
 {% endif %}
 
 <form method="post" action="{% url django.contrib.auth.views.login %}">
-{% csrf_token %}
-<table id="login">
-<tr>
-    <td><label for="student_num">Student ID#:</label></td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td><label for="last_name">Last Name: </label></td>
-    <td>{{ form.password }}</td>
-</tr>
-<tr>
-    <td align="right"></td>
-    <td align="left"><button>Login</button></td>
-</tr>
-</table>
-
+	{% csrf_token %}
+	<div class="input_area">
+		<div class="login">
+    		<p><label for="student_num">Student ID:</label> {{ form.username }}</p>
+			<p><label for="last_name">Last Name:</label> {{ form.password }}</p>
+    		<button>Login</button>
+		</div>
+	</div>
 <input type="hidden" name="next" value="/didlogin/" />
 </form>
 

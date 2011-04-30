@@ -6,7 +6,9 @@
 <div>To create a new session, you must provide a name, examination dates, and test time length. You must also assign problems to this session and choose the students who are in this session.</div>
 
 <form action="/admin/settings/" method="post">
-{{ form.as_p }}
+	<div class="input_area">
+		{{ form.as_p }}
+	</div>
 <button>Create Session</button>
 </form>
 
