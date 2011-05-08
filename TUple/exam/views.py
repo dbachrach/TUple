@@ -214,6 +214,7 @@ def admin_session(request, group_name):
             'exam_group': exam_group, 
             'exam_groups': ExamGroup.objects.all(),
             'finished_students': exam_group.finished_students().order_by('score'),
+            # TODO: Grade and grades _distribution.
             'grades_distribution':  exam_group.grade_distribution(),
             'problem_distributions': exam_group.problem_distributions(),
             'tab_number': 1,
@@ -235,10 +236,23 @@ def admin_edit_session(request):
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-@cache_page(60 * 5)
+# TODO: cache
 def admin_trends(request):
     # TODO: Trends
-    return render_to_response("admin_trends.html", {'tab_number': 2}, context_instance=RequestContext(request))
+    
+    sessions = ExamGroup.objects.all()
+    # stats = {}
+    # for s in sessions:
+    #     stats[s.name] = s.calculate_statistics()
+    
+    problem_count = max([s.problem_count() for s in sessions])
+    #grade_distribution = "[" + ",".join([str(s.grade_distribution()) for s in sessions]) + "]"
+    
+    return render_to_response("admin_trends.html", {'tab_number': 2, 
+                                                    'sessions': sessions,
+                                                    'problem_count': problem_count,
+                                                    #'grade_distribution': grade_distribution,
+                                                    }, context_instance=RequestContext(request))
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)

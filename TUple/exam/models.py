@@ -130,7 +130,7 @@ class ExamGroup(models.Model):
             if 'standard_deviation' in __aggregates:
                 standard_deviation = __aggregates['standard_deviation'] 
             else:
-                standard_deviation = "not available"
+                standard_deviation = ""
                 
             high_score = __aggregates['high_score']
             low_score = __aggregates['low_score']

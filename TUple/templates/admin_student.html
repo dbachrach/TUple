@@ -14,10 +14,27 @@
 <script type="text/javascript" src="{{ media_url }}js/datatables/media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="{{ media_url }}js/tabletools/ZeroClipboard/ZeroClipboard.js"></script>
 <script type="text/javascript" src="{{ media_url }}js/tabletools/js/TableTools.min.js"></script>
+<script type="text/javascript" src="{{ media_url }}js/Apprise/apprise-1.5.js"></script>
+<link rel="stylesheet" href="{{ media_url }}js/Apprise/apprise.css" type="text/css" />
 
 <script type="text/javascript">
 
 $(document).ready(function() {
+	
+	// Set up hover cursor for the two tables
+	$('.problem_number_row').hover(function() {
+			$(this).css('cursor','pointer');
+		}, function() {
+			$(this).css('cursor','auto');
+	});
+	
+	// Problem clicks
+	$('.problem_number_row').click(function() {
+		apprise_info = $(this).attr('apprise_info');
+		apprise(apprise_info);
+		return false;
+	});
+	
 	TableToolsInit.oFeatures.bXls = false;
 	TableToolsInit.oFeatures.bCopy = false;
 	TableToolsInit.oFeatures.bPrint = false;
@@ -54,7 +71,16 @@ $(document).ready(function() {
         </thead>
 		<tbody>
 			{% for answer_sheet in answer_sheets %}
-			    <tr>
+			    <tr class="problem_number_row" apprise_info="<p>{{ answer_sheet.problem.text }}</p>
+
+																<table cellspacing='0' cellpadding='5' style='margin: 0 auto''>
+																		{% for answer in answer_sheet.problem.sorted_answers %}  
+																    	<tr>
+																        	<td class='left'><strong>{{ answer.letter|upper }})</strong></td>
+																        	<td>{{ answer.text }}</td>
+																    	</tr>
+																    	{% endfor %}
+																</table>">
 			        <td class="left">{{ answer_sheet.problem.number }}</td>
 			        {% if answer_sheet.answer %}
 			        <td>{{ answer_sheet.answer.letter }} {% if answer_sheet.answer.correct %}<img src="{{ media_url }}images/checkmark.gif" style="height:12px;width:12px;">{% endif %}</td>

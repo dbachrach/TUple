@@ -1,1 +1,218 @@
 {% extends "base_admin.html" %}
+
+
+{% block head_additions %}
+{{ block.super }}
+
+<style>
+
+@import "{{ media_url }}css/jquery-ui-1.8.6.custom.css";
+@import "{{ media_url }}js/datatables/media/css/demo_table_jui.css";
+@import "{{ media_url }}js/tabletools/css/TableTools.css";
+
+</style>
+
+<!--[if IE]><script language="javascript" type="text/javascript" src="{{ media_url }}js/flot/excanvas.min.js"></script><![endif]-->
+<script type="text/javascript" src="{{ media_url }}js/jquery.js"></script> 
+<script type="text/javascript" src="{{ media_url }}js/datatables/media/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="{{ media_url }}js/tabletools/ZeroClipboard/ZeroClipboard.js"></script>
+<script type="text/javascript" src="{{ media_url }}js/tabletools/js/TableTools.min.js"></script>
+<script type="text/javascript" src="{{ media_url }}js/datatables/media/js/datatables.numhtml.js"></script>
+<script language="javascript" type="text/javascript" src="{{ media_url }}js/flot/jquery.flot.js"></script>
+<script language="javascript" type="text/javascript" src="{{ media_url }}js/flot/jquery.flot.selection.js"></script>
+<script type="text/javascript" src="{{ media_url }}js/Apprise/apprise-1.5.js"></script>
+<link rel="stylesheet" href="{{ media_url }}js/Apprise/apprise.css" type="text/css" />
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+	
+	// Set up hover cursor for the two tables
+	$('.stat_row').hover(function() {
+			stat_num = $(this).attr('stat_num');
+			$(this).css('cursor','pointer');
+			plotAccordingToChoices(stat_num);
+		}, function() {
+			$(this).css('cursor','auto');
+			plotAccordingToChoices(null);
+	});
+	
+	// Session clicks
+	$('.stat_row').click(function() {
+		stat_info = $(this).attr('stat_info');
+		window.location = "/admin/sessions/" + stat_info + "/";
+		return false;
+	});
+	
+    TableToolsInit.oFeatures.bXls = false;
+    TableToolsInit.oFeatures.bCopy = false;
+    TableToolsInit.oFeatures.bPrint = false;
+    TableToolsInit.oBom.bXls = false;
+    TableToolsInit.iButtonHeight = 24;
+    TableToolsInit.iButtonWidth = 24;
+    TableToolsInit.sSwfPath = "/media/js/tabletools/swf/ZeroClipboard.swf";
+    TableToolsInit.sTitle = "Grades";
+    
+    var grades_table = $('#stats_table').dataTable( {
+        "bAutoWidth": false,
+        "bJQueryUI": true,
+        "bStateSave": true,
+        // "sScrollY": "325px",
+        "bPaginate": false,
+        "bLengthChange": false,
+        // "bScrollCollapse": true,
+        "sDom": '<"H"Tf>t',
+    });
+
+	var datasets = [
+		{% for session in sessions %}
+	        { 
+	            label: "{{ session.name }}",  
+	            data: eval('{{ session.grade_distribution }}'), 
+	            lines: { 
+	                show: true, 
+	                fill: true,
+	                lineWidth: 3,
+	                align: "center",
+	            },
+	            color: "rgb(91,144,151)",
+	        },
+		{% endfor %}
+        ];
+	
+	// hard-code color indices to prevent them from shifting as
+    // countries are turned on/off
+    var i = 0;
+    $.each(datasets, function(key, val) {
+        val.color = i;
+        i++;
+    });
+
+	
+	var max_y_value = -1;
+	
+	for (var i = 0; i < datasets.length; i++) {
+		var set = datasets[i];
+		d = set['data'];
+		for (var j = 0; j < d.length; j++) {
+			var el = d[j];
+			var val = el[1];
+			if (max_y_value < val) {
+				max_y_value = val;
+			}
+		}
+	}
+	alert(max_y_value);
+
+	function plotAccordingToChoices(plot_choice) {
+        var data = [];
+
+		if (plot_choice == null) {
+			data = datasets;
+		}
+		else {
+			data.push(datasets[plot_choice])
+		}
+
+        if (data.length > 0) {
+            $.plot($("#grades_graph"), data, {
+				xaxis: {
+	                ticks: {{ problem_count }},
+	                tickSize: 1,
+	                tickDecimals: 0,
+	                min: -.5,
+	                max: {{ problem_count }} + 0.5,
+	            },
+	            yaxis: {
+	                min: 0,
+					max: max_y_value + 0.5,
+	                tickSize: 1,
+	                tickDecimals: 0,
+	            },
+	            grid: {
+	                backgroundColor: { colors: ["#fff", "#eee"] },
+	                hoverable: true, 
+	                clickable: true,
+	                borderWidth: 1,
+	                borderColor: "#C1DAD7",
+	                verticalLinesX1: false,
+	            }
+            });
+		}
+    }
+
+	plotAccordingToChoices(null);
+
+			//     var plot = $.plot($("#grades_graph"), 
+			// , {
+			//             xaxis: {
+			//                 ticks: {{ problem_count }},
+			//                 tickSize: 1,
+			//                 tickDecimals: 0,
+			//                 min: -.5,
+			//                 max: {{ problem_count }} + 0.5,
+			//             },
+			//             yaxis: {
+			//                 min: 0,
+			//                 tickSize: 1,
+			//                 tickDecimals: 0,
+			//             },
+			//             grid: {
+			//                 backgroundColor: { colors: ["#fff", "#eee"] },
+			//                 hoverable: true, 
+			//                 clickable: true,
+			//                 borderWidth: 1,
+			//                 borderColor: "#C1DAD7",
+			//                 verticalLinesX1: false,
+			//             }
+			//     });
+});
+
+</script>
+
+{% endblock %}
+
+
+{% block content_admin %}
+
+<h1>Stats</h1>
+<table id="stats_table" class="data_table display" cellspacing="0" cellpadding="0">
+    <thead>
+        <tr>
+            <th>Session</th>
+            <th>Average</th>
+			<th>Standard Deviation</th>
+			<th>Highest</th>
+			<th>Lowest</th>
+            <th>Finished Students</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for session in sessions %}
+                <tr class="stat_row" stat_info="{{ session.name }}" stat_num="{{ forloop.counter0 }}">
+                    <td class="left">{{ session.name }}</td>
+                    <td>{{ session.calculate_statistics.average_score_percentage|floatformat }}%</td>
+					<td>{{ session.calculate_statistics.standard_deviation|floatformat|default:"Not available" }}</td>
+                    <td>{{ session.calculate_statistics.high_score_percentage|floatformat }}%</td>
+					<td>{{ session.calculate_statistics.low_score_percentage|floatformat }}%</td>
+					<td>{{ session.calculate_statistics.finished_students_count }}</td>
+                </tr>
+            {% endfor %}
+    </tbody>
+</table>
+
+<h1>Grade distribution</h1>
+<table style="font-size:10px">
+	<tr>
+		<td># of students</td>
+		<td>
+			<div id="grades_graph" style="width:650px;height:300px; margin:0 auto;"></div>
+		</td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td style="text-align:center">Grade</td>
+	</tr>
+</table>
+
+{% endblock %}
