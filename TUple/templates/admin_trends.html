@@ -102,7 +102,6 @@ $(document).ready(function() {
 			}
 		}
 	}
-	alert(max_y_value);
 
 	function plotAccordingToChoices(plot_choice) {
         var data = [];
@@ -142,6 +141,9 @@ $(document).ready(function() {
     }
 
 	plotAccordingToChoices(null);
+	
+	// TODO: consolidate all this js into one file and share it w/ admin_session
+	// TODO: Make the table and the graph closer to each other
 
 			//     var plot = $.plot($("#grades_graph"), 
 			// , {

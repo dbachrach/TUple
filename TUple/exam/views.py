@@ -236,7 +236,7 @@ def admin_edit_session(request):
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-# TODO: cache
+@cache_page(60 * 5)
 def admin_trends(request):
     # TODO: Trends
     
