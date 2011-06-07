@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>templates/admin_trends.html</string>
+	<string>templates/admin_session_edit.html</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -40,30 +40,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>26</integer>
+				<integer>50</integer>
 				<key>line</key>
-				<integer>66</integer>
+				<integer>44</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>46</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>8</integer>
-				<key>line</key>
-				<integer>66</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>26</integer>
-				<key>line</key>
-				<integer>66</integer>
-			</dict>
+			<integer>124</integer>
 		</dict>
 		<key>exam/tests.py</key>
 		<dict>
@@ -84,14 +68,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>53</integer>
+				<integer>19</integer>
 				<key>line</key>
-				<integer>253</integer>
+				<integer>248</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>225</integer>
+			<integer>214</integer>
 		</dict>
 		<key>manage.py</key>
 		<dict>
@@ -212,23 +196,23 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>13</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>318</integer>
+				<integer>156</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>287</integer>
+			<integer>141</integer>
 		</dict>
 		<key>media/js/Apprise/apprise-1.5.js</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>58</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>48</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -293,6 +277,36 @@
 			<key>firstVisibleLine</key>
 			<integer>222</integer>
 		</dict>
+		<key>media/js/datatables/media/js/jquery.dataTables.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>46</integer>
+				<key>line</key>
+				<integer>959</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>1182</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>20</integer>
+				<key>line</key>
+				<integer>959</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>46</integer>
+				<key>line</key>
+				<integer>959</integer>
+			</dict>
+		</dict>
 		<key>media/js/exam.js</key>
 		<dict>
 			<key>caret</key>
@@ -306,6 +320,20 @@
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>138</integer>
+		</dict>
+		<key>media/js/jquery.uploadProgress.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>11</integer>
+				<key>line</key>
+				<integer>115</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>74</integer>
 		</dict>
 		<key>media/js/tabletools/css/TableTools.css</key>
 		<dict>
@@ -365,6 +393,20 @@
 			<key>firstVisibleLine</key>
 			<integer>75</integer>
 		</dict>
+		<key>templates/404.html</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>56</integer>
+				<key>line</key>
+				<integer>5</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 		<key>templates/500.html</key>
 		<dict>
 			<key>caret</key>
@@ -384,29 +426,29 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>line</key>
-				<integer>21</integer>
+				<integer>193</integer>
 			</dict>
 			<key>columnSelection</key>
 			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>172</integer>
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
-				<integer>86</integer>
+				<integer>111</integer>
 				<key>line</key>
-				<integer>22</integer>
+				<integer>193</integer>
 			</dict>
 			<key>selectTo</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>line</key>
-				<integer>21</integer>
+				<integer>193</integer>
 			</dict>
 		</dict>
 		<key>templates/admin_session_add.html</key>
@@ -414,14 +456,28 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>6</integer>
+				<integer>52</integer>
 				<key>line</key>
-				<integer>10</integer>
+				<integer>55</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
+			<integer>33</integer>
+		</dict>
+		<key>templates/admin_session_edit.html</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>4</integer>
+				<key>line</key>
+				<integer>87</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
 			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>76</integer>
 		</dict>
 		<key>templates/admin_settings.html</key>
 		<dict>
@@ -456,14 +512,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>3</integer>
+				<integer>28</integer>
 				<key>line</key>
-				<integer>102</integer>
+				<integer>18</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>83</integer>
+			<integer>38</integer>
 		</dict>
 		<key>templates/base.html</key>
 		<dict>
@@ -493,34 +549,48 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
+		<key>templates/closed.html</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>10</integer>
+				<key>line</key>
+				<integer>5</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 		<key>templates/exam.html</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>24</integer>
+				<integer>23</integer>
 				<key>line</key>
-				<integer>105</integer>
+				<integer>11</integer>
 			</dict>
 			<key>columnSelection</key>
 			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>81</integer>
+			<integer>0</integer>
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
-				<integer>40</integer>
+				<integer>5</integer>
 				<key>line</key>
-				<integer>105</integer>
+				<integer>11</integer>
 			</dict>
 			<key>selectTo</key>
 			<dict>
 				<key>column</key>
-				<integer>24</integer>
+				<integer>23</integer>
 				<key>line</key>
-				<integer>105</integer>
+				<integer>11</integer>
 			</dict>
 		</dict>
 		<key>templates/home.html</key>
@@ -570,41 +640,35 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>38</integer>
+				<integer>17</integer>
 				<key>line</key>
-				<integer>35</integer>
+				<integer>33</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>10</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>31</integer>
-				<key>line</key>
-				<integer>35</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>43</integer>
-				<key>line</key>
-				<integer>35</integer>
-			</dict>
+			<integer>5</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
 		<string>manage.py</string>
 		<string>templates/500.html</string>
+		<string>templates/404.html</string>
 		<string>templates/admin_trends.html</string>
 		<string>templates/admin_student.html</string>
 		<string>urls.py</string>
+		<string>templates/closed.html</string>
 		<string>exam/views.py</string>
+		<string>media/js/jquery.uploadProgress.js</string>
 		<string>templates/admin_session_add.html</string>
+		<string>media/css/style.css</string>
+		<string>media/css/jquery.ui.theme.css</string>
+		<string>media/js/datatables/media/js/jquery.dataTables.js</string>
+		<string>templates/admin_settings.html</string>
+		<string>templates/admin_session_edit.html</string>
+		<string>media/js/Apprise/apprise-1.5.js</string>
+		<string>templates/exam.html</string>
 		<string>exam/models.py</string>
 		<string>templates/admin_session.html</string>
 	</array>
@@ -639,6 +703,21 @@
 							<true/>
 							<key>subItems</key>
 							<dict/>
+						</dict>
+						<key>js</key>
+						<dict>
+							<key>isExpanded</key>
+							<true/>
+							<key>subItems</key>
+							<dict>
+								<key>Apprise</key>
+								<dict>
+									<key>isExpanded</key>
+									<true/>
+									<key>subItems</key>
+									<dict/>
+								</dict>
+							</dict>
 						</dict>
 					</dict>
 				</dict>

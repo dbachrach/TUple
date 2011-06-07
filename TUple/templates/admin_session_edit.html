@@ -1,0 +1,182 @@
+{% extends "base_admin.html" %}
+
+{% block head_additions %}
+{{ block.super }}
+
+<style>
+
+@import "{{ media_url }}css/jquery-ui-1.8.6.custom.css";
+@import "{{ media_url }}js/datatables/media/css/demo_table_jui.css";
+@import "{{ media_url }}js/tabletools/css/TableTools.css";
+
+</style>
+<script type="text/javascript" src="{{ media_url }}js/jquery.js"></script>
+<script type="text/javascript" src="{{ media_url }}js/jquery.uploadProgress.js"></script>
+<script type="text/javascript" src="{{ media_url }}js/datatables/media/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="{{ media_url }}js/tabletools/ZeroClipboard/ZeroClipboard.js"></script>
+<script type="text/javascript" src="{{ media_url }}js/tabletools/js/TableTools.min.js"></script>
+<script type="text/javascript" src="{{ media_url }}js/datatables/media/js/datatables.numhtml.js"></script>
+<script language="javascript" type="text/javascript" src="{{ media_url }}js/flot/jquery.flot.js"></script>
+<script language="javascript" type="text/javascript" src="{{ media_url }}js/flot/jquery.flot.selection.js"></script>
+<script type="text/javascript" src="{{ media_url }}js/Apprise/apprise-1.5.js"></script>
+<link rel="stylesheet" href="{{ media_url }}js/Apprise/apprise.css" type="text/css" />
+
+
+<script type="text/javascript">
+
+function addStudent(student_name, student_id) {
+	$('#students_table').dataTable().fnAddData( [
+		student_name, student_id
+	] );
+	
+	$('#students_table td:first-child').attr('class','left_td');
+}
+
+$(document).ready(function() {
+	
+	TableToolsInit.oFeatures.bXls = false;
+    TableToolsInit.oFeatures.bCopy = false;
+    TableToolsInit.oFeatures.bPrint = false;
+	TableToolsInit.oFeatures.bCsv = false;
+    TableToolsInit.oBom.bXls = false;
+    TableToolsInit.iButtonHeight = 24;
+    TableToolsInit.iButtonWidth = 24;
+    TableToolsInit.sSwfPath = "/media/js/tabletools/swf/ZeroClipboard.swf";
+    TableToolsInit.sTitle = "Students";
+    
+    var grades_table = $('#students_table').dataTable( {
+        "bAutoWidth": false,
+        "bJQueryUI": true,
+        "bStateSave": true,
+        "sScrollY": "325px",
+        "bPaginate": false,
+        "bLengthChange": false,
+        "bScrollCollapse": true,
+        "sDom": '<"H"T<"toolbar">>t',
+		"oLanguage": {
+			"sEmptyTable": "No students."
+		}
+    });
+
+	// TODO: Style these like buttons
+	$('.toolbar').html('<input type="button" id="upload_csv" value="Upload CSV of Students" /> <input type="button" id="add_student" value="Add Student" />');
+	$('.toolbar').attr('style', 'float:right');
+	
+	$('#add_student').click(function() {
+		// TODO: Style h3's nicely. ANd h2's while youre at it.
+		apprise('<h3>Add Student</h3><div class="input_area"><p><label for="">Last Name:</label> <input id="add_student_name" type="text" name="name" maxlength="100" /></p><p><label for="">Student ID:</label> <input type="text" name="date" id="add_student_id" /></p></div>', 
+			{'confirm':true},
+			function(r) {
+				if (r) {
+					var student_name = $('#add_student_name').val();
+					var student_id = $('#add_student_id').val();
+					
+					addStudent(student_name, student_id);
+				}
+			}
+		);
+		return false;
+	});
+	
+	function handleFileSelect(evt) {
+		evt.stopPropagation();
+		evt.preventDefault();
+		
+		var reader = new FileReader();
+		reader.onload = function(e) {
+			alert(e.target.result);
+		};
+		reader.onerror = function(err) {
+			alert(err + " " + err.getMessage());
+		}
+		
+		reader.readAsText(evt.target.files[0], "UTF-8");
+		
+
+	}
+	function handleDragOver(evt) {
+		evt.stopPropagation();
+		evt.preventDefault();
+	}
+	
+	
+	
+	var str = "\
+		<h3>Upload CSV of Students</h3>\
+		<div id='drop_zone'>Drop files here</div>\
+		<output id='list'></output>";
+	
+	var str2 = '<h3>Upload CSV of Students</h3><div class="input_area" id="upload_form"><p><label for="">File:</label> <input id="" type="file" id="files"  /></p></div>				<div id="progress_container">		    <div id="progress_filename"></div>		    <div id="progress_bar">		        <div id="progress_indicator"></div>		    </div></div>';
+	
+	$('#upload_csv').click(function() {
+		// TODO: Remove the okay button on apprise for this and the above form
+		apprise(str);
+		
+		var dropZone = $('#drop_zone').get(0);
+		 dropZone.addEventListener('dragover', handleDragOver, false);
+		dropZone.addEventListener('drop', handleFileSelect, false);
+		// $('#files').addEventListner
+		return false;
+	});
+	
+	$('#upload_form').uploadProgress({
+	    jqueryPath: "{{ MEDIA_URL }}js/jquery.js",
+	    progressBar: '#progress_indicator',
+	    progressUrl: '', // { url upload_progress }
+	    start: function() {
+	        $("#upload_form").hide();
+	        filename = $("#id_file").val().split(/[\/\\]/).pop();
+	        $("#progress_filename").html('Uploading ' + filename + "...");
+	        $("#progress_container").show();
+	    },
+	    uploadProgressPath: "{{MEDIA_URL}}js/jquery.uploadProgress.js",
+	    uploading: function(upload) {
+	        if (upload.percents == 100) {
+	            window.clearTimeout(this.timer);
+	            $("#progress_filename").html('Processing ' + filename + "...");
+	        } else {
+	            $("#progress_filename").html('Uploading ' + filename + ': ' + upload.percents + '%');
+	        }
+	    },
+	    interval: 1000
+	});
+	
+	$('#students_table td:first-child').attr('class', $('#students_table td:first-child').attr('class') + ' left_td');
+});
+
+</script>
+
+{% endblock %}
+
+{% block content_admin %}
+
+<h1>Edit session</h1>
+
+<form action="/admin/sessions/add/" method="post"> <!-- todo: set this action -->
+	<div class="input_area">
+		<h2>Basic settings</h2>
+		<!-- TODO: use django form object -->
+		<p><label for="id_name">Name:</label> <input id="id_name" type="text" name="name" maxlength="100" /></p>
+		<p><label for="id_date">Date:</label> <input type="text" name="date" id="id_date" class="datepicker" /></p>
+		<p><label for="id_examination_time">Examination time:</label> <input type="text" name="examination_time" id="id_examination_time" /></p>
+		<p><label for="id_answers_per_problem">Answers per problem:</label> <input type="text" name="answers_per_problem" id="id_answers_per_problem" disabled="disabled" /></p>
+		<p><input type="checkbox" name="active" id="id_active" checked="checked" /> <label for="id_active">Make the currently active exam</label></p>
+		
+	</div>
+	
+	
+	<h2>Students</h2>
+		<table id="students_table" class="data_table display" cellspacing="0" cellpadding="0">
+		    <thead>
+		        <tr>
+		            <th>Last Name</th>
+		            <th>Student ID</th>
+		        </tr>
+		        </thead>
+			</table>
+	<h2>Problems</h2>
+	
+<button>Save</button>
+</form>
+
+{% endblock %}

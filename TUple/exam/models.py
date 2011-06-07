@@ -39,10 +39,10 @@ class Problem(models.Model):
 class ExamGroup(models.Model):
     name = models.CharField(max_length=100)
     date = models.DateField()
-    active = models.BooleanField()
     problems = models.ManyToManyField(Problem)
-    examination_time = models.IntegerField()
+    examination_time = models.IntegerField(help_text="<em>minutes</em>")
     answers_per_problem = models.SmallIntegerField()
+    active = models.BooleanField(help_text="<em>(Makes this the currently administered exam.</em>")
     
     class Meta:
         ordering = ('-date',)
@@ -143,6 +143,7 @@ class ExamGroup(models.Model):
 class ExamGroupForm(ModelForm):
     class Meta:
         model = ExamGroup
+        exclude = ('problems',)
                 
 class UserProfile(models.Model):
     student_id = models.CharField(max_length=20)

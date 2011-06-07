@@ -35,7 +35,7 @@ if(e.keyCode==27)
 {$('.aButtons > button[value="cancel"]').click();}}});var aText=$('.aTextbox').val();if(!aText){aText=false;}
 $('.aTextbox').keyup(function()
 {aText=$(this).val();});$('.aButtons > button').click(function()
-{$('.appriseOverlay').remove();$('.appriseOuter').remove();if(callback)
+{if(callback)
 {var wButton=$(this).attr("value");if(wButton=='ok')
 {if(args)
 {if(args['input'])
@@ -45,4 +45,5 @@ else
 else
 {callback(true);}}
 else if(wButton=='cancel')
-{callback(false);}}});}
+{callback(false);}}
+$('.appriseOverlay').remove();$('.appriseOuter').remove();});}

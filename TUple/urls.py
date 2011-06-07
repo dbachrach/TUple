@@ -36,11 +36,6 @@ urlpatterns = patterns('',
     (r'^admin/trends/$', views.admin_trends),
     (r'^admin/settings/$', views.admin_settings),
     
-    # (r'^admin/distribution/(.+)/csv/$', views.distribution_csv),
-    # 
-    # (r'^admin/grades/(.+)/csv/$', views.grades_csv),
-    # (r'^admin/grades/(.+)/$', views.grades),
-    
 
     (r'^admin-django/', include(admin.site.urls)),
 )

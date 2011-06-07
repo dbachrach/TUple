@@ -224,15 +224,25 @@ def admin_session(request, group_name):
 @user_passes_test(lambda u: u.is_staff)
 def admin_add_session(request): 
     return create_update.create_object(request, form_class=ExamGroupForm,
-                                                            post_save_redirect="/admin/sessions/%(name)s", 
+                                                            post_save_redirect="/admin/sessions/%(name)s/edit", 
                                                             template_name="admin_session_add.html",
                                                             extra_context={'tab_number': 1})
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_edit_session(request):
-    # TODO: Edit session
-    pass
+def admin_edit_session(request, session_name):
+    try:
+        session_id = ExamGroup.objects.get(name=session_name).id
+    except UserProfile.DoesNotExist:
+        return HttpResponse("Error: No session with name " + session_name)
+    except UserProfile.MultipleObjectsReturned:
+        return HttpResponse("Error: Multiple sessions with name " + session_name)
+    
+    return create_update.update_object(request, form_class=ExamGroupForm,
+                                                object_id=session_id,
+                                                post_save_redirect="/admin/sessions/%(name)s", 
+                                                template_name="admin_session_edit.html",
+                                                extra_context={'tab_number': 1})
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
@@ -262,7 +272,7 @@ def admin_settings(request):
                                                 object_id=the_exam.id,
                                                 post_save_redirect="/admin/settings/", 
                                                 template_name="admin_settings.html",
-                                                extra_context={'tab_number': 3})
+                                                extra_context={'tab_number': 3})                                    
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
@@ -285,3 +295,30 @@ def admin_student(request, student_id):
             'tab_number': 1,
         }, context_instance=RequestContext(request))
  
+
+def admin_upload_student_csv(request):
+    exam_group = ExamGroup.objects.get(name=student[6])
+    
+    for student in students:
+        try:
+            user = User.objects.create_user(username=student[1],
+                                            email='',
+                                            password=student[0])
+        except:
+            continue
+            
+        user.last_name=student[0]
+        user.isStaff = False
+        user.save()
+
+        user_profile = UserProfile()
+        user_profile.test_status = 0
+        user_profile.score = 0
+        user_profile.student_id = student[1]
+        
+        user_profile.exam_group = exam_gropu
+        user_profile.user = user
+        user_profile.retake = False
+        user_profile.save()
+        
+        # TODO: user profiles are expected to be hooked up to an answersheet

@@ -13,6 +13,7 @@
 </style>
 <!--[if IE]><script language="javascript" type="text/javascript" src="{{ media_url }}js/flot/excanvas.min.js"></script><![endif]-->
 <script type="text/javascript" src="{{ media_url }}js/jquery.js"></script> 
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 <script type="text/javascript" src="{{ media_url }}js/datatables/media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="{{ media_url }}js/tabletools/ZeroClipboard/ZeroClipboard.js"></script>
 <script type="text/javascript" src="{{ media_url }}js/tabletools/js/TableTools.min.js"></script>
@@ -66,6 +67,9 @@ $(document).ready(function() {
         "bLengthChange": false,
         "bScrollCollapse": true,
         "sDom": '<"H"Tf>t',
+		"oLanguage": {
+			"sEmptyTable": "No students."
+		}
     });
 
     TableToolsInit.sTitle = "Distribution";
@@ -79,6 +83,9 @@ $(document).ready(function() {
         "bLengthChange": false,
         //"bScrollCollapse": true,
         "sDom": '<"H"Tf>t',
+		"oLanguage": {
+			"sEmptyTable": "No problem."
+		}
     });
     
     $.fn.dataTableExt.afnFiltering.push(
@@ -183,6 +190,9 @@ $(document).ready(function() {
         $('#range-high').html("");
         grades_table.fnDraw();
     });	
+
+	$('#grades_table td:first-child').attr('class', $('#grades_table td:first-child').attr('class') + ' left_td');
+	$('#distribution_table td:first-child').attr('class', $('#distribution_table td:first-child').attr('class') + ' left_td');
 });
 
 </script>
@@ -229,18 +239,19 @@ $(document).ready(function() {
             <th>Student ID</th>
             <th>Grade</th>
         </tr>
-        </thead>
-        <tbody>
-            {% for student in finished_students %}
-                <tr class="grade_row" student_info="{{ student.student_id }}">
-                    <td class="left">{{ student.user.last_name }}</td>
-                    <td>{{ student.user.get_profile.student_id }}</td>
-                    <td>{{ student.score }}</td>
-                </tr>
-            {% endfor %}
+   	</thead>
+    <tbody>
+	    {% for student in finished_students %}
+	        <tr class="grade_row" student_info="{{ student.student_id }}">
+	            <td class="left">{{ student.user.last_name }}</td>
+	            <td>{{ student.user.get_profile.student_id }}</td>
+	            <td>{{ student.score }}</td>
+	        </tr>
+	    {% endfor %}
     </tbody>
 </table>
 
+<!-- TODO: Make this work when no one has taken test -->
 <h1>Grade distribution</h1>
 <table style="font-size:10px">
 	<tr>
@@ -295,13 +306,6 @@ $(document).ready(function() {
             
             <td>{{ distribution.unanswered_percentage|floatformat }}% {% if distribution.unanswered_count > 0 %} <br />({{ distribution.unanswered_count }}) {% endif %}</td>
         </tr>
-        {% empty %}			
-			{% ifequal exam_group.answers_per_problem 5 %}
-            	<tr><td colspan="6" style='text-align:center'>No Problems</td></tr>
-			{% endifequal %}
-			{% ifequal exam_group.answers_per_problem 5 %}
-				<tr><td colspan="7" style='text-align:center'>No Problems</td></tr>
-			{% endifequal %}
         {% endfor %}
     </tbody>
 </table>
