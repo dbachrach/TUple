@@ -45,7 +45,7 @@ $(document).ready(function() {
 <h1>Create new session</h1>
 <div>To create a new session, you must provide a name, examination dates, and test time length. You will then assign problems to this session and choose the students who are in this session.</div>
 
-<form action="/admin/sessions/add/" method="post">
+<form action="/admin/sessions/add/" method="post" enctype="multipart/form-data">
 	{{ form.non_field_errors }}
 	<div class="input_area">
 		<h2>Basic settings</h2>

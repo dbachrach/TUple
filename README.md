@@ -20,7 +20,7 @@ TUple takes advantage of some great tools, which are included in this distributi
 
 After installing TUple, you will need to configure a few things for your server. First edit the settings.py file:
 
-	mate TUple/settins.py
+	vi TUple/settings.py
 
 Edit the DATABASES dictionary to connect to your database. TUple should work fine with any of Django's database backends. (http://docs.djangoproject.com/en/dev/ref/settings/?from=olddocs#std:setting-DATABASES)[This page] has more information on the database options Django offers.
 

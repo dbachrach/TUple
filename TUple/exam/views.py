@@ -6,10 +6,11 @@ from django.contrib.auth import views as AuthViews
 from django.template import RequestContext
 from django.utils import simplejson
 from django.contrib import messages
-from TUple.exam.models import Problem, ExamGroup, Answer, Exam, ExamForm, UserProfile, ExamGroupForm
+from TUple.exam.models import Problem, ExamGroup, Answer, Exam, ExamForm, UserProfile, ExamGroupForm, AnswerSheet
 from django.views.generic import create_update
 from django.views.decorators.cache import cache_page
-import csv
+from django.contrib.auth.models import User
+
 
 
 def check_closed(f):
@@ -213,7 +214,7 @@ def admin_session(request, group_name):
             'problem_count': exam_group.problem_count(),
             'exam_group': exam_group, 
             'exam_groups': ExamGroup.objects.all(),
-            'finished_students': exam_group.finished_students().order_by('score'),
+            'finished_students': exam_group.finished_students(),
             # TODO: Grade and grades _distribution.
             'grades_distribution':  exam_group.grade_distribution(),
             'problem_distributions': exam_group.problem_distributions(),
@@ -232,7 +233,8 @@ def admin_add_session(request):
 @user_passes_test(lambda u: u.is_staff)
 def admin_edit_session(request, session_name):
     try:
-        session_id = ExamGroup.objects.get(name=session_name).id
+	exam_group = ExamGroup.objects.get(name=session_name)
+        session_id = exam_group.id
     except UserProfile.DoesNotExist:
         return HttpResponse("Error: No session with name " + session_name)
     except UserProfile.MultipleObjectsReturned:
@@ -242,7 +244,74 @@ def admin_edit_session(request, session_name):
                                                 object_id=session_id,
                                                 post_save_redirect="/admin/sessions/%(name)s", 
                                                 template_name="admin_session_edit.html",
-                                                extra_context={'tab_number': 1})
+                                                extra_context={'tab_number': 1, 
+							       'all_students': exam_group.all_students(),
+							       'exam_group': exam_group})
+
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def admin_edit_upload_csv(request, session_name):
+    try:
+        exam_group = ExamGroup.objects.get(name=session_name)
+    except UserProfile.DoesNotExist:
+        return HttpResponse("Error: No session with name " + session_name)
+    except UserProfile.MultipleObjectsReturned:
+        return HttpResponse("Error: Multiple sessions with name " + session_name)
+    
+    if request.method != 'POST':
+        return HttpResponse("Error: Not post")
+    else:
+        if len(request.FILES) == 0:
+            return HttpResponse("Error: No file")
+        else:
+            file = request.FILES['file']
+            if file.size > 10485760:
+                return HttpResponse("Error: File too large")
+            else:
+                file.read()
+                import csv
+                reader = csv.reader(file)
+
+                for row in reader:
+                    try:
+			create_student(row[0], row[1], exam_group)
+		    except:
+			raise
+		
+                return HttpResponseRedirect('/admin/sessions/'+ session_name  + '/edit/')
+
+# TODO: Move this to the right file
+def create_student(last_name, student_id, exam_group):
+        try:
+            user = User.objects.create_user(username=student_id,
+                                            email='',
+                                            password=last_name)
+        except:
+            raise
+
+        user.last_name=last_name
+        user.isStaff = False
+        user.save()
+
+        user_profile = UserProfile()
+        user_profile.test_status = 0
+        user_profile.score = 0
+        user_profile.student_id = student_id
+
+        user_profile.exam_group = exam_group
+        user_profile.user = user
+        user_profile.retake = False
+        user_profile.save()
+
+        for i in xrange(30):
+            prob = Problem.objects.get(number=i+1)
+            sheet = AnswerSheet()
+            sheet.user_profile = user_profile
+            sheet.problem = prob
+            sheet.save()
+
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
@@ -296,29 +365,29 @@ def admin_student(request, student_id):
         }, context_instance=RequestContext(request))
  
 
-def admin_upload_student_csv(request):
-    exam_group = ExamGroup.objects.get(name=student[6])
-    
-    for student in students:
-        try:
-            user = User.objects.create_user(username=student[1],
-                                            email='',
-                                            password=student[0])
-        except:
-            continue
-            
-        user.last_name=student[0]
-        user.isStaff = False
-        user.save()
-
-        user_profile = UserProfile()
-        user_profile.test_status = 0
-        user_profile.score = 0
-        user_profile.student_id = student[1]
+#def admin_upload_student_csv(request):
+#    exam_group = ExamGroup.objects.get(name=student[6])
+#    
+#    for student in students:
+#        try:
+#            user = User.objects.create_user(username=student[1],
+#                                            email='',
+#                                            password=student[0])
+#        except:
+#            continue
+##            
+ #       user.last_name=student[0]
+#        user.isStaff = False
+#        user.save()
+#
+ #       user_profile = UserProfile()
+ #       user_profile.test_status = 0
+#        user_profile.score = 0
+#        user_profile.student_id = student[1]
         
-        user_profile.exam_group = exam_gropu
-        user_profile.user = user
-        user_profile.retake = False
-        user_profile.save()
-        
+#        user_profile.exam_group = exam_gropu
+#        user_profile.user = user
+#        user_profile.retake = False
+ #       user_profile.save()
+#        
         # TODO: user profiles are expected to be hooked up to an answersheet

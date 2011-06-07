@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models import Avg, StdDev, Max, Min
 from datetime import datetime, date
 from django.forms import ModelForm
-
+#from django import forms
 
 class Exam(models.Model):
     name = models.CharField(max_length=100)
@@ -57,7 +57,10 @@ class ExamGroup(models.Model):
     def finished_students(self):
         '''Returns the list of students in this group who have finished the exam.'''
         return self.userprofile_set.filter(test_status=2)
-        
+    
+    def all_students(self):
+        return self.userprofile_set.all()
+                
     def get_examination_time_string(self):
         return '%d minutes' % int(self.examination_time / 60)
     
@@ -144,6 +147,10 @@ class ExamGroupForm(ModelForm):
     class Meta:
         model = ExamGroup
         exclude = ('problems',)
+
+    #upload_csv_file_of_students = forms.FileField()
+
+
                 
 class UserProfile(models.Model):
     student_id = models.CharField(max_length=20)

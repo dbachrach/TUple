@@ -28,6 +28,7 @@ urlpatterns = patterns('',
     (r'^admin/$', views.admin),
     (r'^admin/sessions/$', views.admin_sessions),
     (r'^admin/sessions/add/$', views.admin_add_session),
+    (r'^admin/sessions/(.+)/edit/csv/$', views.admin_edit_upload_csv),
     (r'^admin/sessions/(.+)/edit/$', views.admin_edit_session),
     (r'^admin/sessions/(.+)/$', views.admin_session),
 
