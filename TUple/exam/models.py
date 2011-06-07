@@ -181,8 +181,11 @@ class UserProfile(models.Model):
         '''Returns how much time the user has before his/her exam will be turned in.'''
         exam_time = self.exam_group.examination_time
         
-        time_difference = (datetime.now() - self.test_date).total_seconds()
-        if time_difference > exam_time:
+        # time_difference = (datetime.now() - self.test_date).total_seconds()
+        # total_seconds is not available on python < 2.7
+	td = (datetime.now() - self.test_date)
+	time_difference = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
+	if time_difference > exam_time:
             self.end_exam()
             return -1
             
