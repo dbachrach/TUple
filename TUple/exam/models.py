@@ -42,7 +42,7 @@ class ExamGroup(models.Model):
     problems = models.ManyToManyField(Problem)
     examination_time = models.IntegerField(help_text="<em>minutes</em>")
     answers_per_problem = models.SmallIntegerField()
-    active = models.BooleanField(help_text="<em>(Makes this the currently administered exam.</em>")
+    active = models.BooleanField(help_text="<em>(Makes this the currently administered exam.)</em>")
     
     class Meta:
         ordering = ('-date',)

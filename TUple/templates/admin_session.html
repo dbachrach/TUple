@@ -212,7 +212,17 @@ $(document).ready(function() {
 </div>
 
 <div>
-    <div style="float:right"><a href="/admin/sessions/{{ exam_group.name }}/edit/"><button type="button">Edit Session</button></a> <a href="/admin/sessions/add/"><button type="button">Create New Session</button></a></div>
+    <div style="float:right">
+		<a href="/admin/sessions/{{ exam_group.name }}/edit/">
+			<button type="button">Edit Session</button>
+		</a> 
+		<a href="/admin/sessions/add/">
+			<button type="button">Create New Session</button>
+		</a>
+		<a href="#">
+			<button type="button"> <img src="{{ media_url }}images/off.png" alt="Off" /> Start Exam</button>
+		</a>
+	</div>
     <p>&nbsp;</p>
 <!-- TODO: Way to close the exam or set an exam close date -->
 <h1>Stats</h1>
