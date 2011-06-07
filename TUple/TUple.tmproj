@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>manage.py</string>
+	<string>templates/admin_trends.html</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -365,14 +365,14 @@
 			<key>firstVisibleLine</key>
 			<integer>75</integer>
 		</dict>
-		<key>templates/adm_ssss.html</key>
+		<key>templates/500.html</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>8</integer>
+				<integer>61</integer>
 				<key>line</key>
-				<integer>27</integer>
+				<integer>9</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -384,29 +384,29 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>16</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>210</integer>
+				<integer>21</integer>
 			</dict>
 			<key>columnSelection</key>
 			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>189</integer>
+			<integer>0</integer>
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
-				<integer>51</integer>
+				<integer>86</integer>
 				<key>line</key>
-				<integer>210</integer>
+				<integer>22</integer>
 			</dict>
 			<key>selectTo</key>
 			<dict>
 				<key>column</key>
-				<integer>16</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>210</integer>
+				<integer>21</integer>
 			</dict>
 		</dict>
 		<key>templates/admin_session_add.html</key>
@@ -442,14 +442,28 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>11</integer>
+				<integer>4</integer>
 				<key>line</key>
-				<integer>50</integer>
+				<integer>52</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>28</integer>
+			<integer>0</integer>
+		</dict>
+		<key>templates/admin_trends.html</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>3</integer>
+				<key>line</key>
+				<integer>102</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>83</integer>
 		</dict>
 		<key>templates/base.html</key>
 		<dict>
@@ -585,6 +599,8 @@
 	<key>openDocuments</key>
 	<array>
 		<string>manage.py</string>
+		<string>templates/500.html</string>
+		<string>templates/admin_trends.html</string>
 		<string>templates/admin_student.html</string>
 		<string>urls.py</string>
 		<string>exam/views.py</string>
