@@ -23,7 +23,7 @@
 
 
 <script type="text/javascript">
-
+/*
 function addStudent(student_name, student_id) {
 	$('#students_table').dataTable().fnAddData( [
 		student_name, student_id
@@ -31,7 +31,7 @@ function addStudent(student_name, student_id) {
 	
 	$('#students_table td:first-child').attr('class','left_td');
 }
-
+*/
 $(document).ready(function() {
 	
 	TableToolsInit.oFeatures.bXls = false;
@@ -64,14 +64,21 @@ $(document).ready(function() {
 	
 	$('#add_student').click(function() {
 		// TODO: Style h3's nicely. ANd h2's while youre at it.
-		apprise('<h3>Add Student</h3><div class="input_area"><p><label for="">Last Name:</label> <input id="add_student_name" type="text" name="name" maxlength="100" /></p><p><label for="">Student ID:</label> <input type="text" name="date" id="add_student_id" /></p></div>', 
-			{'confirm':true},
+		apprise('<h3>Add Student</h3>\
+        <form id="add_student_form" action="/admin/sessions/{{ exam_group.name }}/edit/add_student/" method="post">\
+        <div class="input_area">\
+        <p><label for="">Last Name:</label> <input type="text" name="last_name"  id="add_student_name" maxlength="100" /></p>\
+        <p><label for="">Student ID:</label> <input type="text" name="student_id" id="add_student_id" maxlength="100" /></p>\
+        </div>\
+        </form>', 
+			{'confirm':true, 'textOk':'Add'},
 			function(r) {
 				if (r) {
-					var student_name = $('#add_student_name').val();
-					var student_id = $('#add_student_id').val();
+					//var student_name = $('#add_student_name').val();
+					//var student_id = $('#add_student_id').val();
 					
-					addStudent(student_name, student_id);
+                    $('#add_student_form').submit();
+					//addStudent(student_name, student_id);
 				}
 			}
 		);
@@ -112,7 +119,7 @@ $(document).ready(function() {
 
 <h1>Edit session</h1>
 
-<form action="/admin/sessions/edit/" method="post"> <!-- todo: set this action -->
+<form action="/admin/sessions/{{ exam_group.name }}/edit/" method="post"> <!-- todo: set this action -->
 	<div class="input_area">
 		<h2>Basic settings</h2>
 		<!-- TODO: use django form object 
@@ -134,19 +141,22 @@ $(document).ready(function() {
 		        <tr>
 		            <th>Last Name</th>
 		            <th>Student ID</th>
+                    <th>Retake</th>
 		        </tr>
 		    </thead>
 		    <tbody>
+            <!-- TODO: Retake and Extension -->
 		    {% for student in all_students %}
 	       	    <tr class="grade_row" student_info="{{ student.student_id }}">
 	            <td class="left">{{ student.user.last_name }}</td>
 	            <td>{{ student.user.get_profile.student_id }}</td>
+                <td><a href="" style="font-size:10px">Allow Retake</a></td>
 	            </tr>
 	    {% endfor %}
 		    </tbody>
 		</table>
 
 
-	<h2>Problems</h2>
+<!-- TODO:	<h2>Problems</h2>-->
 	
 {% endblock %}

@@ -1,5 +1,5 @@
 <h1>Problem #{{ problem.number }}</h1>
-<p>{{ problem.text }}</p>
+<p>{{ problem.text|safe }}</p>
        
 <form>         
 <table id="multiple_choice_table">   
@@ -7,7 +7,7 @@
     <tr>
 		<td><input type="radio" name="problem_{{ problem.id }}" value="{{ answer.letter|upper }}" onclick="answerSelected('{{ problem.id }}', '{{ answer.id }}');" id="problem_{{ problem.id }}_answer_{{ answer.id }}" {% ifequal chosen_answer answer %} checked='checked' {% endifequal %} /></td>
         <td><strong>{{ answer.letter|upper }})</strong></td>
-        <td>{{ answer.text }}</td>
+        <td>{{ answer.text|safe }}</td>
     </tr>
     {% endfor %}
 </table>

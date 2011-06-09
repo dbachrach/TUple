@@ -34,7 +34,7 @@ function changeQuestion() {
 	// Load the new question
 	$.get('/problem/' + questionNum + '/', function(data) {
 		$('#question').html(data);
-		MathJax.Hub.Queue(["Typeset",MathJax.Hub,"question"]);
+		//MathJax.Hub.Queue(["Typeset",MathJax.Hub,"question"]);
 	});
 	
 	// Binds shortcut keys for each of the answers to this problem

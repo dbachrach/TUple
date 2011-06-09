@@ -4,6 +4,8 @@ from django.db.models import Avg, StdDev, Max, Min
 from datetime import datetime, date
 from django.forms import ModelForm
 #from django import forms
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class Exam(models.Model):
     name = models.CharField(max_length=100)
@@ -35,6 +37,9 @@ class Problem(models.Model):
         '''Returns the answers for this problem in sorted order (i.e. A, B, C, D, E).'''
         return self.answer_set.order_by('letter')
         
+#TODO: Change seconds to minutes
+#TODO: Fix questions renering with html instead of with super and subscripts
+#TODO: Retake ui so students can be given retake
 
 class ExamGroup(models.Model):
     name = models.CharField(max_length=100)
@@ -126,7 +131,7 @@ class ExamGroup(models.Model):
         unstarted_students_percentage = float(unstarted_students_count) / float(total_students_count) * 100
         
         if finished_students:
-            __aggregates = finished_students.aggregate(average_score=Avg('score'), high_score=Max('score'), low_score=Min('score'))
+            __aggregates = finished_students.aggregate(average_score=Avg('score'), high_score=Max('score'), low_score=Min('score'), standard_deviation=StdDev('score'))
             average_score = int(__aggregates['average_score'])
             
             # Standard deviation is not available in Sqlite
@@ -134,7 +139,7 @@ class ExamGroup(models.Model):
                 standard_deviation = __aggregates['standard_deviation'] 
             else:
                 standard_deviation = ""
-                
+            
             high_score = __aggregates['high_score']
             low_score = __aggregates['low_score']
             
@@ -150,8 +155,16 @@ class ExamGroupForm(ModelForm):
 
     #upload_csv_file_of_students = forms.FileField()
 
+@receiver(post_save, sender=ExamGroup)
+def exam_group_post_save_handler(sender, **kwargs):
+    obj = kwargs['instance']
+    if obj.active:
+        ExamGroup.objects.exclude(name=obj.name).update(active=False)
+    if obj.problem_count() == 0:
+        obj.problems = Problem.objects.all() # TODO: This is auto picking the 30 questions. Make this generic so it can work with any problems
+        obj.save()
 
-                
+              
 class UserProfile(models.Model):
     student_id = models.CharField(max_length=20)
     test_status = models.SmallIntegerField() # 0 = Not Started, 1 = In Progress, 2 = Finished
@@ -235,6 +248,7 @@ class UserProfile(models.Model):
         return answer_sheet.answer
 
     def answer_sheets(self):
+        #TODO: I think we can do this via an association rather than filter
         try:    
             answer_sheets = AnswerSheet.objects.filter(user_profile=self)
         except AnswerSheet.DoesNotExist:
@@ -267,9 +281,11 @@ class UserProfile(models.Model):
         return self.retake
         
     def give_retake(self):
-        self.retake = True
+        #self.retake = True
         self.test_status = 0
         self.test_date = None
+        self.score = 0
+        self.answer_sheets.update(answer=None)
         self.save()
 
 

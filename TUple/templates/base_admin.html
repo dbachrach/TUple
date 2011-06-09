@@ -10,6 +10,12 @@
 
 {% block content %}
 
+{% if messages %}
+{% for message in messages %}
+<p class="error">{{ message }}</p>
+{% endfor %}
+{% endif %}
+
 <ul id="tabnav">
     <div class="selected_tab{{ tab_number }}">
 	<li class="tab1"><a href="/admin/sessions/">Sessions</a></li>
@@ -17,6 +23,7 @@
 	<li class="tab3"><a href="/admin/settings/">Settings</a></li>
 	</div>
 </ul>
+
 
 {% block content_admin %}
 	

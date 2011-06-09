@@ -8,7 +8,7 @@ from django.utils import simplejson
 from django.contrib import messages
 from TUple.exam.models import Problem, ExamGroup, Answer, Exam, ExamForm, UserProfile, ExamGroupForm, AnswerSheet
 from django.views.generic import create_update
-from django.views.decorators.cache import cache_page
+#from django.views.decorators.cache import cache_page
 from django.contrib.auth.models import User
 
 
@@ -195,7 +195,6 @@ def admin_sessions(request):
     
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-@cache_page(60 * 5)
 def admin_session(request, group_name):
     if group_name:
         try:
@@ -275,12 +274,44 @@ def admin_edit_upload_csv(request, session_name):
                 reader = csv.reader(file)
 
                 for row in reader:
-                    try:
-			create_student(row[0], row[1], exam_group)
-		    except:
-			raise
+			        create_student(row[0], row[1], exam_group)
 		
                 return HttpResponseRedirect('/admin/sessions/'+ session_name  + '/edit/')
+
+#TODO: all of these try except blocks use the wrong module name
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def admin_edit_add_student(request, session_name):
+    try:
+        exam_group = ExamGroup.objects.get(name=session_name)
+    except UserProfile.DoesNotExist:
+        return HttpResponse("Error: No session with name " + session_name)
+    except UserProfile.MultipleObjectsReturned:
+        return HttpResponse("Error: Multiple sessions with name " + session_name)
+                                  
+    if request.method != 'POST':
+        return HttpResponse("Error: Not post")
+    else:
+        create_student(request.POST['last_name'], request.POST['student_id'], exam_group)                                                        
+
+    return HttpResponseRedirect('/admin/sessions/' + session_name + '/edit/')
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def admin_edit_retake(request, session_name):
+    if request.method != 'POST':
+        return HttpResponse("Error: Not post")
+    else:
+        try:
+            user = UserProfile.get(request.POST['user'])
+        except UserProfile.DoesNotExist:
+            return HttpResponse("Error: No user")
+        except UserProfile.MultipleObjectsReturned:
+            return HttpResponse("Error: Multiple users")
+
+        user.give_retake()
+
+    return HttpResponseRedirect('/admin/sessions/' + session_name + '/edit/')
 
 # TODO: Move this to the right file
 def create_student(last_name, student_id, exam_group):
@@ -289,7 +320,7 @@ def create_student(last_name, student_id, exam_group):
                                             email='',
                                             password=last_name)
         except:
-            raise
+           pass 
 
         user.last_name=last_name
         user.isStaff = False
@@ -315,7 +346,6 @@ def create_student(last_name, student_id, exam_group):
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-@cache_page(60 * 5)
 def admin_trends(request):
     # TODO: Trends
     
