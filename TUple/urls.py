@@ -31,9 +31,10 @@ urlpatterns = patterns('',
     (r'^admin/sessions/(.+)/edit/csv/$', views.admin_edit_upload_csv),
     (r'^admin/sessions/(.+)/edit/add_student/$', views.admin_edit_add_student),
     (r'^admin/sessions/(.+)/edit/$', views.admin_edit_session),
-    (r'^admin/sessions/(.+)/edit/retake/$', views.admin_edit_retake),
+    
     (r'^admin/sessions/(.+)/$', views.admin_session),
 
+    (r'^admin/students/(.+)/retake/$', views.admin_student_retake),
     (r'^admin/students/(.+)/$', views.admin_student),
     
     (r'^admin/trends/$', views.admin_trends),

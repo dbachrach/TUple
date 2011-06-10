@@ -23,15 +23,7 @@
 
 
 <script type="text/javascript">
-/*
-function addStudent(student_name, student_id) {
-	$('#students_table').dataTable().fnAddData( [
-		student_name, student_id
-	] );
-	
-	$('#students_table td:first-child').attr('class','left_td');
-}
-*/
+
 $(document).ready(function() {
 	
 	TableToolsInit.oFeatures.bXls = false;
@@ -58,12 +50,10 @@ $(document).ready(function() {
 		}
     });
 
-	// TODO: Style these like buttons
-	$('.toolbar').html('<input type="button" id="upload_csv" value="Upload CSV of Students" /> <input type="button" id="add_student" value="Add Student" />');
+	$('.toolbar').html('<button id="upload_csv">Upload CSV of Students</button> <button id="add_student">Add Student</button>');
 	$('.toolbar').attr('style', 'float:right');
 	
 	$('#add_student').click(function() {
-		// TODO: Style h3's nicely. ANd h2's while youre at it.
 		apprise('<h3>Add Student</h3>\
         <form id="add_student_form" action="/admin/sessions/{{ exam_group.name }}/edit/add_student/" method="post">\
         <div class="input_area">\
@@ -73,12 +63,8 @@ $(document).ready(function() {
         </form>', 
 			{'confirm':true, 'textOk':'Add'},
 			function(r) {
-				if (r) {
-					//var student_name = $('#add_student_name').val();
-					//var student_id = $('#add_student_id').val();
-					
+				if (r) {					
                     $('#add_student_form').submit();
-					//addStudent(student_name, student_id);
 				}
 			}
 		);
@@ -86,9 +72,7 @@ $(document).ready(function() {
 	});
 	
 	
-	$('#upload_csv').click(function() {
-		// TODO: Remove the okay button on apprise for this and the above form
-		
+	$('#upload_csv').click(function() {		
 		var str = '<h3>Upload CSV of Students</h3>\
 			   <form id="upload_form" action="/admin/sessions/{{ exam_group.name }}/edit/csv/" method="post" enctype="multipart/form-data">\
 			   <div class="input_area" id="upload_form">\
@@ -107,7 +91,6 @@ $(document).ready(function() {
 		return false;
 	});
 	
-	
 	$('#students_table td:first-child').attr('class', $('#students_table td:first-child').attr('class') + ' left_td');
 });
 
@@ -119,44 +102,43 @@ $(document).ready(function() {
 
 <h1>Edit session</h1>
 
-<form action="/admin/sessions/{{ exam_group.name }}/edit/" method="post"> <!-- todo: set this action -->
+
+<h2>Basic settings</h2>
+
+<form action="/admin/sessions/{{ exam_group.name }}/edit/" method="post">
 	<div class="input_area">
-		<h2>Basic settings</h2>
-		<!-- TODO: use django form object 
-		<p><label for="id_name">Name:</label> <input id="id_name" type="text" name="name" maxlength="100" /></p>
-		<p><label for="id_date">Date:</label> <input type="text" name="date" id="id_date" class="datepicker" /></p>
-		<p><label for="id_examination_time">Examination time:</label> <input type="text" name="examination_time" id="id_examination_time" /></p>
-		<p><label for="id_answers_per_problem">Answers per problem:</label> <input type="text" name="answers_per_problem" id="id_answers_per_problem" disabled="disabled" /></p>
-		<p><input type="checkbox" name="active" id="id_active" checked="checked" /> <label for="id_active">Make the currently active exam</label></p>
-	-->
-	{{ form.as_p }}	
+		{{ form.as_p }}	
+		
+		<button>Save</button>
 	</div>
 	
-<button>Save</button>
+	
 </form>
 	
-	<h2>Students</h2>
-		<table id="students_table" class="data_table display" cellspacing="0" cellpadding="0">
-		    <thead>
-		        <tr>
-		            <th>Last Name</th>
-		            <th>Student ID</th>
-                    <th>Retake</th>
-		        </tr>
-		    </thead>
-		    <tbody>
-            <!-- TODO: Retake and Extension -->
-		    {% for student in all_students %}
-	       	    <tr class="grade_row" student_info="{{ student.student_id }}">
-	            <td class="left">{{ student.user.last_name }}</td>
-	            <td>{{ student.user.get_profile.student_id }}</td>
-                <td><a href="" style="font-size:10px">Allow Retake</a></td>
-	            </tr>
-	    {% endfor %}
-		    </tbody>
-		</table>
+<h2>Students</h2>
+
+<table id="students_table" class="data_table display" cellspacing="0" cellpadding="0">
+    <thead>
+        <tr>
+            <th>Last Name</th>
+            <th>Student ID</th>
+            <th>Retake</th>
+        </tr>
+    </thead>
+    <tbody>
+    	{% for student in all_students %}
+      	    <tr class="grade_row" student_info="{{ student.student_id }}">
+           		<td class="left">{{ student.user.last_name }}</td>
+           		<td>{{ student.user.get_profile.student_id }}</td>
+              	<td><a href="/admin/students/{{ student.student_id }}/retake/" class="allow_retake">Allow Retake</a></td>
+           </tr>
+   		{% endfor %}
+    </tbody>
+</table>
 
 
-<!-- TODO:	<h2>Problems</h2>-->
+<h2>Problems</h2>
+
+In the near future, you will be able to choose which problems this session will have, and you will be able to add new problems.
 	
 {% endblock %}

@@ -38,8 +38,6 @@ class Problem(models.Model):
         return self.answer_set.order_by('letter')
         
 #TODO: Change seconds to minutes
-#TODO: Fix questions renering with html instead of with super and subscripts
-#TODO: Retake ui so students can be given retake
 
 class ExamGroup(models.Model):
     name = models.CharField(max_length=100)
@@ -131,14 +129,8 @@ class ExamGroup(models.Model):
         unstarted_students_percentage = float(unstarted_students_count) / float(total_students_count) * 100
         
         if finished_students:
-            __aggregates = finished_students.aggregate(average_score=Avg('score'), high_score=Max('score'), low_score=Min('score'), standard_deviation=StdDev('score'))
+            __aggregates = finished_students.aggregate(average_score=Avg('score'), high_score=Max('score'), low_score=Min('score'))# TODO: Put this back, standard_deviation=StdDev('score'))
             average_score = int(__aggregates['average_score'])
-            
-            # Standard deviation is not available in Sqlite
-            if 'standard_deviation' in __aggregates:
-                standard_deviation = __aggregates['standard_deviation'] 
-            else:
-                standard_deviation = ""
             
             high_score = __aggregates['high_score']
             low_score = __aggregates['low_score']
@@ -285,7 +277,7 @@ class UserProfile(models.Model):
         self.test_status = 0
         self.test_date = None
         self.score = 0
-        self.answer_sheets.update(answer=None)
+        self.answer_sheets().update(answer=None)
         self.save()
 
 

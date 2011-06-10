@@ -3,25 +3,6 @@
 {% block head_additions %}
 {{ block.super }}
 
- <!-- <style>
-
-@import "{{ media_url }}css/jquery-ui-1.8.6.custom.css";
-@import "{{ media_url }}js/datatables/media/css/demo_table_jui.css";
-@import "{{ media_url }}js/tabletools/css/TableTools.css";
-
-</style> -->
-<!--
-<script type="text/javascript" src="{{ media_url }}js/jquery.js"></script>
-<script type="text/javascript" src="{{ media_url }}js/jquery.uploadProgress.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
-<script type="text/javascript" src="{{ media_url }}js/datatables/media/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="{{ media_url }}js/tabletools/ZeroClipboard/ZeroClipboard.js"></script>
-<script type="text/javascript" src="{{ media_url }}js/tabletools/js/TableTools.min.js"></script>
-<script type="text/javascript" src="{{ media_url }}js/datatables/media/js/datatables.numhtml.js"></script>
-<script language="javascript" type="text/javascript" src="{{ media_url }}js/flot/jquery.flot.js"></script>
-<script language="javascript" type="text/javascript" src="{{ media_url }}js/flot/jquery.flot.selection.js"></script>
-<script type="text/javascript" src="{{ media_url }}js/Apprise/apprise-1.5.js"></script>
-<link rel="stylesheet" href="{{ media_url }}js/Apprise/apprise.css" type="text/css" /> -->
 <script type="text/javascript" src="{{ media_url }}js/jquery.js"></script>
 
 <script type="text/javascript">
@@ -33,7 +14,6 @@ $(document).ready(function() {
 	var year = current.getFullYear();
 	var date_str = month + "/" + day + "/" + year;
 	$('#id_date').attr('value', date_str);
-	// $('#id_date').datepicker({ showAnim: "clip" });
 });
 
 </script>
@@ -45,26 +25,14 @@ $(document).ready(function() {
 <h1>Create new session</h1>
 <div>To create a new session, you must provide a name, examination dates, and test time length. You will then assign problems to this session and choose the students who are in this session.</div>
 
+<h2>Basic settings</h2>
+
 <form action="/admin/sessions/add/" method="post" enctype="multipart/form-data">
 	{{ form.non_field_errors }}
 	<div class="input_area">
-		<h2>Basic settings</h2>
-		<!-- TODO: use django form object -->
-		<!-- TODO: default date to today -->
-		<!-- TODO: format errors using css -->
-		<!-- TODO: Get 'minutes' aligned with text box -->
-		<!-- TODO: Have exams have a start and end date -->
-		<!-- <p><label for="id_name">Name: {{ form.name.errors }}</label> <input id="id_name" type="text" name="name" maxlength="100" /></p>
-		<p><label for="id_date">Date: {{ form.date.errors }}</label> <input type="text" name="date" id="id_date" class="datepicker" /></p> 
-		<p><label for="id_examination_time">Examination time (minutes): {{ form.examination_time.errors }}</label> <input type="text" name="examination_time" id="id_examination_time" /></p> 
-		<p><label for="id_answers_per_problem">Answers per problem: {{ form.answers_per_problem.errors }}</label> <input type="text" name="answers_per_problem" id="id_answers_per_problem" /></p>
-		<p><input type="checkbox" name="active" id="id_active" checked="checked" /> <label for="id_active">Make the currently active exam {{ form.active.errors }}</label></p> -->
-		{{ form.as_p }}
-		
+		{{ form.as_p }}	
+		<button>Create Session</button>
 	</div>
-	
-<button>Create Session</button>
-
 </form>
 
 {% endblock %}

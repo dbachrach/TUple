@@ -214,7 +214,6 @@ def admin_session(request, group_name):
             'exam_group': exam_group, 
             'exam_groups': ExamGroup.objects.all(),
             'finished_students': exam_group.finished_students(),
-            # TODO: Grade and grades _distribution.
             'grades_distribution':  exam_group.grade_distribution(),
             'problem_distributions': exam_group.problem_distributions(),
             'tab_number': 1,
@@ -234,9 +233,9 @@ def admin_edit_session(request, session_name):
     try:
 	exam_group = ExamGroup.objects.get(name=session_name)
         session_id = exam_group.id
-    except UserProfile.DoesNotExist:
+    except ExamGroup.DoesNotExist:
         return HttpResponse("Error: No session with name " + session_name)
-    except UserProfile.MultipleObjectsReturned:
+    except ExamGroup.MultipleObjectsReturned:
         return HttpResponse("Error: Multiple sessions with name " + session_name)
     
     return create_update.update_object(request, form_class=ExamGroupForm,
@@ -254,9 +253,9 @@ def admin_edit_session(request, session_name):
 def admin_edit_upload_csv(request, session_name):
     try:
         exam_group = ExamGroup.objects.get(name=session_name)
-    except UserProfile.DoesNotExist:
+    except ExamGroup.DoesNotExist:
         return HttpResponse("Error: No session with name " + session_name)
-    except UserProfile.MultipleObjectsReturned:
+    except ExamGroup.MultipleObjectsReturned:
         return HttpResponse("Error: Multiple sessions with name " + session_name)
     
     if request.method != 'POST':
@@ -278,15 +277,14 @@ def admin_edit_upload_csv(request, session_name):
 		
                 return HttpResponseRedirect('/admin/sessions/'+ session_name  + '/edit/')
 
-#TODO: all of these try except blocks use the wrong module name
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_edit_add_student(request, session_name):
     try:
         exam_group = ExamGroup.objects.get(name=session_name)
-    except UserProfile.DoesNotExist:
+    except ExamGroup.DoesNotExist:
         return HttpResponse("Error: No session with name " + session_name)
-    except UserProfile.MultipleObjectsReturned:
+    except ExamGroup.MultipleObjectsReturned:
         return HttpResponse("Error: Multiple sessions with name " + session_name)
                                   
     if request.method != 'POST':
@@ -296,24 +294,8 @@ def admin_edit_add_student(request, session_name):
 
     return HttpResponseRedirect('/admin/sessions/' + session_name + '/edit/')
 
-@login_required
-@user_passes_test(lambda u: u.is_staff)
-def admin_edit_retake(request, session_name):
-    if request.method != 'POST':
-        return HttpResponse("Error: Not post")
-    else:
-        try:
-            user = UserProfile.get(request.POST['user'])
-        except UserProfile.DoesNotExist:
-            return HttpResponse("Error: No user")
-        except UserProfile.MultipleObjectsReturned:
-            return HttpResponse("Error: Multiple users")
 
-        user.give_retake()
-
-    return HttpResponseRedirect('/admin/sessions/' + session_name + '/edit/')
-
-# TODO: Move this to the right file
+# Note: Only views that are authenticated for is_staff should call this method
 def create_student(last_name, student_id, exam_group):
         try:
             user = User.objects.create_user(username=student_id,
@@ -347,20 +329,14 @@ def create_student(last_name, student_id, exam_group):
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_trends(request):
-    # TODO: Trends
     
     sessions = ExamGroup.objects.all()
-    # stats = {}
-    # for s in sessions:
-    #     stats[s.name] = s.calculate_statistics()
     
     problem_count = max([s.problem_count() for s in sessions])
-    #grade_distribution = "[" + ",".join([str(s.grade_distribution()) for s in sessions]) + "]"
     
     return render_to_response("admin_trends.html", {'tab_number': 2, 
                                                     'sessions': sessions,
                                                     'problem_count': problem_count,
-                                                    #'grade_distribution': grade_distribution,
                                                     }, context_instance=RequestContext(request))
 
 @login_required
@@ -394,30 +370,16 @@ def admin_student(request, student_id):
             'tab_number': 1,
         }, context_instance=RequestContext(request))
  
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def admin_student_retake(request, student_id):
+    try:
+        user = UserProfile.objects.get(student_id=student_id)
+    except UserProfile.DoesNotExist:
+        return HttpResponse("Error: No user")
+    except UserProfile.MultipleObjectsReturned:
+        return HttpResponse("Error: Multiple users")
 
-#def admin_upload_student_csv(request):
-#    exam_group = ExamGroup.objects.get(name=student[6])
-#    
-#    for student in students:
-#        try:
-#            user = User.objects.create_user(username=student[1],
-#                                            email='',
-#                                            password=student[0])
-#        except:
-#            continue
-##            
- #       user.last_name=student[0]
-#        user.isStaff = False
-#        user.save()
-#
- #       user_profile = UserProfile()
- #       user_profile.test_status = 0
-#        user_profile.score = 0
-#        user_profile.student_id = student[1]
-        
-#        user_profile.exam_group = exam_gropu
-#        user_profile.user = user
-#        user_profile.retake = False
- #       user_profile.save()
-#        
-        # TODO: user profiles are expected to be hooked up to an answersheet
+    user.give_retake()
+
+    return HttpResponseRedirect('/admin/sessions/' + user.exam_group.name + '/edit/')
