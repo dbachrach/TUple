@@ -207,3 +207,45 @@ function checkFinished() {
 
 	return confirm("Are you sure you are finished?");
 }
+
+
+$(document).ready(function() {
+	
+	$("#finish_test_button").click(function() {
+	    return checkFinished();
+	});
+	
+	$("#help_link a").click(function() {
+		window.open('/popup/instructions/','Instructions','width=830,height=580,scrollbars=1');
+		return false;
+	});
+	
+	$("#prev_link").click(function() {
+		prevQuestion();
+		return false;
+	});
+	
+	$("#next_link").click(function() {
+		nextQuestion();
+		return false;
+	});
+	
+	$("#periodic_table").click(function() {
+		window.open('{{ media_url }}images/ptable.gif','Periodic Table','width=806,height=580');
+		return false;
+	});
+	
+	$(function() {
+        $('.rollover').hover(function() {
+            var currentImg = $('img', this).attr('src');
+            $('img', this).attr('src', $('img', this).attr('hover'));
+            $('img', this).attr('hover', currentImg);
+        }, function() {
+            var currentImg = $('img', this).attr('src');
+            $('img', this).attr('src', $('img', this).attr('hover'));
+            $('img', this).attr('hover', currentImg);
+        });
+    });
+
+   	startTest({{ problem_data|length }}, {{ time_left }});
+});
