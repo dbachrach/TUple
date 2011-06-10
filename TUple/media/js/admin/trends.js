@@ -114,6 +114,4 @@ $(document).ready(function() {
     }
 
 	plotAccordingToChoices(null);
-	
-	// TODO: consolidate all this js into one file and share it w/ admin_session
 });
