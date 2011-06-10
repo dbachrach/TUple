@@ -36,8 +36,6 @@ class Problem(models.Model):
     def sorted_answers(self):
         '''Returns the answers for this problem in sorted order (i.e. A, B, C, D, E).'''
         return self.answer_set.order_by('letter')
-        
-#TODO: Change seconds to minutes
 
 class ExamGroup(models.Model):
     name = models.CharField(max_length=100)
@@ -65,7 +63,7 @@ class ExamGroup(models.Model):
         return self.userprofile_set.all()
                 
     def get_examination_time_string(self):
-        return '%d minutes' % int(self.examination_time / 60)
+        return '%d minutes' % int(self.examination_time)
     
     def problem_count(self):
         return self.sorted_problems().count()      
@@ -129,7 +127,7 @@ class ExamGroup(models.Model):
         unstarted_students_percentage = float(unstarted_students_count) / float(total_students_count) * 100
         
         if finished_students:
-            __aggregates = finished_students.aggregate(average_score=Avg('score'), high_score=Max('score'), low_score=Min('score'))# TODO: Put this back, standard_deviation=StdDev('score'))
+            __aggregates = finished_students.aggregate(average_score=Avg('score'), high_score=Max('score'), low_score=Min('score'), standard_deviation=StdDev('score'))
             average_score = int(__aggregates['average_score'])
             
             high_score = __aggregates['high_score']
@@ -192,13 +190,13 @@ class UserProfile(models.Model):
     
     def time_left(self):
         '''Returns how much time the user has before his/her exam will be turned in.'''
-        exam_time = self.exam_group.examination_time
+        exam_time = self.exam_group.examination_time * 60
         
         # time_difference = (datetime.now() - self.test_date).total_seconds()
         # total_seconds is not available on python < 2.7
-	td = (datetime.now() - self.test_date)
-	time_difference = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
-	if time_difference > exam_time:
+        td = (datetime.now() - self.test_date)
+    	time_difference = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
+    	if time_difference > exam_time:
             self.end_exam()
             return -1
             
@@ -240,7 +238,7 @@ class UserProfile(models.Model):
         return answer_sheet.answer
 
     def answer_sheets(self):
-        #TODO: I think we can do this via an association rather than filter
+        # CONSIDER: I think we can do this via an association rather than filter
         try:    
             answer_sheets = AnswerSheet.objects.filter(user_profile=self)
         except AnswerSheet.DoesNotExist:
